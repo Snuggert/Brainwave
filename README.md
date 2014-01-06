@@ -2,7 +2,7 @@ Brainwave
 =========
 
 Specifications
-=========
+==============
 * Op rekening (pre-paid)
 * Modulair scherm (scalable)
 * Administratie
