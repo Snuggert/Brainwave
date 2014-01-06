@@ -17,19 +17,19 @@ Specifications
 * Two stocks on one tablet
 * Utp cassier system
 * Beer statistics
-* pep8
 * Mobile version(?)
 * Customer frontend
 
 #### Libraries
 * Flask - http://flask.pocoo.org/ (Webframework)
-* Flask-SQLAlchemy - http://pythonhosted.org/Flask-SQLAlchemy/ (SQLAlchemy
-integration for Flask)
+* SQLAlchemy - http://www.sqlalchemy.org/ (sort of ORM. NO QUERIES!)
 * Sass - http://sass-lang.com/ (Enhanced css, with things like nesting and
 mixins)
 
 Installation
 ============
+
+#### Python and Flask
 To get everything working, a virtualenv (virtual environment) has to be set up.
 Python has a tool for this: python-virtualenv. You can install this through
 your package manager of choice. I do not know (and care) how to do this on
@@ -75,3 +75,20 @@ Install the following packages:
 * watchdog==0.6.0
 
 I will later take some time to explain the use of these packages.
+
+#### Sass
+Sass is an abstraction of CSS. In its pure form, it allows you to code CSS
+without the need of accolades. It is also possible to nest code, and to create
+mixins, that make repeated jobs a lot easier.
+
+We are going to use a version looking more lice CSS, it is called SCSS. This
+basically Sass, but it does require accolades. This makes it less confusing to
+use. Have fun!
+
+To install Sass, you will need to follow the instructions under `command-line`
+on this website: http://sass-lang.com/install
+
+SCSS files go in the `scss/` folder. There is a script that compiles these files
+to CSS automatically, and puts them under the original name (except .css
+instead of .scss) in the folder `brainwave/static/css/`. This script is called
+`do_scss.sh`.
