@@ -2,6 +2,7 @@ Brainwave
 =========
 
 Specifications
+<<<<<<< HEAD
 =========
 * Pre-paid Selling
 * Modulair screen (scalable)
