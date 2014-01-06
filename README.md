@@ -28,7 +28,8 @@ integration for Flask)
 * Sass - http://sass-lang.com/ (Enhanced css, with things like nesting and
 mixins)
 
-#### Installation
+Installation
+============
 To get everything working, a virtualenv (virtual environment) has to be set up.
 Python has a tool for this: python-virtualenv. You can install this through
 your package manager of choice. I do not know (and care) how to do this on
@@ -66,6 +67,7 @@ You can now list your packages using the following command:
     `yolk -l`
 
 Install the following packages:
+
 * Flask==0.10.1
 * Flask-Failsafe==0.2
 * Flask-SQLAlchemy==1.0
