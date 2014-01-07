@@ -23,6 +23,13 @@ db.session.add(product_category1)
 db.session.add(product_category2)
 db.session.commit()
 
+# Dummy users
+user1 = User('Fokke', 'RETARD', 'Fokke Dekker')
+user2 = User('Jonas', 'RETARD', 'Jonas Lodewegen')
+db.session.add(user1)
+db.session.add(user2)
+db.session.commit()
+
 # Dummy products
 product1 = Product('Hertog Jan 30cL', 'HJ 30cL', 0.70, 300, product_category1)
 product2 = Product('Hertog Jan 50cL', 'HJ 50cL', 1.00, 500, product_category1)
