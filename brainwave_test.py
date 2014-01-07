@@ -2,6 +2,8 @@ import unittest
 import os
 from glob import glob
 
+from flask import json, url_for
+
 from brainwave import app, db
 from brainwave.models import *
 from brainwave.api.user import UserAPI
@@ -23,7 +25,7 @@ class brainwaveTestCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
-    def test_user(self):
+    def test_user_api(self):
         password = 'test1234'
         user_dict = {'username': 'test', 'password': password,
                      'name': 'Test de Test'}
@@ -46,6 +48,36 @@ class brainwaveTestCase(unittest.TestCase):
         UserAPI.delete(user)
         assert not UserAPI.get(user_id)
 
+    def test_user_controller(self):
+        with app.test_client() as c, app.app_context():
+            password = 'test1234'
+            user_dict = {'username': 'test', 'password': password,
+                         'name': 'Test de Test'}
+            resp = c.post('/api/user', content_type='application/json',
+                          data=json.dumps(user_dict))
+            data = json.loads(resp.data)
+            assert 'id' in data
+            assert 'pw_hash' in data
+
+            user_id = data['id']
+
+            new_name = 'Test de Test2'
+            user_dict['name'] = new_name
+            resp = c.put('/api/user/%d' % (user_id),
+                         content_type='application/json',
+                         data=json.dumps(user_dict))
+            data = json.loads(resp.data)
+            assert 'pw_hash' in data
+
+            resp = c.get('/api/user/%d' % (user_id))
+            data = json.loads(resp.data)
+            assert 'user' in data
+            assert data['user']['id'] == user_id
+
+            resp = c.delete('/api/user/%d' % (user_id))
+            resp = c.get('/api/user/%d' % (user_id))
+            data = json.loads(resp.data)
+            assert not 'user' in data
 
 if __name__ == '__main__':
     unittest.main()

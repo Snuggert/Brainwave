@@ -7,7 +7,7 @@ user_controller = Blueprint('user_controller', __name__,
                             url_prefix='/api/user')
 
 
-@user_controller.route('/', methods=['POST'])
+@user_controller.route('', methods=['POST'])
 def create():
     """Create a new user."""
     user_dict = request.json
@@ -37,6 +37,8 @@ def delete(user_id):
 
     if not user:
         return jsonify(error='User not found'), 500
+
+    UserAPI.delete(user)
 
     return jsonify()
 
