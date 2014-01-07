@@ -75,10 +75,10 @@ Install the following packages:
 * watchdog==0.6.0
 
 > pip install Flask==0.10.1
-> pip install Flask-Failsafe==0.2
-> pip install Flask-SQLAlchemy==1.0
-> pip install pyinotify==0.9.4
-> pip install watchdog==0.6.0
+pip install Flask-Failsafe==0.2
+pip install Flask-SQLAlchemy==1.0
+pip install pyinotify==0.9.4
+pip install watchdog==0.6.0
 
 
 I will later take some time to explain the use of these packages.
