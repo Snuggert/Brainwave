@@ -38,3 +38,5 @@ nosetests.xml
 venv/
 brainwave/static/css/style.css
 .sass-cache
+*.swp
+*.sqlite

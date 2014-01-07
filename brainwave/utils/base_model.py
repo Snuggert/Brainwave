@@ -5,7 +5,7 @@ functions.
 
 """
 from brainwave import db
-from brainwave.utils.utils import serialize_sqla
+from brainwave.utils import serialize_sqla
 from datetime import datetime
 import dateutil.parser
 
@@ -107,8 +107,6 @@ class BaseEntity(object):
             elif key in relationships:
                 setattr(entry, key, relationships[key].by_ids(value))
 
-        db.session.add(entry)
-        db.session.commit()
         return entry
 
     # For future proofing use new_dict when creating new entries, so it could
