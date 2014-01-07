@@ -1,5 +1,6 @@
 from brainwave import db
-from brainwave.utils import BaseEntity
+from brainwave.utils.base_model import BaseEntity
+
 
 class Product(db.Model, BaseEntity):
     __tablename__ = 'product'
@@ -15,9 +16,9 @@ class Product(db.Model, BaseEntity):
     # Percentage in Floats???
     loss = db.Column(db.Float)
 
-    product_category_id = db.Column(db.Integer, 
+    product_category_id = db.Column(db.Integer,
                                     db.ForeignKey('product_category.id'))
-    
+
     def __init__(self, name='', shortname='', price=None, volume=None,
                  product_category=None):
         self.active = False

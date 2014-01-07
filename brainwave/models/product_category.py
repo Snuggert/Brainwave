@@ -1,5 +1,6 @@
 from brainwave import db
-from brainwave.utils import BaseEntity
+from brainwave.utils.base_model import BaseEntity
+
 
 class ProductCategory(db.Model, BaseEntity):
     __tablename__ = 'product_category'

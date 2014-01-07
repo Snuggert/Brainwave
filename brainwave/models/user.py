@@ -3,7 +3,7 @@ from brainwave.utils.base_model import BaseEntity
 from brainwave import db
 
 
-class User(BaseEntity):
+class User(db.Model, BaseEntity):
     """User model."""
     __tablename__ = 'user'
 

@@ -1,5 +1,6 @@
-from flask import Flask
+from flask import Flask, g
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlite3 import dbapi2 as sqlite3
 
 # Startup stuff
 app = Flask(__name__)

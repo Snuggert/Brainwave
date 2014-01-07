@@ -112,3 +112,16 @@ class BaseEntity(object):
     # For future proofing use new_dict when creating new entries, so it could
     # become a separate function if needed.
     new_dict = merge_dict
+
+    @classmethod
+    def by_id(cls, _id):
+        """Get entry by id."""
+        return cls.query.filter_by(id=_id).first()
+
+    @classmethod
+    def by_ids(cls, ids):
+        """Get entries by id list."""
+        try:
+            return db.session.query(cls).filter(cls.id.in_(ids)).all()
+        except:
+            return []
