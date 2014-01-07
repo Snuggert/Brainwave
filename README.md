@@ -6,6 +6,9 @@ Bar backend/frontend for the brainwave bar at sciencepark. Basically a POS
 The project will be made using Python 2.7, Flask, HTML5 (JS/AJAX). All Python
 MUST conform to PEP8 (http://www.python.org/dev/peps/pep-0008/).
 
+Scrumtool:
+http://pangoscrum.com/
+
 Specifications
 =========
 * Pre-paid Selling
