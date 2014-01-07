@@ -4,8 +4,8 @@ Extra functionality that is used by all models. It extends db.Model with extra
 functions.
 
 """
-from app import db
-from app.system.utils import serialize_sqla
+from brainwave import db
+from brainwave.utils.utils import serialize_sqla
 from datetime import datetime
 import dateutil.parser
 

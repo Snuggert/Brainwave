@@ -76,6 +76,7 @@ Install the following packages:
 * Flask-SQLAlchemy==1.0
 * pyinotify==0.9.4
 * watchdog==0.6.0
+* python-dateutil==2.2
 
 > pip install Flask==0.10.1
 >
