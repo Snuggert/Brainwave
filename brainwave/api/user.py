@@ -56,7 +56,7 @@ class UserAPI:
     def get(user_id):
         """Get a user by its id."""
 
-        return User.query.get(user_id).first()
+        return User.query.get(user_id)
 
     @staticmethod
     def get_all():
