@@ -6,7 +6,6 @@ from brainwave.utils import serialize_sqla
 user_controller = Blueprint('user_controller', __name__,
                             url_prefix='/api/user')
 
-
 @user_controller.route('', methods=['POST'])
 def create():
     """Create a new user."""
