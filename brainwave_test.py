@@ -7,6 +7,7 @@ from flask import json, url_for
 from brainwave import app, db
 from brainwave.models import *
 from brainwave.api.user import UserAPI
+from brainwave.api.stock import StockAPI
 
 
 class brainwaveTestCase(unittest.TestCase):
@@ -80,9 +81,29 @@ class brainwaveTestCase(unittest.TestCase):
             assert not 'user' in data
 
     def test_stock_api(self):
-        pass
+        stock_dict = {'name': 'Hertog Jan fust', 'quantity': 30}
+        stock = StockAPI.create(stock_dict)
+        assert stock.id
+
+        stock_dict = {'name': 'Jupiler fust'}
+        stock = StockAPI.create(stock_dict)
+        assert stock.quantity == 0
+
+        StockAPI.add(stock, 2)
+        assert stock.quantity == 2
+
+        stock_id = stock.id
+
+        stock2 = StockAPI.get(stock_id)
+        assert stock2.name
+        stockall = StockAPI.get_all()
+        assert stockall
+        stock3 = StockAPI.get(stock_id)
+        StockAPI.delete(stock3)
+        assert not StockAPI.get(stock_id)
 
     def test_stock_controller(self):
+        # Need to write (Jaap)
         pass
 
 if __name__ == '__main__':

@@ -29,7 +29,7 @@ class StockAPI:
     def get(stock_id):
         """ Get a stock object bij its id """
 
-        return Stock.query.get(stock_id).first()
+        return Stock.query.get(stock_id)
 
     @staticmethod
     def get_all():

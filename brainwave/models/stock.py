@@ -7,8 +7,6 @@ class Stock(db.Model, BaseEntity):
     """Stock model."""
     __tablename__ = 'stock'
 
-    prints = ['id', 'stock']
-
     quantity = db.Column(db.Integer)
     name = db.Column(db.String(256))
 
