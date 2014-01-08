@@ -12,4 +12,4 @@ admin_blueprint = Blueprint('admin', __name__,
 @admin_blueprint.route('/user', methods=['GET'])
 def view_user(user_id=None):
     users = UserAPI.get_all();
-    return render_template('admin/users.htm', users=users)
+    return render_template('admin/users.htm', data={'users':users})

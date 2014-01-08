@@ -21,6 +21,7 @@ app.register_blueprint(stock_controller)
 app.register_blueprint(admin_blueprint)
 
 # Add methods and modules to jinja environment
-from .brainwave.utils import serialize_sqla
+from brainwave.utils import serialize_sqla
+import json
 app.jinja_env.globals.update(json=json)
 app.jinja_env.globals.update(serialize_sqla=serialize_sqla)

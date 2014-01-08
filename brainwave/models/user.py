@@ -1,6 +1,6 @@
 """user.py - User model."""
-from .brainwave.utils.base_model import BaseEntity
-from .brainwave import db
+from brainwave.utils.base_model import BaseEntity
+from brainwave import db
 
 
 class User(db.Model, BaseEntity):

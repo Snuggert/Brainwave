@@ -1,6 +1,6 @@
 """product_category.py - ProductCategory model."""
-from .brainwave import db
-from .brainwave.utils.base_model import BaseEntity
+from brainwave import db
+from brainwave.utils.base_model import BaseEntity
 
 
 class ProductCategory(db.Model, BaseEntity):

@@ -1,7 +1,7 @@
 """user.py - API calls for user."""
 from werkzeug.security import generate_password_hash, check_password_hash
-from .brainwave.models.user import User
-from .brainwave import db
+from brainwave.models.user import User
+from brainwave import db
 
 
 class UserAPI:
