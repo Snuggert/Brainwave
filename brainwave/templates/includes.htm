@@ -5,6 +5,5 @@
 {% if data %}
 	<script>
 		brainwave = {{json.dumps(serialize_sqla(data)) | safe}};
-		console.log(brainwave);
 	</script>
 {% endif %}
