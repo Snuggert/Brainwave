@@ -4,28 +4,28 @@
     <div class="row">
         <div class="col-lg-11  ">
             <div class="input-group">
-              <input type="text" class="form-control">
-              <span class="input-group-btn">
-              <button class="btn btn-default" type="button">
-              <span style="margin: 3px;" class="glyphicon glyphicon-search"></span>
-             </button>
-             </span>
-             </div><!-- /input-group -->
+                <input type="text" class="form-control">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">
+                        <span style="margin: 3px;" class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
+            </div><!-- /input-group -->
         </div>
     </div>
     <br />
     <div class="row col-md-12 custyle">
         <table class="table table-striped custab">
-        <thead>
-        <a href="#" class="btn btn-primary btn-xs pull-right"><b>+</b> Add new user</a>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Name</th>
-                <th>Crediet</th>
-                <th class="text-center">Action</th>
-            </tr>
-        </thead>
+            <thead>
+            <a href="#" class="btn btn-primary btn-xs pull-right"><b>+</b> Add new user</a>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Crediet</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
         	{% for user in data.users %}
                 <tr>
                     <td> {{user.id}}</td>

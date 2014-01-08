@@ -5,8 +5,6 @@
 <script src="/static/libraries/bootstrap/js/bootstrap.min.js"></script>
 <script src="/static/libraries/jquery/jquery.min.js"></script>
 
-
-
 {% if data %}
 	<script>
 		brainwave = {{json.dumps(serialize_sqla(data)) | safe}};
