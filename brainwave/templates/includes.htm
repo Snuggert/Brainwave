@@ -1,0 +1,9 @@
+<link href="/static/libraries/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/js/backbone-min.js" rel="stylesheet">
+<link href="/static/js/backbone_base.js" rel="stylesheet">
+
+{% if data %}
+	<script>
+		brainwave = #{json.dumps(serialize_sqla({{data}}))};
+	</script>
+{% endif %}
