@@ -3,6 +3,7 @@ from flask import flash, redirect, render_template, request, url_for, abort,\
     session
 from flask import Blueprint
 from brainwave.api.user import UserAPI
+from brainwave.api.stock import StockAPI
 from brainwave.utils import serialize_sqla
 
 admin_blueprint = Blueprint('admin', __name__,
@@ -11,5 +12,10 @@ admin_blueprint = Blueprint('admin', __name__,
 @admin_blueprint.route('/', methods=['GET'])
 @admin_blueprint.route('/user', methods=['GET'])
 def view_user(user_id=None):
-    users = UserAPI.get_all();
+    users = UserAPI.get_all(); 
     return render_template('admin/users.htm', data={'users':users})
+
+@admin_blueprint.route('/stock', methods=['GET'])
+def view_stock(user_id=None):
+    stock = StockAPI.get_all(); 
+    return render_template('admin/stock.htm', data={'stock':stock})

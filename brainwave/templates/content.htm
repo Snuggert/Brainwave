@@ -5,9 +5,9 @@
     <div class="row">
         <div class="col-md-3">
             <ul class="nav nav-pills nav-stacked admin-menu">
-                <li class="active"><a href="#" data-target-id="home"><i class="fa fa-home fa-fw"></i>Home</a></li>
-                <li><a href="http://www.jquery2dotnet.com" data-target-id="Gebruikers"><i class="fa fa-list-alt fa-fw"></i>Gebruikers</a></li>
-                <li><a href="http://www.jquery2dotnet.com" data-target-id="Teams"><i class="fa fa-file-o fa-fw"></i>Teams</a></li>
+                <li class="active"><a href="{{ url_for('admin.view_user') }}" data-target-id="home"><i class="fa fa-home fa-fw"></i>Home</a></li>
+                <li><a href="{{ url_for('admin.view_user') }}" data-target-id="Gebruikers"><i class="fa fa-list-alt fa-fw"></i>Gebruikers</a></li>
+                <li><a href="{{ url_for('admin.view_stock') }}" data-target-id="Teams"><i class="fa fa-file-o fa-fw"></i>Teams</a></li>
             </ul>
         </div>
         <div class="col-md-9 well">
