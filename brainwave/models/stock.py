@@ -9,9 +9,9 @@ class Stock(db.Model, BaseEntity):
 
     prints = ['id', 'stock']
 
-    stock = db.Column(db.Integer)
-    stock_type = db.Column(db.Integer)
+    quantity = db.Column(db.Integer)
+    name = db.Column(db.String(256))
 
-    def __init__(self, stock=None, stock_type=None):
-        self.stock = stock
-        self.stock_type = stock_type
+    def __init__(self, quantity=None, name=None):
+        self.quantity = quantity
+        self.name = name
