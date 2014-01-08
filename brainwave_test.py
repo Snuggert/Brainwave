@@ -79,5 +79,11 @@ class brainwaveTestCase(unittest.TestCase):
             data = json.loads(resp.data)
             assert not 'user' in data
 
+    def test_stock_api(self):
+        pass
+
+    def test_stock_controller(self):
+        pass
+
 if __name__ == '__main__':
     unittest.main()
