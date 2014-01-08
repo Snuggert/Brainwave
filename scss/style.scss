@@ -1,0 +1,16 @@
+html,body {
+    height:100%;
+    padding:0;
+    margin:0;
+}
+
+.container-full {
+    margin: 0 auto;
+    width: 100%;
+}
+.content-container {
+    height: -moz-calc(100% - (50px));
+    height: -webkit-calc(100% - (50px));
+    height: calc(100% - (50px));
+    display:block;
+}
