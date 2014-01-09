@@ -34,7 +34,6 @@ class StockAPI:
     @staticmethod
     def get_all():
         """ Get all stock items """
-
         return Stock.query.all()
 
     @staticmethod

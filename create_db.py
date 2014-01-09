@@ -30,9 +30,16 @@ db.session.add(user1)
 db.session.add(user2)
 db.session.commit()
 
+# Dummy stock
+stock1 = Stock(10000, 'Hertog Jan')
+db.session.add(stock1)
+db.session.commit()
+
 # Dummy products
-product1 = Product('Hertog Jan 30cL', 'HJ 30cL', 0.70, 300, product_category1)
-product2 = Product('Hertog Jan 50cL', 'HJ 50cL', 1.00, 500, product_category1)
+product1 = Product('Hertog Jan 30cL', 'HJ 30cL', 0.70, 300, product_category1, 
+				   stock1)
+product2 = Product('Hertog Jan 50cL', 'HJ 50cL', 1.00, 500, product_category1,
+				   stock1)
 db.session.add(product1)
 db.session.add(product2)
 db.session.commit()
