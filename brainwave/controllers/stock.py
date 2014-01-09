@@ -6,7 +6,7 @@ from brainwave.utils import serialize_sqla
 stock_controller = Blueprint('stock_controller', __name__,
                               url_prefix='/api/stock')
 
-@stock_controller.route('/', methods=['POST'])
+@stock_controller.route('', methods=['POST'])
 def create():
     """ Create new stock item """
     stock_dict = request.json

@@ -103,8 +103,40 @@ class brainwaveTestCase(unittest.TestCase):
         assert not StockAPI.get(stock_id)
 
     def test_stock_controller(self):
-        # Need to write (Jaap)
-        pass
+        with app.test_client() as c, app.app_context():
+            stock_dict = {'name': 'Hertog Jan fust', 'quantity': 30}
+
+            resp = c.post('/api/stock', content_type='application/json',
+                          data=json.dumps(stock_dict))
+            data = json.loads(resp.data)
+
+            assert 'id' in data
+            assert 'name' in data
+            assert 'quantity' in data
+
+            stock_id = data['id']
+            quantity_before = data['quantity']
+            quantity_after = quantity_before + 2
+
+            resp = c.put('/api/stock/%d/%d' % (stock_id, 2),
+                         content_type='application/json')
+            data = json.loads(resp.data)
+
+            assert data['quantity'] == quantity_after
+
+            resp = c.get('/api/stock/%d' % (stock_id),
+                         content_type='application/json')
+            data = json.loads(resp.data)
+
+            assert data['stock']['quantity'] == quantity_after
+
+            resp = c.delete('/api/stock/%d' % (stock_id))
+            resp = c.get('/api/stock/%d' % (stock_id),
+                         content_type='application/json')
+            data = json.loads(resp.data)
+
+            assert not 'id' in data
+
 
 if __name__ == '__main__':
     unittest.main()
