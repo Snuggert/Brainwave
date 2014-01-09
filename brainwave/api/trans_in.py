@@ -9,6 +9,7 @@ class TransInAPI:
 
     @staticmethod
     def create(trans_in_dict):
+        trans_in_dict['stock'] = StockAPI.get(trans_in_dict['stock_id'])
         trans_in = TransIn.new_dict(trans_in_dict)
         StockAPI.add(StockAPI.get(trans_in_dict['stock_id']), trans_in_dict['volume']) 
         db.session.add(trans_in)
