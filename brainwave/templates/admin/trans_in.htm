@@ -17,21 +17,21 @@
     <div class="row col-md-12 custyle">
         <table class="table table-striped custab">
             <thead>
-            <a href="#" class="btn btn-primary btn-xs pull-right"><b>+</b> Add new user</a>
+            <a href="#" class="btn btn-primary btn-xs pull-right"><b>+</b> Add new transaction</a>
                 <tr>
                     <th>ID</th>
-                    <th>Username</th>
-                    <th>Name</th>
-                    <th>Crediet</th>
+                    <th>Volume</th>
+                    <th>Price</th>
+                    <th>Stock</th>
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
-        	{% for user in data.users %}
+        	{% for item in data.trans_in %}
                 <tr>
-                    <td>{{user.id}}</td>
-                    <td>{{user.username}}</td>
-                    <td>{{user.name}}</td>
-                    <td>€{{10}}</td>
+                    <td>{{item.id}}</td>
+                    <td>{{item.volume}}</td>
+                    <td>€{{item.price}}</td>
+                    <td><a href="#">{{item.stock.name}}</a></td>
                     <td class="text-center">
                         <a class='btn btn-info btn-xs' href="#">
                             <span class="glyphicon glyphicon glyphicon-usd">

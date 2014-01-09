@@ -2,8 +2,7 @@
 from flask import flash, redirect, render_template, request, url_for, abort,\
     session
 from flask import Blueprint
-from brainwave.api.user import UserAPI
-from brainwave.api.stock import StockAPI
+from brainwave.api import UserAPI, StockAPI, TransInAPI
 from brainwave.utils import serialize_sqla
 
 admin_blueprint = Blueprint('admin', __name__,
@@ -19,3 +18,8 @@ def view_user(user_id=None):
 def view_stock(user_id=None):
     stock = StockAPI.get_all(); 
     return render_template('admin/stock.htm', data={'stock':stock})
+
+@admin_blueprint.route('/trans_in', methods=['GET'])
+def view_trans_in(user_id=None):
+    trans_in = TransInAPI.get_all(); 
+    return render_template('admin/trans_in.htm', data={'trans_in':trans_in})

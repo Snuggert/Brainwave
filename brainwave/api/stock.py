@@ -27,7 +27,7 @@ class StockAPI:
 
     @staticmethod
     def get(stock_id):
-        """ Get a stock object bij its id """
+        """ Get a stock object by its id """
 
         return Stock.query.get(stock_id)
 
