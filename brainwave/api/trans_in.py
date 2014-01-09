@@ -10,7 +10,7 @@ class TransInAPI:
     @staticmethod
     def create(trans_in_dict):
         trans_in = TransIn.new_dict(trans_in_dict)
-        print "Anale ontmaagding", trans_in_dict['stock_id']
+        StockAPI.add(StockAPI.get(trans_in_dict['stock_id']), trans_in_dict['volume']) 
         db.session.add(trans_in)
         db.session.commit()
 
