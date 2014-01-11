@@ -11,7 +11,7 @@ class ProductCategory(db.Model, BaseEntity):
 
     name = db.Column(db.String(256))
 
-    products = db.relationship('Product', backref='prduct_category')
+    products = db.relationship('Product', backref='product_category')
 
     def __init__(self, name):
         self.name = name

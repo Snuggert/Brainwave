@@ -11,6 +11,7 @@ class Stock(db.Model, BaseEntity):
     name = db.Column(db.String(256))
 
     products = db.relationship('Product', backref='stock')
+    transactions = db.relationship('TransIn', backref='stock')
 
     def __init__(self, quantity=0, name=None):
         self.quantity = quantity

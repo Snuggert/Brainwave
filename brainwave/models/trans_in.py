@@ -12,7 +12,8 @@ class TransIn(db.Model, BaseEntity):
 	in_stock = db.Column(db.Boolean)
 
 	stock_id = db.Column(db.Integer, db.ForeignKey('stock.id'))
-	def __init__(price=None, volume=None, stock=None):
+	def __init__(self, price=None, volume=None, stock=None):
 		self.price = price
 		self.volume = volume
 		self.stock = stock
+		self.in_stock = True

@@ -6,8 +6,7 @@ from flask import json, url_for
 
 from brainwave import app, db
 from brainwave.models import *
-from brainwave.api.user import UserAPI
-from brainwave.api.stock import StockAPI
+from brainwave.api import UserAPI, StockAPI, TransInAPI
 
 
 class brainwaveTestCase(unittest.TestCase):
@@ -137,6 +136,54 @@ class brainwaveTestCase(unittest.TestCase):
             data = json.loads(resp.data)
 
             assert not 'stock' in data
+
+    def test_trans_in_api(self):
+        stock_dict = {'name': 'Hertog Jan', 'quantity': 30}
+        stock = StockAPI.create(stock_dict)
+        assert stock.id
+
+        trans_in_dict = {'price': 100.0, 'volume': 60000, 'stock_id': stock.id}
+        trans_in = TransInAPI.create(trans_in_dict)
+        assert trans_in.id
+
+        assert stock.quantity == 2
+
+        stock_id = stock.id
+
+    def test_trans_in_controller(self):
+        with app.test_client() as c, app.app_context():
+            stock_dict = {'name': 'Hertog Jan fust', 'quantity': 30}
+
+            resp = c.post('/api/stock', content_type='application/json',
+                          data=json.dumps(stock_dict))
+            data = json.loads(resp.data)
+
+            assert 'id' in data
+            assert 'name' in data
+            assert 'quantity' in data
+
+            stock_id = data['id']
+            quantity_before = data['quantity']
+            quantity_after = quantity_before + 2
+
+            resp = c.put('/api/stock/%d/%d' % (stock_id, 2),
+                         content_type='application/json')
+            data = json.loads(resp.data)
+
+            assert data['quantity'] == quantity_after
+
+            resp = c.get('/api/stock/%d' % (stock_id),
+                         content_type='application/json')
+            data = json.loads(resp.data)
+
+            assert data['stock']['quantity'] == quantity_after
+
+            resp = c.delete('/api/stock/%d' % (stock_id))
+            resp = c.get('/api/stock/%d' % (stock_id),
+                         content_type='application/json')
+            data = json.loads(resp.data)
+
+            assert not 'id' in data
 
 
 if __name__ == '__main__':

@@ -35,6 +35,11 @@ stock1 = Stock(10000, 'Hertog Jan')
 db.session.add(stock1)
 db.session.commit()
 
+# Dummy trans_in
+trans_in1 = TransIn(100.50, 10000, stock1)
+db.session.add(trans_in1)
+db.session.commit()
+
 # Dummy products
 product1 = Product('Hertog Jan 30cL', 'HJ 30cL', 0.70, 300, product_category1, 
 				   stock1)
