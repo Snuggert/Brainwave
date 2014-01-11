@@ -228,6 +228,69 @@ class brainwaveTestCase(unittest.TestCase):
 
             assert not 'id' in data
 
+    def test_product_api(self):
+        product_category_dict = {'name': 'bier'}
+        product_category = ProductCategoryAPI.create(product_category_dict)
+
+        stock_dict = {'name': 'Hertog Jan', 'quantity': 30}
+        stock = StockAPI.create(stock_dict)
+
+        product_dict = {'name': 'Hertog Jan 30cl', 'shortname': 'HJ 30cl',
+                        'price': 1.0, 'volume': 1, 'loss': None,
+                        'product_category_id': product_category['id'],
+                        'stock_id': stock['id']}
+        product = ProductAPI.create(product_dict)
+        assert product['id']
+        assert product['name'] == 'Hertog Jan 30cl'
+        assert product['shortname'] == 'HJ 30cl'
+
+        product_id = product['id']
+
+        product = ProductAPI.get(product_id)
+        assert product['id'] == product_id
+        assert product['name'] == 'Hertog Jan 30cl'
+
+        products = ProductAPI.get_all()
+        assert products
+
+        ProductAPI.delete(product)
+        assert not ProductAPI.get(product_id)
+
+    def test_product_controller(self):
+        product_category_dict = {'name': 'bier'}
+        product_category = ProductCategoryAPI.create(product_category_dict)
+
+        stock_dict = {'name': 'Hertog Jan', 'quantity': 30}
+        stock = StockAPI.create(stock_dict)
+
+        with app.test_client() as c, app.app_context():
+            product_dict = {'name': 'Hertog Jan 30cl', 'shortname': 'HJ 30cl',
+                            'price': 1.0, 'volume': 1, 'loss': None,
+                            'product_category_id': product_category['id'],
+                            'stock_id': stock['id']}
+
+            resp = c.post('/api/product',
+                          content_type='application/json',
+                          data=json.dumps(product_dict))
+            data = json.loads(resp.data)
+
+            assert 'id' in data
+            assert 'name' in data
+
+            product_id = data['id']
+
+            resp = c.get('/api/product/%d' % (product_id),
+                         content_type='application/json')
+            data = json.loads(resp.data)
+            assert data['product']['id'] == product_id
+
+            resp = c.delete('/api/product/%d' % (product_id))
+            resp = c.get('/api/product/%d' % (product_id),
+                         content_type='application/json')
+            data = json.loads(resp.data)
+
+            assert not 'id' in data
+
 
 if __name__ == '__main__':
     unittest.main()

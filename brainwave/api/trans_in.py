@@ -33,7 +33,7 @@ class TransInAPI:
         transactions_with = []
         for item in transactions:
             dictitem = row2dict(item)
-            dictitem['stock'] = row2dict(StockAPI.get(dictitem['stock_id']))
+            dictitem['stock'] = StockAPI.get(dictitem['stock_id'])
             transactions_with.append(dictitem)
         return transactions_with
 

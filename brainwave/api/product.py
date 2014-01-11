@@ -18,7 +18,7 @@ class ProductAPI:
         db.session.add(product)
         db.session.commit()
 
-        return product
+        return row2dict(product)
 
     @staticmethod
     def get(product_id):
@@ -39,11 +39,10 @@ class ProductAPI:
         return_products = []
         for item in products:
             dictitem = row2dict(item)
-            dictitem['stock'] = row2dict(StockAPI.get(dictitem['stock_id']))
+            dictitem['stock'] = StockAPI.get(dictitem['stock_id'])
 
-            dictitem['product_category'] =  \
-                row2dict(ProductCategoryAPI.get(
-                    dictitem['product_category_id']))
+            dictitem['product_category'] = ProductCategoryAPI.get(
+                dictitem['product_category_id'])
 
             return_products.append(dictitem)
         return return_products
