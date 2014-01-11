@@ -13,5 +13,5 @@ class ProductCategory(db.Model, BaseEntity):
 
     products = db.relationship('Product', backref='product_category')
 
-    def __init__(self, name):
+    def __init__(self, name=''):
         self.name = name

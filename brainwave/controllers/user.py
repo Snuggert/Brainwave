@@ -6,6 +6,7 @@ from brainwave.utils import serialize_sqla
 user_controller = Blueprint('user_controller', __name__,
                             url_prefix='/api/user')
 
+
 @user_controller.route('', methods=['POST'])
 def create():
     """Create a new user."""
@@ -16,7 +17,7 @@ def create():
     except UserAPI.NoPassword as e:
         return jsonify(error=e.error), 500
 
-    return jsonify(id=user.id, pw_hash=user.pw_hash)
+    return jsonify(id=user['id'], pw_hash=user['pw_hash'])
 
 
 @user_controller.route('/<int:user_id>', methods=['PUT'])
@@ -26,7 +27,7 @@ def update(user_id):
 
     user = UserAPI.update(user_dict)
 
-    return jsonify(pw_hash=user.pw_hash)
+    return jsonify(pw_hash=user['pw_hash'])
 
 
 @user_controller.route('/<int:user_id>', methods=['DELETE'])

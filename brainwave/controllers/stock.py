@@ -4,7 +4,8 @@ from brainwave.api.stock import StockAPI
 from brainwave.utils import serialize_sqla
 
 stock_controller = Blueprint('stock_controller', __name__,
-                              url_prefix='/api/stock')
+                             url_prefix='/api/stock')
+
 
 @stock_controller.route('', methods=['POST'])
 def create():
@@ -13,7 +14,9 @@ def create():
 
     stock = StockAPI.create(stock_dict)
 
-    return jsonify(id=stock.id, name=stock.name, quantity=stock.quantity)
+    return jsonify(id=stock['id'], name=stock['name'],
+                   quantity=stock['quantity'])
+
 
 @stock_controller.route('/<int:stock_id>/<int:quantity>', methods=['PUT'])
 def add(stock_id, quantity):
@@ -23,9 +26,11 @@ def add(stock_id, quantity):
     if not stock:
         return jsonify(error='Stock item not found'), 500
 
-    StockAPI.add(stock, quantity)
+    stock = StockAPI.add(stock, quantity)
 
-    return jsonify(id=stock.id, name=stock.name, quantity=stock.quantity)
+    return jsonify(id=stock['id'], name=stock['name'],
+                   quantity=stock['quantity'])
+
 
 @stock_controller.route('/<int:stock_id>', methods=['DELETE'])
 def delete(stock_id):
@@ -38,6 +43,7 @@ def delete(stock_id):
     StockAPI.delete(stock)
 
     return jsonify()
+
 
 @stock_controller.route('/<int:stock_id>', methods=['GET'])
 def get(stock_id):
