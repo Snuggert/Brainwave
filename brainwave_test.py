@@ -128,6 +128,7 @@ class brainwaveTestCase(unittest.TestCase):
                          content_type='application/json')
             data = json.loads(resp.data)
 
+            assert 'stock' in data
             assert data['stock']['quantity'] == quantity_after
 
             resp = c.delete('/api/stock/%d' % (stock_id))
@@ -135,7 +136,7 @@ class brainwaveTestCase(unittest.TestCase):
                          content_type='application/json')
             data = json.loads(resp.data)
 
-            assert not 'id' in data
+            assert not 'stock' in data
 
 
 if __name__ == '__main__':
