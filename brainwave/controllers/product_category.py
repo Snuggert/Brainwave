@@ -1,4 +1,4 @@
-""" product_category.py - Controller for ProductCategory. """
+"""product_category.py - Controller for ProductCategory."""
 from flask import Blueprint, jsonify, request
 from brainwave.api import ProductCategoryAPI
 from brainwave.utils import serialize_sqla
@@ -10,18 +10,18 @@ product_category_controller = Blueprint('product_category_controller',
 
 @product_category_controller.route('', methods=['POST'])
 def create():
-    """ Create new product category """
+    """Create new product category."""
     product_category = request.json
 
     product_category = ProductCategoryAPI.create(product_category)
 
-    return jsonify(id=product_category['id'], name=product_category['name'])
+    return jsonify(id=product_category.id)
 
 
 @product_category_controller.route('/<int:product_category_id>',
                                    methods=['DELETE'])
 def delete(product_category_id):
-    """ Delete product category """
+    """Delete product category."""
     product_category = ProductCategoryAPI.get(product_category_id)
 
     if not product_category:
@@ -35,7 +35,7 @@ def delete(product_category_id):
 @product_category_controller.route('/<int:product_category_id>',
                                    methods=['GET'])
 def get(product_category_id):
-    """ Get product category"""
+    """Get product category."""
     product_category = ProductCategoryAPI.get(product_category_id)
 
     if not product_category:

@@ -22,6 +22,7 @@ class StockAPI:
         """
         item.quantity = item.quantity + quantity
         
+        db.session.add(item)
         db.session.commit()
 
         return item
@@ -31,7 +32,6 @@ class StockAPI:
         """ Get a stock object by its id """
 
         return Stock.query.get(stock_id)
-
 
     @staticmethod
     def get_all(query):

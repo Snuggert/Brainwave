@@ -1,18 +1,19 @@
-"""user.py - View for user."""
-from flask import flash, redirect, render_template, request, url_for, abort,\
-    session
+"""admin.py - View for administration."""
+from flask import render_template
 from flask import Blueprint
-from brainwave.api import UserAPI, StockAPI, TransInAPI
-from brainwave.utils import serialize_sqla
+from brainwave.api import AssociationAPI, StockAPI, TransInAPI
 
 admin_blueprint = Blueprint('admin', __name__,
                             url_prefix='/admin')
 
+
 @admin_blueprint.route('/', methods=['GET'])
-@admin_blueprint.route('/user', methods=['GET'])
-def view_user(user_id=None):
-    users = UserAPI.get_all(); 
-    return render_template('admin/users.htm', data={'users':users})
+@admin_blueprint.route('/association', methods=['GET'])
+def view_association(association_id=None):
+    associations = AssociationAPI.get_all()
+    return render_template('admin/association.htm',
+                           data={'associations': associations})
+
 
 @admin_blueprint.route('/stock', methods=['GET'])
 def view_stock(user_id=None, query=""):
@@ -21,5 +22,5 @@ def view_stock(user_id=None, query=""):
 
 @admin_blueprint.route('/trans_in', methods=['GET'])
 def view_trans_in(user_id=None):
-    trans_in = TransInAPI.get_all(); 
-    return render_template('admin/trans_in.htm', data={'trans_in':trans_in})
+    trans_in = TransInAPI.get_all()
+    return render_template('admin/trans_in.htm', data={'trans_in': trans_in})
