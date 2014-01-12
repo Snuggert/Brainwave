@@ -15,10 +15,10 @@ db.session.add(product_category2)
 db.session.commit()
 
 # Dummy users
-user1 = User('Fokke', 'RETARD', 'Fokke Dekker')
-user2 = User('Jonas', 'RETARD', 'Jonas Lodewegen')
-db.session.add(user1)
-db.session.add(user2)
+assoc1 = Association('Fokke', 'RETARD', 'Fokke Dekker')
+assoc2 = Association('Jonas', 'RETARD', 'Jonas Lodewegen')
+db.session.add(assoc1)
+db.session.add(assoc2)
 db.session.commit()
 
 # Dummy stock
