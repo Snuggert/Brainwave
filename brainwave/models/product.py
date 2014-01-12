@@ -21,6 +21,7 @@ class Product(db.Model, BaseEntity):
     product_category_id = db.Column(db.Integer,
                                     db.ForeignKey('product_category.id'))
     stock_id = db.Column(db.Integer, db.ForeignKey('stock.id'))
+    # assoc_id = db.Column(db.Integer, db.ForeignKey('assosiation.id'))
 
     def __init__(self, name='', shortname='', price=None, volume=None,
                  product_category=None, stock=None):

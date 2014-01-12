@@ -45,10 +45,20 @@ def delete(stock_id):
     return jsonify()
 
 
-@stock_controller.route('/<int:stock_id>', methods=['GET'])
+@stock_controller.route('/<string:query>', methods=['GET'])
 def get(stock_id):
     """ Get stock item """
     stock = StockAPI.get(stock_id)
+
+    if not stock:
+        return jsonify(error='Stock item not found'), 500
+
+    return jsonify(stock=serialize_sqla(stock))
+
+@stock_controller.route('/search/<int:query>', methods=['GET'])
+def get_all(query):
+    """ Get all stock items filtered by query """
+    stock = StockAPI.get_all(query)
 
     if not stock:
         return jsonify(error='Stock item not found'), 500
