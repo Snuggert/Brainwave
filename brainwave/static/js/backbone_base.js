@@ -10,7 +10,7 @@ models.User = Backbone.Model.extend({
 });
 
 models.ProductCategory = Backbone.Model.extend({
-    urlRoot: '/',
+    urlRoot: '/api/product_category',
     defaults: function(){
         return{
             name: '',
@@ -19,16 +19,15 @@ models.ProductCategory = Backbone.Model.extend({
 });
 
 models.Product = Backbone.Model.extend({
-    urlRoot: '/',
+    urlRoot: '/api/product',
     defaults: function(){
         return{
-            active: null,
             name: '',
             shortname: '',
             price: null,
             volume: null,
-            loss: null,
             product_category_id: null,
+            stock_id: null,
         };
     }
 });
