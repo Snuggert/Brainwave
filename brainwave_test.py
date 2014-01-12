@@ -6,6 +6,7 @@ from flask import json
 from brainwave import app, db
 from brainwave.models import *
 from brainwave.api import *
+from brainwave.utils import serialize_sqla
 
 
 class brainwaveTestCase(unittest.TestCase):
@@ -24,59 +25,59 @@ class brainwaveTestCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
-    def test_user_api(self):
+    def test_association_api(self):
         password = 'test1234'
-        user_dict = {'username': 'test', 'password': password,
-                     'name': 'Test de Test'}
-        user = UserAPI.create(user_dict)
-        assert user['id']
+        association_dict = {'login_name': 'test', 'password': password,
+                            'name': 'Test de Test'}
+        association = AssociationAPI.create(association_dict)
+        assert association.id
 
-        user_dict = user
+        association_dict = serialize_sqla(association)
         new_name = 'Test de Test2'
-        user_dict['name'] = new_name
-        user = UserAPI.update(user_dict)
-        assert user['name'] == new_name
+        association_dict['name'] = new_name
+        association = AssociationAPI.update(association_dict)
+        assert association.name == new_name
 
-        user_id = user['id']
-        user = UserAPI.get(user_id)
-        assert user
-        assert user['id'] == user_id
+        association_id = association.id
+        association = AssociationAPI.get(association_id)
+        assert association
+        assert association.id == association_id
 
-        assert UserAPI.check_password(user, password)
+        assert AssociationAPI.check_password(association, password)
 
-        UserAPI.delete(user)
-        assert not UserAPI.get(user_id)
+        AssociationAPI.delete(association)
+        assert not AssociationAPI.get(association_id)
 
-    def test_user_controller(self):
+    def test_association_controller(self):
         with app.test_client() as c, app.app_context():
             password = 'test1234'
-            user_dict = {'username': 'test', 'password': password,
-                         'name': 'Test de Test'}
-            resp = c.post('/api/user', content_type='application/json',
-                          data=json.dumps(user_dict))
+            association_dict = {'login_name': 'test', 'password': password,
+                                'name': 'Test de Test'}
+            resp = c.post('/api/association', content_type='application/json',
+                          data=json.dumps(association_dict))
             data = json.loads(resp.data)
             assert 'id' in data
             assert 'pw_hash' in data
 
-            user_id = data['id']
+            association_id = data['id']
 
             new_name = 'Test de Test2'
-            user_dict['name'] = new_name
-            resp = c.put('/api/user/%d' % (user_id),
+            association_dict['name'] = new_name
+            resp = c.put('/api/association/%d' % (association_id),
                          content_type='application/json',
-                         data=json.dumps(user_dict))
+                         data=json.dumps(association_dict))
             data = json.loads(resp.data)
             assert 'pw_hash' in data
 
-            resp = c.get('/api/user/%d' % (user_id))
+            resp = c.get('/api/association/%d' % (association_id))
             data = json.loads(resp.data)
-            assert 'user' in data
-            assert data['user']['id'] == user_id
+            assert 'association' in data
+            assert data['association']['id'] == association_id
 
-            resp = c.delete('/api/user/%d' % (user_id))
-            resp = c.get('/api/user/%d' % (user_id))
+            resp = c.delete('/api/association/%d' % (association_id))
+            resp = c.get('/api/association/%d' % (association_id))
             data = json.loads(resp.data)
-            assert not 'user' in data
+            assert not 'association' in data
 
     def test_stock_api(self):
         stock_dict = {'name': 'Hertog Jan fust', 'quantity': 30}

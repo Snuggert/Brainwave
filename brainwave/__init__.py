@@ -1,9 +1,5 @@
-import os
-import sys
-
-from flask import Flask, g
+from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
-from sqlite3 import dbapi2 as sqlite3
 
 # Startup stuff
 app = Flask(__name__)
@@ -15,7 +11,7 @@ db = SQLAlchemy(app)
 from brainwave.controllers import *
 from brainwave.views.admin import admin_blueprint
 
-app.register_blueprint(user_controller)
+app.register_blueprint(association_controller)
 app.register_blueprint(stock_controller)
 app.register_blueprint(trans_in_controller)
 app.register_blueprint(product_category_controller)
