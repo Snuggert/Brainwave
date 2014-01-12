@@ -60,11 +60,7 @@ class AssociationAPI:
     @staticmethod
     def get_all():
         """Get all associations."""
-        associations = Association.query.all()
-        return_associations = []
-        for item in associations:
-            return_associations.append(row2dict(item))
-        return return_associations
+        return Association.query.all()
 
     @staticmethod
     def check_password(association, password):

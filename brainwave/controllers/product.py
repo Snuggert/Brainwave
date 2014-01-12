@@ -1,4 +1,4 @@
-""" product.py - Controller for Product. """
+"""product.py - Controller for Product."""
 from flask import Blueprint, jsonify, request
 from brainwave.api import ProductAPI
 from brainwave.utils import serialize_sqla
@@ -10,15 +10,11 @@ product_controller = Blueprint('product_controller', __name__,
 @product_controller.route('', methods=['POST'])
 def create():
     """ Create new product """
-    product = request.json
+    product_dict = request.json
 
-    product = ProductAPI.create(product)
+    product = ProductAPI.create(product_dict)
 
-    return jsonify(id=product['id'], name=product['name'],
-                   shortname=product['shortname'], price=product['active'],
-                   volume=product['volume'], loss=product['loss'],
-                   product_category_id=product['product_category_id'],
-                   stock_id=product['stock_id'])
+    return jsonify(id=product.id)
 
 
 @product_controller.route('/<int:product_id>', methods=['DELETE'])
