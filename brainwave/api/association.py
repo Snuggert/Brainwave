@@ -1,7 +1,6 @@
 """association.py - API calls for association."""
 from werkzeug.security import generate_password_hash, check_password_hash
 from brainwave.models.association import Association
-from brainwave.utils import row2dict
 from brainwave import db
 
 

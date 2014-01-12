@@ -16,6 +16,7 @@ app.register_blueprint(stock_controller)
 app.register_blueprint(trans_in_controller)
 app.register_blueprint(product_category_controller)
 app.register_blueprint(product_controller)
+app.register_blueprint(customer_controller)
 app.register_blueprint(admin_blueprint)
 
 # Add methods and modules to jinja environment

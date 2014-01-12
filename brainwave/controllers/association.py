@@ -45,7 +45,7 @@ def delete(association_id):
 
 @association_controller.route('/<int:association_id>', methods=['GET'])
 def get(association_id):
-    """Get a association."""
+    """Get an association."""
     association = AssociationAPI.get(association_id)
 
     if not association:
