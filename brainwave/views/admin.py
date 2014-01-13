@@ -26,12 +26,15 @@ def view_stock(user_id=None, query=""):
     else:
         stock = StockAPI.get_all()
 
-    return render_template('admin/stock.htm', data={'stock':stock})
+    return render_template('admin/stock.htm', data={'stock': stock})
 
 
 @admin_blueprint.route('/stock/new', methods=['GET'])
 def new_stock(user_id=None):
-    return render_template('admin/new_stock.htm', data={'stock': {}})
+    associations = AssociationController.get_all()
+    return render_template('admin/new_stock.htm',
+                           data={'stock': {},
+                                 'associations': associations})
 
 
 @admin_blueprint.route('/trans_in', methods=['GET'])
@@ -50,7 +53,8 @@ def view_product(user_id=None):
 def new_product(user_id=None):
     stocks = Stock.query.all()
     product_categories = ProductCategoryAPI.get_all()
+    associations = AssociationController.get_all()
     return render_template('admin/new_product.htm',
                            data={'stocks': stocks,
                                  'product_categories': product_categories,
-                                 'product': {}})
+                                 'product': {}, 'associations': associations})
