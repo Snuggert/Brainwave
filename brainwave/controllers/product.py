@@ -11,6 +11,11 @@ product_controller = Blueprint('product_controller', __name__,
 def create():
     """ Create new product """
     product_dict = request.json
+    if product_dict:
+        if product_dict['price'] == '':
+            product_dict['price'] = 0.0
+        if product_dict['volume'] == '':
+            product_dict['product_dict'] = 0.0
     print product_dict
     product = ProductAPI.create(product_dict)
     return jsonify(id=product.id)
