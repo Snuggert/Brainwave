@@ -92,7 +92,7 @@ Install the following packages:
 >
 > pip install flask-login==0.2.9
 >
-> pip install Flask-WTF
+> pip install Flask-WTF==0.9.4
 
 I will later take some time to explain the use of these packages.
 
