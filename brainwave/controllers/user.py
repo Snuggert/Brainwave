@@ -1,7 +1,13 @@
 """user.py - Controller for user."""
 from werkzeug.security import generate_password_hash, check_password_hash
 from brainwave.models.user import User
-from brainwave import db
+from brainwave import db, login_manager
+from flask.ext.login import login_user
+
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 
 class UserController:
@@ -16,6 +22,7 @@ class UserController:
     def create(user_dict):
         """Create a new user."""
         password = user_dict.pop('password', None)
+
         if not password:
             raise UserController.NoPassword()
 
@@ -57,6 +64,12 @@ class UserController:
         return User.query.get(user_id)
 
     @staticmethod
+    def get_by_name(username):
+        user = User.query.get.filter_by(username=username).first()
+
+        return user
+
+    @staticmethod
     def get_all():
         """Get all users."""
         return User.query.all()
@@ -65,3 +78,14 @@ class UserController:
     def check_password(user, password):
         """Check whether the given password is correct."""
         return check_password_hash(user.pw_hash, password)
+
+    @staticmethod
+    def login(username, password):
+        user = User.get_by_name(username)
+
+        password_hash = generate_password_hash(password)
+
+        if User.check_password(user, password_hash):
+            return login_user(user)
+
+        return False

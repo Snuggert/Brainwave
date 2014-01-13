@@ -14,8 +14,10 @@ db = SQLAlchemy(app)
 
 # Register blueprints
 from brainwave.controllers import *
+from brainwave.api import *
 from brainwave.views.admin import admin_blueprint
 
+app.register_blueprint(user_api)
 app.register_blueprint(association_controller)
 app.register_blueprint(stock_controller)
 app.register_blueprint(trans_in_controller)
