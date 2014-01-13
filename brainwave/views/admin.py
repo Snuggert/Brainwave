@@ -1,8 +1,8 @@
 """admin.py - View for administration."""
 from flask import render_template
 from flask import Blueprint
-from brainwave.api import AssociationAPI, StockAPI, TransInAPI, ProductAPI, \
-    ProductCategoryAPI
+from brainwave.api import StockAPI, TransInAPI, ProductAPI, ProductCategoryAPI
+from brainwave.controllers import AssociationController
 from brainwave.utils import serialize_sqla
 from brainwave.models import Stock
 
@@ -13,15 +13,25 @@ admin_blueprint = Blueprint('admin', __name__,
 @admin_blueprint.route('/', methods=['GET'])
 @admin_blueprint.route('/association', methods=['GET'])
 def view_association(association_id=None):
-    associations = AssociationAPI.get_all()
+    associations = AssociationController.get_all()
     return render_template('admin/association.htm',
                            data={'associations': associations})
 
 
 @admin_blueprint.route('/stock', methods=['GET'])
-def view_stock(user_id=None):
-    stock = StockAPI.get_all()
-    return render_template('admin/stock.htm', data={'stock': stock})
+@admin_blueprint.route('/stock/<string:query>', methods=['GET'])
+def view_stock(user_id=None, query=""):
+    if query != "":
+        stock = StockAPI.get_all_from(query)
+    else:
+        stock = StockAPI.get_all()
+
+    return render_template('admin/stock.htm', data={'stock':stock})
+
+
+@admin_blueprint.route('/stock/new', methods=['GET'])
+def new_stock(user_id=None):
+    return render_template('admin/new_stock.htm', data={'stock': {}})
 
 
 @admin_blueprint.route('/trans_in', methods=['GET'])
@@ -40,5 +50,7 @@ def view_product(user_id=None):
 def new_product(user_id=None):
     stocks = Stock.query.all()
     product_categories = ProductCategoryAPI.get_all()
-    return render_template('admin/new_product.htm', data={'stocks': stocks,
-                           'product_categories': product_categories})
+    return render_template('admin/new_product.htm',
+                           data={'stocks': stocks,
+                                 'product_categories': product_categories,
+                                 'product': {}})

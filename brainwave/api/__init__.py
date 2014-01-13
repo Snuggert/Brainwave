@@ -1,5 +1,5 @@
 """__init__.py - APIs."""
-from .association import AssociationAPI
+from .association import association_api
 from .stock import StockAPI
 from .trans_in import TransInAPI
 from .product import ProductAPI

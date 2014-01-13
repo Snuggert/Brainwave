@@ -1,14 +1,14 @@
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.login import LoginManager
+# from flask.ext.login import LoginManager
 from sqlite3 import dbapi2 as sqlite3
 
 # Startup stuff
 app = Flask(__name__)
 app.config.from_object('config')
 
-login_manager = LoginManager()
-login_manager.init_app(app)
+# login_manager = LoginManager()
+# login_manager.init_app(app)
 
 db = SQLAlchemy(app)
 
@@ -17,8 +17,9 @@ from brainwave.controllers import *
 from brainwave.api import *
 from brainwave.views.admin import admin_blueprint
 
+
 app.register_blueprint(user_api)
-app.register_blueprint(association_controller)
+app.register_blueprint(association_api)
 app.register_blueprint(stock_controller)
 app.register_blueprint(trans_in_controller)
 app.register_blueprint(product_category_controller)

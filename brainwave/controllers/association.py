@@ -1,54 +1,31 @@
-"""association.py - Controller for association."""
-from flask import Blueprint, jsonify, request
-from brainwave.api.association import AssociationAPI
-from brainwave.utils import serialize_sqla
-
-association_controller = Blueprint('association_controller', __name__,
-                                   url_prefix='/api/association')
+"""association.py - Controller calls for association."""
+from brainwave.models.association import Association
+from brainwave import db
 
 
-@association_controller.route('', methods=['POST'])
-def create():
-    """Create a new association."""
-    association_dict = request.json
+class AssociationController:
+    """The Controller for association manipulation."""
+    @staticmethod
+    def create(association_dict):
+        """Create a new association."""
+        association = Association.new_dict(association_dict)
+        db.session.add(association)
+        db.session.commit()
 
-    try:
-        association = AssociationAPI.create(association_dict)
-    except AssociationAPI.NoPassword as e:
-        return jsonify(error=e.error), 500
+        return association
 
-    return jsonify(id=association.id, pw_hash=association.pw_hash)
+    @staticmethod
+    def delete(association):
+        """Delete an association."""
+        db.session.delete(association)
+        db.session.commit()
 
+    @staticmethod
+    def get(association_id):
+        """Get an association by its id."""
+        return Association.query.get(association_id)
 
-@association_controller.route('/<int:association_id>', methods=['PUT'])
-def update(association_id):
-    """Update an association."""
-    association_dict = request.json
-
-    association = AssociationAPI.update(association_dict)
-
-    return jsonify(pw_hash=association.pw_hash)
-
-
-@association_controller.route('/<int:association_id>', methods=['DELETE'])
-def delete(association_id):
-    """Delete an association."""
-    association = AssociationAPI.get(association_id)
-
-    if not association:
-        return jsonify(error='Association not found'), 500
-
-    AssociationAPI.delete(association)
-
-    return jsonify()
-
-
-@association_controller.route('/<int:association_id>', methods=['GET'])
-def get(association_id):
-    """Get an association."""
-    association = AssociationAPI.get(association_id)
-
-    if not association:
-        return jsonify(error='Association not found'), 500
-
-    return jsonify(association=serialize_sqla(association))
+    @staticmethod
+    def get_all():
+        """Get all associations."""
+        return Association.query.all()

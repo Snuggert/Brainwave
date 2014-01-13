@@ -54,12 +54,25 @@ def get(stock_id):
     return jsonify(stock=serialize_sqla(stock))
 
 
-@stock_controller.route('/search/<int:query>', methods=['GET'])
-def get_all(query):
-    """ Get all stock items filtered by query """
-    stock = StockAPI.get_all(query)
+@stock_controller.route('/all', methods=['GET'])
+def get_all():
+    """ Get all stock items unfiltered """
+    stock = StockAPI.get_all()
 
     if not stock:
         return jsonify(error='Stock item not found'), 500
 
     return jsonify(stock=serialize_sqla(stock))
+
+@stock_controller.route('/search/<int:query>', methods=['GET'])
+def get_all_from(query):
+    """ Get all stock objects filter by query """
+
+    stock = Stock.query.all()
+    items = [item.name for item in stock]
+
+    result_names = difflib.get_close_matches(query, items, len(items), 0.25)
+
+    results = Stock.query.filter(Stock.name.in_(result_names)).all()
+
+    return jsonify(stock=serialize_sqla(results))

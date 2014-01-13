@@ -7,13 +7,10 @@ class Association(db.Model, BaseEntity):
     """Association model."""
     __tablename__ = 'association'
 
-    login_name = db.Column(db.String(256))
-    pw_hash = db.Column(db.String(66))
-
     name = db.Column(db.String(256))
+    products = db.relationship('Product', backref='association')
+    stocks = db.relationship('Stock', backref='association')
 
-    def __init__(self, login_name='', pw_hash='', name=''):
+    def __init__(self, name=''):
         """Initialize the association."""
-        self.login_name = login_name
-        self.pw_hash = pw_hash
         self.name = name
