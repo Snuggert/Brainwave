@@ -89,7 +89,8 @@ Install the following packages:
 > pip install watchdog==0.6.0
 >
 > pip install python-dateutil==2.2
-
+>
+> pip install flask-login==0.2.9
 
 I will later take some time to explain the use of these packages.
 
