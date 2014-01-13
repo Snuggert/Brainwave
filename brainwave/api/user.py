@@ -1,6 +1,6 @@
 """user.py - API for user."""
 from flask import Blueprint, jsonify, request
-from brainwave.controller.user import UserController
+from brainwave.controllers.user import UserController
 from brainwave.utils import serialize_sqla
 
 user_api = Blueprint('user_api', __name__, url_prefix='/api/user')

@@ -1,7 +1,7 @@
 """ login.py - Login view """
 from flask import render_template
 from brainwave import app
-from brainwave.forms.loginform import LoginForm
+from brainwave.forms.login_form import LoginForm
 
 
 @app.route('/login', methods=['GET', 'POST'])
