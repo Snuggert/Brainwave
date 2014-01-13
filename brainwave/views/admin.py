@@ -21,7 +21,11 @@ def view_association(association_id=None):
 @admin_blueprint.route('/stock', methods=['GET'])
 @admin_blueprint.route('/stock/<string:query>', methods=['GET'])
 def view_stock(user_id=None, query=""):
-    stock = StockAPI.get_all_from(query)
+    if query != "":
+        stock = StockAPI.get_all_from(query)
+    else:
+        stock = StockAPI.get_all()
+
     return render_template('admin/stock.htm', data={'stock':stock})
 
 
