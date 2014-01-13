@@ -1,67 +1,54 @@
-"""association.py - API calls for association."""
-from werkzeug.security import generate_password_hash, check_password_hash
-from brainwave.models.association import Association
-from brainwave import db
+"""association.py - Controller for association."""
+from flask import Blueprint, jsonify, request
+from brainwave.controllers.association import AssociationController
+from brainwave.utils import serialize_sqla
+
+association_api = Blueprint('association_api', __name__,
+                            url_prefix='/api/association')
 
 
-class AssociationAPI:
-    """The API for association manipulation."""
-    class NoPassword(Exception):
-        """Exception for when a password is missing."""
-        def __init__(self):
-            """Initialize with a standard message."""
-            self.error = 'No password given'
+@association_api.route('', methods=['POST'])
+def create():
+    """Create a new association."""
+    association_dict = request.json
 
-    @staticmethod
-    def create(association_dict):
-        """Create a new association."""
-        password = association_dict.pop('password', None)
-        if not password:
-            raise AssociationAPI.NoPassword()
+    try:
+        association = AssociationController.create(association_dict)
+    except AssociationController.NoPassword as e:
+        return jsonify(error=e.error), 500
 
-        association = Association.new_dict(association_dict)
+    return jsonify(id=association.id, pw_hash=association.pw_hash)
 
-        pw_hash = generate_password_hash(password)
-        association.pw_hash = pw_hash
 
-        db.session.add(association)
-        db.session.commit()
+@association_api.route('/<int:association_id>', methods=['PUT'])
+def update(association_id):
+    """Update an association."""
+    association_dict = request.json
 
-        return association
+    association = AssociationController.update(association_dict)
 
-    @staticmethod
-    def update(association_dict):
-        """Update an association."""
-        password = association_dict.pop('password', None)
+    return jsonify(pw_hash=association.pw_hash)
 
-        association = Association.merge_dict(association_dict)
 
-        if password:
-            pw_hash = generate_password_hash(password)
-            association.pw_hash = pw_hash
+@association_api.route('/<int:association_id>', methods=['DELETE'])
+def delete(association_id):
+    """Delete an association."""
+    association = AssociationController.get(association_id)
 
-        db.session.add(association)
-        db.session.commit()
+    if not association:
+        return jsonify(error='Association not found'), 500
 
-        return association
+    AssociationController.delete(association)
 
-    @staticmethod
-    def delete(association):
-        """Delete an association."""
-        db.session.delete(association)
-        db.session.commit()
+    return jsonify()
 
-    @staticmethod
-    def get(association_id):
-        """Get an association by its id."""
-        return Association.query.get(association_id)
 
-    @staticmethod
-    def get_all():
-        """Get all associations."""
-        return Association.query.all()
+@association_api.route('/<int:association_id>', methods=['GET'])
+def get(association_id):
+    """Get an association."""
+    association = AssociationController.get(association_id)
 
-    @staticmethod
-    def check_password(association, password):
-        """Check whether the given password is correct."""
-        return check_password_hash(association.pw_hash, password)
+    if not association:
+        return jsonify(error='Association not found'), 500
+
+    return jsonify(association=serialize_sqla(association))

@@ -15,7 +15,7 @@ class StockAPI:
 
         return stock
 
-    @staticmethod
+    @staticmethod 
     def add(item, quantity):
         """ Add a certain quantity to stock. Use negative to remove items from
         stock
@@ -34,17 +34,24 @@ class StockAPI:
         return Stock.query.get(stock_id)
 
     @staticmethod
-    def get_all(query):
+    def get_all():
+        """ Get all stock objects """
+
+        return Stock.query.all()
+
+    @staticmethod
+    def get_all_from(query):
         """ Get all stock objects searched by query """
 
         stock = Stock.query.all()
         items = [item.name for item in stock]
 
-        result_names = difflib.get_close_matches(query, items, 10, 0.0)
+        result_names = difflib.get_close_matches(query, items, len(items), 0.25)
 
         results = Stock.query.filter(Stock.name.in_(result_names)).all()
 
         return results
+
 
     @staticmethod
     def delete(item):
