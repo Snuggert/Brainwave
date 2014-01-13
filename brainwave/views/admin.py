@@ -25,6 +25,11 @@ def view_stock(user_id=None, query=""):
     return render_template('admin/stock.htm', data={'stock':stock})
 
 
+@admin_blueprint.route('/stock/new', methods=['GET'])
+def new_stock(user_id=None):
+    return render_template('admin/new_stock.htm', data={})
+
+
 @admin_blueprint.route('/trans_in', methods=['GET'])
 def view_trans_in(user_id=None):
     trans_in = TransInAPI.get_all()

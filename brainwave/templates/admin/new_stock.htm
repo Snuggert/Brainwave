@@ -1,0 +1,21 @@
+{% extends "content.htm" %}
+
+{% block includes %}
+    <script src="/static/js/stock/new_stock.js"></script>
+{% endblock %}
+
+{% block content %}
+    <form class="form-horizontal col-md-12" id="new_stock">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input class="form_field form-control" type='text' id="name", placeholder="Stock name", data-property="name"/>
+        </div>
+        <div id="createhide" class="form-group" >
+            <label for="quantity">Quantity</label>
+            <input class="form_field form-control" type='text' id="quantity", placeholder="Quantity", data-property="quantity"/>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary save" data-loading-text="Bezig...">Verzenden</button>
+        </div>
+    </form>
+{% endblock %}

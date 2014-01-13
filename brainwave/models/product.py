@@ -21,10 +21,10 @@ class Product(db.Model, BaseEntity):
     product_category_id = db.Column(db.Integer,
                                     db.ForeignKey('product_category.id'))
     stock_id = db.Column(db.Integer, db.ForeignKey('stock.id'))
-    # assoc_id = db.Column(db.Integer, db.ForeignKey('assosiation.id'))
+    assoc_id = db.Column(db.Integer, db.ForeignKey('association.id'))
 
     def __init__(self, name='', shortname='', price=None, volume=None,
-                 product_category=None, stock=None):
+                 product_category=None, stock=None, association=None):
         self.active = False
         self.name = name
         self.shortname = shortname
@@ -32,3 +32,4 @@ class Product(db.Model, BaseEntity):
         self.volume = volume
         self.product_category = product_category
         self.stock = stock
+        self.association = association
