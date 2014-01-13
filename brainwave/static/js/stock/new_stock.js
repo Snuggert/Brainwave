@@ -3,7 +3,7 @@
 $(function(){
     $('select').select2();
     var stock = new models.Stock(brainwave.stock);
-    $('div#createhide').toggle();
+    $('#createhide').toggle();
     $('form#new_stock').on('submit', function(e) {
         e.preventDefault();
         var button = $(this).find('button.save');
