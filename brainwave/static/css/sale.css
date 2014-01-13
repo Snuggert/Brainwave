@@ -1,0 +1,19 @@
+.sale-container {
+    margin-top: 50px;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    width: 100%;
+    background-color: blue;
+}
+
+#product-list {
+    background-color: red; 
+}
+
+#number-pad {
+    background-color: green;
+}
+
+#receipt {
+    background-color: purple;
+}
