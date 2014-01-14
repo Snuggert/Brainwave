@@ -8,6 +8,10 @@ from brainwave import db
 from brainwave.models import *
 from werkzeug.security import generate_password_hash
 
+# Dummy association
+assoc1 = Association("VIA")
+db.session.add(assoc1)
+
 # Dummy product categories
 product_category1 = ProductCategory('Bier')
 product_category2 = ProductCategory('Wijn')
@@ -35,6 +39,7 @@ product1 = Product('Hertog Jan 30cL', 'HJ 30cL', 0.70, 300, product_category1,
                   stock1, assoc1)
 product2 = Product('Hertog Jan 50cL', 'HJ 50cL', 1.00, 500, product_category1,
                   stock1, assoc1)
+
 db.session.add(product1)
 db.session.add(product2)
 db.session.commit()
