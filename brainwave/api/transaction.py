@@ -12,46 +12,9 @@ def create():
     """Create a new transaction."""
     dict = request.json
 
-    print dict
+    transaction = TransactionController.create(dict)
 
-    return jsonify(random='Yeah!'), 500
+    if not transaction:
+        return jsonify(status='failed', error="No transaction found."), 500
 
-
-# @user_api.route('/<int:user_id>', methods=['PUT'])
-# def update(user_id):
-#     """Update a user."""
-#     user_dict = request.json
-
-#     user = UserController.update(user_dict)
-
-#     return jsonify(pw_hash=user.pw_hash)
-
-
-# @user_api.route('/<int:user_id>', methods=['DELETE'])
-# def delete(user_id):
-#     """Delete a user."""
-#     user = UserController.get(user_id)
-
-#     if not user:
-#         return jsonify(error='User not found'), 500
-
-#     UserController.delete(user)
-
-#     return jsonify()
-
-
-# @user_api.route('/<int:user_id>', methods=['GET'])
-# def get(user_id):
-#     """Get a user."""
-#     user = UserController.get(user_id)
-
-#     if not user:
-#         return jsonify(error='User not found'), 500
-
-#     return jsonify(user=serialize_sqla(user))
-
-
-# # Work in progress
-# @user_api.route('/login', methods=['GET', 'POST'])
-# def login():
-#     pass
+    return jsonify(status='success')

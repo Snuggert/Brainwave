@@ -9,7 +9,8 @@ class Transaction(db.Model, BaseEntity):
     
     assoc_id = db.Column(db.Integer, db.ForeignKey('association.id'))
 
-    paid_by = db.Column(db.Enum('cash', 'pin', name='paid_by'))
+    pay_type = db.Column(db.Enum('cash', 'pin', name='pay_type'))
 
-    def __init__(self, assoc_id=None):
+    def __init__(self, assoc_id=None, pay_type='cash'):
         self.assoc_id = assoc_id
+        self.pay_type = pay_type
