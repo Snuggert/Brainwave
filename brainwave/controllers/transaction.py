@@ -1,6 +1,5 @@
 """transaction.py - Controller calls for transaction."""
 from brainwave import db
-import difflib
 from brainwave.models import Transaction
 
 

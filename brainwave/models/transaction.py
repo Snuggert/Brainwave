@@ -1,4 +1,4 @@
-"""stock.py - Transaction model."""
+"""transaction.py - Transaction model."""
 from brainwave import db
 from brainwave.utils.base_model import BaseEntity
 
