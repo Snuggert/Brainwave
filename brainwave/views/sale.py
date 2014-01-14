@@ -1,8 +1,8 @@
 """sale.py - View for sale interface (cash register)."""
 from flask import render_template
 from flask import Blueprint
-from brainwave.api import StockAPI, TransInAPI, ProductAPI, ProductCategoryAPI
-from brainwave.controllers import AssociationController
+from brainwave.controllers import AssociationController, StockController, \
+    TransInController, ProductController, ProductCategoryController
 from brainwave.utils import serialize_sqla
 from brainwave.models import Stock
 

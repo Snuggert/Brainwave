@@ -3,7 +3,7 @@ from brainwave import db
 from brainwave.models import Transaction
 from brainwave.controllers.transaction_piece import TransactionPieceController
 # Change product api to controller when the switch has been made
-from brainwave.api.product import ProductAPI
+from brainwave.controllers.product import ProductController
 
 
 class TransactionController:

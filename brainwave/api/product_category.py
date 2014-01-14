@@ -1,32 +1,41 @@
-"""product_category.py - API calls for product categories."""
-from brainwave import db
-from brainwave.models import ProductCategory
+"""product_category.py - Controller for ProductCategory."""
+from flask import Blueprint, jsonify, request
+from brainwave.controllers import ProductCategoryController
+from brainwave.utils import serialize_sqla
+
+product_category_api = Blueprint('product_category_api', __name__,
+                                 url_prefix='/api/product_category')
 
 
-class ProductCategoryAPI:
-    """The API for product category manipulation."""
-    @staticmethod
-    def create(product_category_dict):
-        """Create product category."""
-        product_category = ProductCategory.new_dict(product_category_dict)
+@product_category_api.route('', methods=['POST'])
+def create():
+    """Create new product category."""
+    product_category = request.json
 
-        db.session.add(product_category)
-        db.session.commit()
+    product_category = ProductCategoryController.create(product_category)
 
-        return product_category
+    return jsonify(id=product_category.id)
 
-    @staticmethod
-    def get(product_category_id):
-        """ Get a product category by its id """
-        return ProductCategory.query.get(product_category_id)
 
-    @staticmethod
-    def get_all():
-        """ Get all product items """
-        return ProductCategory.query.all()
+@product_category_api.route('/<int:product_category_id>', methods=['DELETE'])
+def delete(product_category_id):
+    """Delete product category."""
+    product_category = ProductCategoryController.get(product_category_id)
 
-    @staticmethod
-    def delete(item):
-        """ Delete product item """
-        db.session.delete(item)
-        db.session.commit()
+    if not product_category:
+        return jsonify(error='Product category not found'), 500
+
+    ProductCategoryController.delete(product_category)
+
+    return jsonify()
+
+
+@product_category_api.route('/<int:product_category_id>', methods=['GET'])
+def get(product_category_id):
+    """Get product category."""
+    product_category = ProductCategoryController.get(product_category_id)
+
+    if not product_category:
+        return jsonify(error='Product category not found'), 500
+
+    return jsonify(product_category=serialize_sqla(product_category))

@@ -1,80 +1,62 @@
-"""stock.py - Controller for stock."""
-from flask import Blueprint, jsonify, request
-from brainwave.api.stock import StockAPI
-from brainwave.utils import serialize_sqla
-
-stock_controller = Blueprint('stock_controller', __name__,
-                             url_prefix='/api/stock')
+"""stock.py - Controller calls for stock."""
+from brainwave import db
+import difflib
+from brainwave.models import Stock
 
 
-@stock_controller.route('', methods=['POST'])
-def create():
-    """Create new stock item."""
-    stock_dict = request.json
+class StockController:
+    """The Controller for stock manipulation."""
 
-    stock = StockAPI.create(stock_dict)
+    @staticmethod
+    def create(stock_dict):
+        stock = Stock.new_dict(stock_dict)
 
-    return jsonify(id=stock.id)
+        db.session.add(stock)
+        db.session.commit()
 
+        return stock
 
-@stock_controller.route('/<int:stock_id>/<int:quantity>', methods=['PUT'])
-def add(stock_id, quantity):
-    """Add items to stock."""
-    stock = StockAPI.get(stock_id)
+    @staticmethod
+    def add(item, quantity):
+        """ Add a certain quantity to stock. Use negative to remove items from
+        stock
+        """
+        item.quantity = item.quantity + quantity
 
-    if not stock:
-        return jsonify(error='Stock item not found'), 500
+        db.session.add(item)
+        db.session.commit()
 
-    stock = StockAPI.add(stock, quantity)
+        return item
 
-    return jsonify(quantity=stock.quantity)
+    @staticmethod
+    def get(stock_id):
+        """ Get a stock object by its id """
 
+        return Stock.query.get(stock_id)
 
-@stock_controller.route('/<int:stock_id>', methods=['DELETE'])
-def delete(stock_id):
-    """Delete stock item."""
-    stock = StockAPI.get(stock_id)
+    @staticmethod
+    def get_all():
+        """ Get all stock objects """
 
-    if not stock:
-        return jsonify(error='Stock item not found'), 500
+        return Stock.query.all()
 
-    StockAPI.delete(stock)
+    @staticmethod
+    def get_all_from(query):
+        """ Get all stock objects searched by query """
 
-    return jsonify()
+        stock = Stock.query.all()
+        items = [item.name for item in stock]
 
+        result_names = difflib.get_close_matches(query, items, len(items),
+                                                 0.25)
 
-@stock_controller.route('/<int:stock_id>', methods=['GET'])
-def get(stock_id):
-    """Get stock item."""
-    stock = StockAPI.get(stock_id)
+        results = Stock.query.filter(Stock.name.in_(result_names)).all()
 
-    if not stock:
-        return jsonify(error='Stock item not found'), 500
+        return results
 
-    return jsonify(stock=serialize_sqla(stock))
-
-
-@stock_controller.route('/all', methods=['GET'])
-def get_all():
-    """ Get all stock items unfiltered """
-    stock = StockAPI.get_all()
-
-    if not stock:
-        return jsonify(error='Stock item not found'), 500
-
-    return jsonify(stock=serialize_sqla(stock))
-
-@stock_controller.route('/search/', methods=['GET']) #temp
-@stock_controller.route('/search/<string:query>', methods=['GET'])
-def get_all_from(query=""):
-    """ Get all stock objects filter by query """
-    if query == "":
-        stock = StockAPI.get_all()
-    else:
-        stock = StockAPI.get_all_from(query)
-    # stock = StockAPI.get_all()
-
-    if not stock:
-        return jsonify(error='Stock item not found'), 200
-
-    return jsonify(stock=serialize_sqla(stock))
+    @staticmethod
+    def delete(item):
+        """ Delete stock item """
+        db.session.delete(item)
+        db.session.commit()
+        return

@@ -1,41 +1,36 @@
-"""trans_in.py - Controller for transaction-in."""
-from flask import Blueprint, jsonify, request
-from brainwave.api import TransInAPI
-from brainwave.utils import serialize_sqla
-
-trans_in_controller = Blueprint('trans_in_controller', __name__,
-                                url_prefix='/api/trans_in')
+"""trans_in.py - Controller calls for transaction-in."""
+from brainwave import db
+from brainwave.models import TransIn
+from .stock import StockController
 
 
-@trans_in_controller.route('', methods=['POST'])
-def create():
-    """Create new trans_in item."""
-    trans_in_dict = request.json
+class TransInController:
+    """The Controller for transaction-in manipulation."""
+    @staticmethod
+    def create(trans_in_dict):
+        trans_in = TransIn.new_dict(trans_in_dict)
 
-    trans_in = TransInAPI.create(trans_in_dict)
+        db.session.add(trans_in)
+        db.session.commit()
 
-    return jsonify(id=trans_in.id)
+        StockController.add(trans_in.stock, trans_in.volume)
 
+        return trans_in
 
-@trans_in_controller.route('/<int:trans_in_id>', methods=['DELETE'])
-def delete(trans_in_id):
-    """Delete trans_in item."""
-    trans_in = TransInAPI.get(trans_in_id)
+    @staticmethod
+    def get(trans_in_id):
+        """Get a transaction-in object by its id."""
+        return TransIn.query.get(trans_in_id)
 
-    if not trans_in:
-        return jsonify(error='Transaction-in item not found'), 500
+    @staticmethod
+    def get_all():
+        """Get all trans_in items."""
+        return TransIn.query.all()
 
-    TransInAPI.delete(trans_in)
+    @staticmethod
+    def delete(item):
+        """Delete trans_in item."""
+        db.session.delete(item)
+        db.session.commit()
 
-    return jsonify()
-
-
-@trans_in_controller.route('/<int:trans_in_id>', methods=['GET'])
-def get(trans_in_id):
-    """Get trans_in item."""
-    trans_in = TransInAPI.get(trans_in_id)
-
-    if not trans_in:
-        return jsonify(error='Transaction-in item not found'), 500
-
-    return jsonify(trans_in=serialize_sqla(trans_in))
+        return

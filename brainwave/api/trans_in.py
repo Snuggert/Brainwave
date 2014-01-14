@@ -1,36 +1,41 @@
-"""trans_in.py - API calls for transaction-in."""
-from brainwave import db
-from brainwave.models import TransIn
-from .stock import StockAPI
+"""trans_in.py - Controller for transaction-in."""
+from flask import Blueprint, jsonify, request
+from brainwave.controllers import TransInController
+from brainwave.utils import serialize_sqla
+
+trans_in_api = Blueprint('trans_in_api', __name__,
+                         url_prefix='/api/trans_in')
 
 
-class TransInAPI:
-    """The API for transaction-in manipulation."""
-    @staticmethod
-    def create(trans_in_dict):
-        trans_in = TransIn.new_dict(trans_in_dict)
+@trans_in_api.route('', methods=['POST'])
+def create():
+    """Create new trans_in item."""
+    trans_in_dict = request.json
 
-        db.session.add(trans_in)
-        db.session.commit()
+    trans_in = TransInController.create(trans_in_dict)
 
-        StockAPI.add(trans_in.stock, trans_in.volume)
+    return jsonify(id=trans_in.id)
 
-        return trans_in
 
-    @staticmethod
-    def get(trans_in_id):
-        """Get a transaction-in object by its id."""
-        return TransIn.query.get(trans_in_id)
+@trans_in_api.route('/<int:trans_in_id>', methods=['DELETE'])
+def delete(trans_in_id):
+    """Delete trans_in item."""
+    trans_in = TransInController.get(trans_in_id)
 
-    @staticmethod
-    def get_all():
-        """Get all trans_in items."""
-        return TransIn.query.all()
+    if not trans_in:
+        return jsonify(error='Transaction-in item not found'), 500
 
-    @staticmethod
-    def delete(item):
-        """Delete trans_in item."""
-        db.session.delete(item)
-        db.session.commit()
+    TransInController.delete(trans_in)
 
-        return
+    return jsonify()
+
+
+@trans_in_api.route('/<int:trans_in_id>', methods=['GET'])
+def get(trans_in_id):
+    """Get trans_in item."""
+    trans_in = TransInController.get(trans_in_id)
+
+    if not trans_in:
+        return jsonify(error='Transaction-in item not found'), 500
+
+    return jsonify(trans_in=serialize_sqla(trans_in))

@@ -14,7 +14,6 @@ login_manager.login_view = 'login'
 db = SQLAlchemy(app)
 
 # Register blueprints
-from brainwave.controllers import *
 from brainwave.api import *
 from brainwave.views.admin import admin_blueprint
 from brainwave.views.sale import sale_blueprint
@@ -23,11 +22,11 @@ from brainwave.views.login import *
 
 app.register_blueprint(user_api)
 app.register_blueprint(association_api)
-app.register_blueprint(stock_controller)
-app.register_blueprint(trans_in_controller)
-app.register_blueprint(product_category_controller)
-app.register_blueprint(product_controller)
-app.register_blueprint(customer_controller)
+app.register_blueprint(stock_api)
+app.register_blueprint(trans_in_api)
+app.register_blueprint(product_category_api)
+app.register_blueprint(product_api)
+app.register_blueprint(customer_api)
 app.register_blueprint(admin_blueprint)
 app.register_blueprint(sale_blueprint)
 app.register_blueprint(transaction_api)
