@@ -49,3 +49,4 @@ def get(customer_id):
         return jsonify(error='Customer not found'), 500
 
     return jsonify(customer=serialize_sqla(customer))
+

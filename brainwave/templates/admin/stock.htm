@@ -2,6 +2,7 @@
 
 {% block includes %}
     <script src="/static/js/stock/search_stock.js"></script>
+    <script src="/static/js/ajax_search.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -29,7 +30,7 @@
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
-            <tbody id="products">
+            <tbody id="stock_results">
             	{% for item in data.stock %}
                     <tr>
                         <td>{{item.id}}</td>

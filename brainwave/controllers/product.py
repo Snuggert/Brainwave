@@ -56,3 +56,19 @@ def get_all():
         return jsonify(error='No products were found'), 500
 
     return jsonify(products=serialize_sqla(products))
+
+
+@product_controller.route('/search/', methods=['GET']) #temp
+@product_controller.route('/search/<string:query>', methods=['GET'])
+def get_all_from(query=""):
+    """ Get all products objects filter by query """
+    if query == "":
+        products = ProductAPI.get_all()
+    else:
+        products = ProductAPI.get_all_from(query)
+    # stock = StockAPI.get_all()
+
+    if not products:
+        return jsonify(error='Product item not found'), 200
+
+    return jsonify(products=serialize_sqla(products))

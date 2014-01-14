@@ -1,5 +1,6 @@
 """product.py - API calls for products."""
 from brainwave import db
+import difflib
 from brainwave.models import Product
 
 
@@ -24,6 +25,19 @@ class ProductAPI:
     def get_all():
         """Get all product items."""
         return Product.query.all()
+
+    @staticmethod
+    def get_all_from(query):
+        """ Get all product objects searched by query """
+
+        products = Product.query.all()
+        items = [item.name for item in products]
+
+        result_names = difflib.get_close_matches(query, items, len(items), 0.25)
+
+        results = Product.query.filter(Product.name.in_(result_names)).all()
+
+        return results
 
     @staticmethod
     def delete(product):

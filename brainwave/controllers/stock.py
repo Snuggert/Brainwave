@@ -66,9 +66,11 @@ def get_all():
 
 @stock_controller.route('/search/', methods=['GET']) #temp
 @stock_controller.route('/search/<string:query>', methods=['GET'])
-def get_all_from(query=None):
+def get_all_from(query=""):
     """ Get all stock objects filter by query """
-    if query != None:
+    if query == "":
+        stock = StockAPI.get_all()
+    else:
         stock = StockAPI.get_all_from(query)
     # stock = StockAPI.get_all()
 

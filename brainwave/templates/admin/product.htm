@@ -3,13 +3,15 @@
 {% block includes %}
     <script src="/static/js/stock/new_stock.js"></script>
     <script src="/static/js/product/product.js"></script>
+    <script src="/static/js/product/search_product.js"></script>
+    <script src="/static/js/ajax_search.js"></script>
 {% endblock %}
 
 {% block content %}
     <div class="row">
         <div class="col-lg-11  ">
             <div class="input-group">
-                <input type="text" class="form-control">
+                <input type="text" id="search_field"  class="form-control">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button">
                         <span style="margin: 3px;" class="glyphicon glyphicon-search"></span>
@@ -33,24 +35,26 @@
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
-            {% for item in data.products %}
-                <tr>
-                    <td>{{item.product_category.name}}</td>
-                    <td>{{item.name}}</td>
-                    <td>€{{item.price}}</td>
-                    <td>{{item.volume}}</td>
-                    <td>{{item.stock.name}}</td>
-                    <td>{{item.association.name}}</td>
-                    <td class="text-center">
-                        <button class="btn btn-info btn-xs edit" data-id={{item.id}}>
-                            <span class="glyphicon glyphicon-edit"></span> 
-                        </button>
-                        <button class="btn btn-danger btn-xs remove" data-id={{item.id}}>
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </button>
-                    </td>
-                </tr>
-            {% endfor %}
+            <tbody id="product_results">
+                {% for item in data.products %}
+                    <tr>
+                        <td>{{item.product_category.name}}</td>
+                        <td>{{item.name}}</td>
+                        <td>€{{item.price}}</td>
+                        <td>{{item.volume}}</td>
+                        <td>{{item.stock.name}}</td>
+                        <td>{{item.association.name}}</td>
+                        <td class="text-center">
+                            <button class="btn btn-info btn-xs edit" data-id={{item.id}}>
+                                <span class="glyphicon glyphicon-edit"></span> 
+                            </button>
+                            <button class="btn btn-danger btn-xs remove" data-id={{item.id}}>
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
     <div class="modal fade" id="remove_modal" tabindex="-1" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
@@ -69,4 +73,23 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+
+<script type="text/template" id="product-template">
+    <tr>
+        <td><%= product_category_id %></td>
+        <td><%= name %></td>
+        <td>€<%= price %></td>
+        <td><%= volume %></td>
+        <td><%= stock_id %></td>
+        <td><%= assoc_id %></td>
+        <td class="text-center">
+            <button class="btn btn-info btn-xs edit" data-id=<%= id %>>
+                <span class="glyphicon glyphicon-edit"></span> 
+            </button>
+            <button class="btn btn-danger btn-xs remove" data-id=<%= id %>>
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </td>
+    </tr>
+</script>​
 {% endblock %}
