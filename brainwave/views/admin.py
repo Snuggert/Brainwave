@@ -55,6 +55,11 @@ def view_product(user_id=None):
     return render_template('admin/product.htm', data={'products': products})
 
 
+@admin_blueprint.route('/post', methods=['GET'])
+def view_post_tmp(user_id=None):
+    return render_template('admin/post.html', data={'bla': 'bla2'})
+
+
 @admin_blueprint.route('/product/new', methods=['GET'])
 @login_required
 def new_product(user_id=None):

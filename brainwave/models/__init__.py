@@ -7,3 +7,4 @@ from .stock import Stock
 from .trans_in import TransIn
 from .user import User
 from .transaction import Transaction
+from .transaction_piece import TransactionPiece

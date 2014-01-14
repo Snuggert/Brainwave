@@ -8,3 +8,4 @@ from .product import product_controller
 from .customer import customer_controller
 from .transaction import TransactionController
 from .user import UserController
+from .transaction_piece import TransactionPieceController
