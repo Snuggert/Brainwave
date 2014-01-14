@@ -66,12 +66,13 @@ def get_all():
 
 @stock_controller.route('/search/', methods=['GET']) #temp
 @stock_controller.route('/search/<string:query>', methods=['GET'])
-def get_all_from(query):
+def get_all_from(query=None):
     """ Get all stock objects filter by query """
-    stock = StockAPI.get_all_from(query)
+    if query != None:
+        stock = StockAPI.get_all_from(query)
     # stock = StockAPI.get_all()
 
     if not stock:
-        return jsonify(error='Stock item not found'), 500
+        return jsonify(error='Stock item not found'), 200
 
     return jsonify(stock=serialize_sqla(stock))
