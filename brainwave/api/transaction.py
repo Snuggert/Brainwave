@@ -7,7 +7,23 @@ from brainwave.utils import serialize_sqla
 transaction_api = Blueprint('transaction_api', __name__,
                             url_prefix='/api/transaction')
 
-
+# Dictionary format example:
+# {
+#    "pay_type":"cash",
+#    "items":[
+#       {
+#          "product_id":"1",
+#          "action":"sell"
+#       },
+#       {
+#          "product_id":"2",
+#          "action":"sell"
+#       }
+#    ]
+# }
+#
+# pay_type can be either cash or pin (credit should become option 3, later)
+# action can be sell, refund or git
 @transaction_api.route('/new', methods=['POST'])
 def create():
     """Create a new transaction."""
