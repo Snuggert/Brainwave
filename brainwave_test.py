@@ -65,34 +65,34 @@ class brainwaveTestCase(unittest.TestCase):
         CustomerController.delete(customer)
         assert not CustomerController.get(customer_id)
 
-    # def test_customer_controller(self):
-    #     with app.test_client() as c, app.app_context():
-    #         customer_dict = {'name': 'Test de Test'}
-    #         resp = c.post('/api/customer', content_type='application/json',
-    #                       data=json.dumps(customer_dict))
-    #         data = json.loads(resp.data)
-    #         assert 'id' in data
+    def test_customer_api(self):
+        with app.test_client() as c, app.app_context():
+            customer_dict = {'name': 'Test de Test'}
+            resp = c.post('/api/customer', content_type='application/json',
+                          data=json.dumps(customer_dict))
+            data = json.loads(resp.data)
+            assert 'id' in data
 
-    #         customer_id = data['id']
-    #         customer_dict['id'] = customer_id
+            customer_id = data['id']
+            customer_dict['id'] = customer_id
 
-    #         new_name = 'Test de Test2'
-    #         customer_dict['name'] = new_name
-    #         resp = c.put('/api/customer/%d' % (customer_id),
-    #                      content_type='application/json',
-    #                      data=json.dumps(customer_dict))
-    #         data = json.loads(resp.data)
+            new_name = 'Test de Test2'
+            customer_dict['name'] = new_name
+            resp = c.put('/api/customer/%d' % (customer_id),
+                         content_type='application/json',
+                         data=json.dumps(customer_dict))
+            data = json.loads(resp.data)
 
-    #         resp = c.get('/api/customer/%d' % (customer_id))
-    #         data = json.loads(resp.data)
-    #         assert 'customer' in data
-    #         assert data['customer']['id'] == customer_id
-    #         assert data['customer']['name'] == new_name
+            resp = c.get('/api/customer/%d' % (customer_id))
+            data = json.loads(resp.data)
+            assert 'customer' in data
+            assert data['customer']['id'] == customer_id
+            assert data['customer']['name'] == new_name
 
-    #         resp = c.delete('/api/customer/%d' % (customer_id))
-    #         resp = c.get('/api/customer/%d' % (customer_id))
-    #         data = json.loads(resp.data)
-    #         assert not 'customer' in data
+            resp = c.delete('/api/customer/%d' % (customer_id))
+            resp = c.get('/api/customer/%d' % (customer_id))
+            data = json.loads(resp.data)
+            assert not 'customer' in data
 
     # def test_stock_api(self):
     #     stock_dict = {'name': 'Hertog Jan fust', 'quantity': 30}
