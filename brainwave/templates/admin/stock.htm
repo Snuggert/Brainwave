@@ -1,5 +1,9 @@
 {% extends "content.htm" %}
 
+{% block includes %}
+    <script src="/static/js/stock/search_stock.js"></script>
+{% endblock %}
+
 {% block content %}
     <div class="row">
         <div class="col-lg-11  ">
@@ -25,21 +29,38 @@
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
-        	{% for item in data.stock %}
-                <tr>
-                    <td>{{item.id}}</td>
-                    <td>{{item.name}}</td>
-                    <td>{{item.quantity}}</td>
-                    <td class="text-center">
-                        <a class='btn btn-info btn-xs' href="#">
-                            <span class="glyphicon glyphicon-edit"></span> 
-                        </a>
-                        <a href="#" class="btn btn-danger btn-xs">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </a>
-                    </td>
-                </tr>
-        	{% endfor %}
+            <tbody id="products">
+            	{% for item in data.stock %}
+                    <tr>
+                        <td>{{item.id}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td class="text-center">
+                            <a class='btn btn-info btn-xs' href="#">
+                                <span class="glyphicon glyphicon-edit"></span> 
+                            </a>
+                            <a href="#" class="btn btn-danger btn-xs">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </a>
+                        </td>
+                    </tr>
+            	{% endfor %}
+            </tbody>
         </table>
     </div>
+
+<script type="text/template" id="stock-template">
+<tr>
+    <td><%= id %></td><td><%= name %></td><td><%= quantity %></td>
+    <td class="text-center">
+        <a class='btn btn-info btn-xs' href="#">
+            <span class="glyphicon glyphicon-edit"></span> 
+        </a>
+        <a href="#" class="btn btn-danger btn-xs">
+            <span class="glyphicon glyphicon-remove"></span>
+        </a>
+    </td>
+</tr>
+</script>​
 {% endblock %}
+
