@@ -43,3 +43,16 @@ def get(product_id):
         return jsonify(error='Product not found'), 500
 
     return jsonify(product=serialize_sqla(product))
+
+
+@product_controller.route('/all', methods=['GET'])
+def get_all():
+    """ Get all products unfiltered """
+    # At this point, the association_id should be gotten, so that not ALL
+    # products are listed, but only those related to the relevant association.
+    products = ProductAPI.get_all()
+
+    if not products:
+        return jsonify(error='No products were found'), 500
+
+    return jsonify(products=serialize_sqla(products))

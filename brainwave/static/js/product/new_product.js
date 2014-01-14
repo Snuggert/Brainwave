@@ -14,6 +14,7 @@ $(function(){
             clearflash();
             button.button('reset');
             flash('Het product is aangemaakt', 'success');
+            redirect('/admin/product')
         }, button);
     });
 })

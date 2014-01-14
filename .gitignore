@@ -40,3 +40,4 @@ brainwave/static/css/style.css
 .sass-cache
 *.swp
 *.sqlite
+.DS_Store
