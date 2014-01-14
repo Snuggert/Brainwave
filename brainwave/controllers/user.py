@@ -2,7 +2,8 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from brainwave.models.user import User
 from brainwave import db, login_manager
-from flask.ext.login import login_user
+from flask.ext.login import login_user, logout_user
+from flask import session
 
 
 @login_manager.user_loader
@@ -17,6 +18,21 @@ class UserController:
         def __init__(self):
             """Initialize with a standard message."""
             self.error = 'No password given'
+
+    class UsernameTaken(Exception):
+        """Exception when username already taken """
+        def __init__(self):
+            self.error = 'Username already in taken'
+
+    class EmailInUse(Exception):
+        """Exception when email address is already in use """
+        def __init__(self):
+            self.error = 'Email address already in use'
+
+    class NoPasswordMatch(Exception):
+        """Exception when passwords don't match """
+        def __init__(self):
+            self.error = 'Passwords don\'t match'
 
     @staticmethod
     def create(user_dict):
@@ -86,10 +102,22 @@ class UserController:
         return check_password_hash(user.pw_hash, password)
 
     @staticmethod
-    def login(username, password):
+    def login(username, password, remember):
         user = User.get_by_name(username)
 
+        if not user:
+            return False
+
         if User.check_password(user, password):
-            return login_user(user)
+            if login_user(user, remember):
+                session['user_id'] == user.id
+                session['user_role'] == user.role
+                return user
 
         return False
+
+    @staticmethod
+    def logout():
+        logout_user()
+
+        return

@@ -2,6 +2,8 @@
 
 from flask.ext.wtf import Form
 from brainwave.forms.validation import Validation
+from wtforms import TextField, PasswordField
+from wtforms.validators import Required
 
 
 class RegisterAssociationForm(Form):
@@ -17,3 +19,4 @@ class RegisterAssociationForm(Form):
     password2 = PasswordField('Password again',
                               validators=[Required(),
                                           Validation.validate_password()])
+

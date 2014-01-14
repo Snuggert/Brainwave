@@ -1,6 +1,7 @@
 """admin.py - View for administration."""
 from flask import render_template
 from flask import Blueprint
+from flask.ext.login import login_required
 from brainwave.api import StockAPI, TransInAPI, ProductAPI, ProductCategoryAPI
 from brainwave.controllers import AssociationController
 from brainwave.utils import serialize_sqla
@@ -12,6 +13,7 @@ admin_blueprint = Blueprint('admin', __name__,
 
 @admin_blueprint.route('/', methods=['GET'])
 @admin_blueprint.route('/association', methods=['GET'])
+@login_required
 def view_association(association_id=None):
     associations = AssociationController.get_all()
     return render_template('admin/association.htm',
@@ -20,6 +22,7 @@ def view_association(association_id=None):
 
 @admin_blueprint.route('/stock', methods=['GET'])
 @admin_blueprint.route('/stock/<string:query>', methods=['GET'])
+@login_required
 def view_stock(user_id=None, query=""):
     if query != "":
         stock = StockAPI.get_all_from(query)
@@ -30,6 +33,7 @@ def view_stock(user_id=None, query=""):
 
 
 @admin_blueprint.route('/stock/new', methods=['GET'])
+@login_required
 def new_stock(user_id=None):
     associations = AssociationController.get_all()
     return render_template('admin/new_stock.htm',
@@ -38,18 +42,26 @@ def new_stock(user_id=None):
 
 
 @admin_blueprint.route('/trans_in', methods=['GET'])
+@login_required
 def view_trans_in(user_id=None):
     trans_in = TransInAPI.get_all()
     return render_template('admin/trans_in.htm', data={'trans_in': trans_in})
 
 
 @admin_blueprint.route('/product', methods=['GET'])
+@login_required
 def view_product(user_id=None):
     products = ProductAPI.get_all()
     return render_template('admin/product.htm', data={'products': products})
 
 
+@admin_blueprint.route('/post', methods=['GET'])
+def view_post_tmp(user_id=None):
+    return render_template('admin/post.html', data={'bla': 'bla2'})
+
+
 @admin_blueprint.route('/product/new', methods=['GET'])
+@login_required
 def new_product(user_id=None):
     stocks = Stock.query.all()
     product_categories = ProductCategoryAPI.get_all()

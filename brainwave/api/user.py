@@ -53,7 +53,22 @@ def get(user_id):
     return jsonify(user=serialize_sqla(user))
 
 
-# Work in progress
-@user_api.route('/login', methods=['GET', 'POST'])
+@user_api.route('/login', methods=['POST'])
 def login():
-    pass
+    username = request.form['username']
+    password = request.form['password']
+    remember = request.form['remember']
+
+    user = UserController.login(username, password, remember)
+
+    if not user:
+        return jsonify(id=user.id)
+    else:
+        return jsonify(error='Username or password incorrect'), 500
+
+
+@user_api.route('/logout', methods=['GET', 'POST'])
+def logout():
+    UserController.logout()
+
+    return jsonify()

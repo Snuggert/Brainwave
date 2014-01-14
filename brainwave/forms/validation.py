@@ -10,7 +10,7 @@ class Validation():
         """ Validates username. Must start with a letter, follow by letters,
         numbers, - or _. Minimum length is 5 characters.
         """
-        return re.match(r'[A-Za-z]+[A-Za-z0-9]{4,}', field.data)
+        return re.match(r'[A-Za-z]+[A-Za-z0-9_-]{4,}', field.data)
 
     def validate_password(form, field):
         """ Validates password. Minimum length is 8 characters, can contain
@@ -19,4 +19,5 @@ class Validation():
         return re.match(r'[A-Za-z0-9@#$%^&+=]{8,}', field.data)
 
     def validate_email(form, field):
+        # Yet to be implemented
         pass
