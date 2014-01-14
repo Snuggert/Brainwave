@@ -10,6 +10,11 @@
     background-color: red; 
 }
 
+.product {
+    width: 15%;
+    background-color: green;
+}
+
 #number-pad {
     background-color: green;
 }
@@ -17,3 +22,5 @@
 #receipt {
     background-color: purple;
 }
+
+
