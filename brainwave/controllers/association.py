@@ -1,5 +1,7 @@
 """association.py - Controller calls for association."""
 from brainwave.models.association import Association
+from brainwave.models.user import ROLE_ASSOCIATION
+from brainwave.controllers.user import UserController
 from brainwave import db
 
 
@@ -8,6 +10,11 @@ class AssociationController:
     @staticmethod
     def create(association_dict):
         """Create a new association."""
+
+        association_dict['role'] = ROLE_ASSOCIATION
+        user = UserController.create(association_dict)
+        association_dict['user_id'] = user.id
+
         association = Association.new_dict(association_dict)
         db.session.add(association)
         db.session.commit()

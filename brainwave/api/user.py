@@ -13,7 +13,7 @@ def create():
 
     try:
         user = UserController.create(user_dict)
-    except UserController.NoPassword as e:
+    except UserController as e:
         return jsonify(error=e.error), 500
 
     return jsonify(id=user.id, pw_hash=user.pw_hash)

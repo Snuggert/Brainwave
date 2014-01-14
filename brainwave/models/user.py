@@ -2,6 +2,7 @@
 from brainwave.utils.base_model import BaseEntity
 from brainwave import db
 
+ROLE_NONE = 0
 ROLE_CUSTOMER = 1
 ROLE_BAR_TEAM = 2
 ROLE_ASSOCIATION = 4
@@ -17,7 +18,7 @@ class User(db.Model, BaseEntity):
     email = db.Column(db.String(120))
     role = db.Column(db.Integer())
 
-    def __init__(self, login_name='', pw_hash='', email='', role=0):
+    def __init__(self, login_name='', pw_hash='', email='', role=ROLE_NONE):
         """Initialize the User."""
         self.login_name = login_name
         self.pw_hash = pw_hash

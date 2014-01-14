@@ -7,3 +7,4 @@ from .product_category import product_category_controller
 from .product import product_controller
 from .customer import customer_controller
 from .transaction import TransactionController
+from .user import UserController
