@@ -9,9 +9,10 @@ class Association(db.Model, BaseEntity):
     __tablename__ = 'association'
 
     name = db.Column(db.String(256))
+    user_id = db.Column(Integer, ForeignKey('user.id'))
+
     products = db.relationship('Product', backref='association')
     stocks = db.relationship('Stock', backref='association')
-    user_id = db.Column(Integer, ForeignKey('user.id'))
 
     def __init__(self, name='', user_id=''):
         """Initialize the association."""
