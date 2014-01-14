@@ -9,6 +9,7 @@ app.config.from_object('config')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 db = SQLAlchemy(app)
 
@@ -29,6 +30,7 @@ app.register_blueprint(product_controller)
 app.register_blueprint(customer_controller)
 app.register_blueprint(admin_blueprint)
 app.register_blueprint(sale_blueprint)
+app.register_blueprint(transaction_api)
 
 # Add methods and modules to jinja environment
 from brainwave.utils import serialize_sqla

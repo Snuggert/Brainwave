@@ -6,7 +6,6 @@ application.
 
 """
 from brainwave import db
-from brainwave.models import *
 import os
 from glob import glob
 
