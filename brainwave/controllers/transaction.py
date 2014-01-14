@@ -24,18 +24,19 @@ class TransactionController:
             # Add transaction_id to the piece
             piece['transaction_id'] = transaction.id
             # Verify that the product exists (and use it to get the price)
-            product = ProductController.get(piece['product_id'])
-            if not product:
-                return False
-            piece['price'] = product.price
+            # product = ProductController.get(piece['product_id'])
+            # if not product:
+            #     return False
+            # piece['price'] = product.price
+            ## Temporarily set the price to a static 2.00 euro
+            piece['price'] = 2.00
 
             transaction_piece = TransactionPieceController.create(piece)
             if not transaction_piece:
                 return False
 
         # Finally, update the status of the transaction to "paid"
-        transaction.status = 'paid'
-        db.session.commit()
+        TransactionController.set_status(transaction.id, 'paid')
 
         return transaction
 
@@ -44,6 +45,13 @@ class TransactionController:
         """ Get a Transaction object by its id """
 
         return Transaction.query.get(transaction_id)
+
+    @staticmethod
+    def set_status(transaction_id, status):
+        """ Set the status of a transaction """
+        Transaction.query.filter_by(id=transaction_id) \
+                         .update(dict(status=status))
+        db.session.commit()
 
     @staticmethod
     def get_all():

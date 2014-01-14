@@ -365,6 +365,19 @@ class brainwaveTestCase(unittest.TestCase):
         # Jaap's Task
         pass
 
+    def test_transaction_controller(self):
+        transaction_dict = {'pay_type': 'cash',
+                            'items': [{'product_id': '1', 'action': 'sell'},
+                                      {'product_id': '2', 'action': 'sell'}]}
+
+        transaction = TransactionController.create(transaction_dict)
+        assert transaction
+
+        TransactionController.set_status(transaction.id, 'cancelled')
+
+        transaction2 = TransactionController.get(transaction.id)
+        assert transaction2
+
 
 if __name__ == '__main__':
     unittest.main()
