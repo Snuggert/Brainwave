@@ -103,12 +103,12 @@ class UserController:
 
     @staticmethod
     def login(username, password, remember):
-        user = User.get_by_name(username)
+        user = UserController.get_by_name(username)
 
         if not user:
             return False
 
-        if User.check_password(user, password):
+        if UserController.check_password(user, password):
             if login_user(user, remember):
                 session['user_id'] == user.id
                 session['user_role'] == user.role
