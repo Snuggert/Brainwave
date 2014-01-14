@@ -12,6 +12,7 @@
 
 .product {
     width: 15%;
+    margin-right: 25px;
     background-color: green;
 }
 
