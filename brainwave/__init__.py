@@ -29,6 +29,7 @@ app.register_blueprint(product_controller)
 app.register_blueprint(customer_controller)
 app.register_blueprint(admin_blueprint)
 app.register_blueprint(sale_blueprint)
+app.register_blueprint(transaction_api)
 
 # Add methods and modules to jinja environment
 from brainwave.utils import serialize_sqla
