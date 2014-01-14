@@ -1,5 +1,10 @@
 'use strict';
 
+/* Redirect the user to a new page. */
+function redirect(url) {
+    window.location = url;
+}
+
 //---------------------- Flash messages ---------------------------------------
 var $default_flash_element, $flash_element, messages_div;
 

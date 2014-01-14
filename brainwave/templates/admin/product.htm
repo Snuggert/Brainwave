@@ -28,6 +28,7 @@
                     <th>Price</th>
                     <th>Volume</th>
                     <th>Stock</th>
+                    <th>Association</th>
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
@@ -35,9 +36,10 @@
                 <tr>
                     <td>{{item.product_category.name}}</td>
                     <td>{{item.name}}</td>
-                    <td>{{item.price}}</td>
+                    <td>€{{item.price}}</td>
                     <td>{{item.volume}}</td>
                     <td>{{item.stock.name}}</td>
+                    <td>{{item.association.name}}</td>
                     <td class="text-center">
                         <button class="btn btn-info btn-xs edit" data-id={{item.id}}>
                             <span class="glyphicon glyphicon-edit"></span> 
@@ -50,4 +52,20 @@
             {% endfor %}
         </table>
     </div>
+    <div class="modal fade" id="remove_modal" tabindex="-1" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="modal_label">Weet u zeker dat u dit product wil verwijderen?</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger finalremove" data-dismiss="modal">DELETE</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 {% endblock %}

@@ -28,6 +28,7 @@ models.Product = Backbone.Model.extend({
             volume: null,
             product_category_id: null,
             stock_id: null,
+            assoc_id: null,
         };
     }
 });
