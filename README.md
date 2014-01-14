@@ -77,6 +77,8 @@ Install the following packages:
 * pyinotify==0.9.4
 * watchdog==0.6.0
 * python-dateutil==2.2
+* flask-login==0.2.9
+* Flash-WTF==0.9.4
 
 > pip install Flask==0.10.1
 >

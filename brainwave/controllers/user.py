@@ -65,7 +65,13 @@ class UserController:
 
     @staticmethod
     def get_by_name(username):
-        user = User.query.get.filter_by(username=username).first()
+        user = User.query.filter_by(login_name=username).first()
+
+        return user
+
+    @staticmethod
+    def get_by_email(email):
+        user = User.query.filter_by(email=email).first()
 
         return user
 
@@ -83,9 +89,7 @@ class UserController:
     def login(username, password):
         user = User.get_by_name(username)
 
-        password_hash = generate_password_hash(password)
-
-        if User.check_password(user, password_hash):
+        if User.check_password(user, password):
             return login_user(user)
 
         return False
