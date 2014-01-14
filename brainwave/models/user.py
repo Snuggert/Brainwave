@@ -4,7 +4,7 @@ from brainwave import db
 
 
 class User(db.Model, BaseEntity):
-    """Association model."""
+    """User model."""
     __tablename__ = 'user'
 
     login_name = db.Column(db.String(256))
@@ -12,7 +12,7 @@ class User(db.Model, BaseEntity):
     email = db.Column(db.String(120))
 
     def __init__(self, login_name='', pw_hash='', email=''):
-        """Initialize the association."""
+        """Initialize the User."""
         self.login_name = login_name
         self.pw_hash = pw_hash
         self.email = email
