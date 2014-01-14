@@ -9,17 +9,15 @@ from brainwave.controllers.product import ProductController
 class TransactionController:
     @staticmethod
     def create(dict):
-
-        # Create a new transaction object first. Note that it is not yet being
-        # added to the database. This only happens when all the pieces have
-        # been added successfully.
-
         # Temporarily set assoc_id to 1, should be changed later
         transaction = Transaction.new_dict({'assoc_id': '1',
-                                            'pay_type': dict['pay_type']})
-
+                                            'pay_type': dict['pay_type'],
+                                            'status': 'pending'})
         if not transaction:
             return False
+
+        db.session.add(transaction)
+        db.session.commit()
 
         # Create individual records for each individual "transaction_piece"
         for piece in dict['items']:
@@ -35,9 +33,8 @@ class TransactionController:
             if not transaction_piece:
                 return False
 
-        # Now that all pieces were added successfully, add the transaction
-        # record itself.
-        db.session.add(transaction)
+        # Finally, update the status of the transaction to "paid"
+        transaction.status = 'paid'
         db.session.commit()
 
         return transaction

@@ -11,6 +11,9 @@ class Transaction(db.Model, BaseEntity):
 
     pay_type = db.Column(db.Enum('cash', 'pin', name='pay_type'))
 
-    def __init__(self, assoc_id=None, pay_type='cash'):
+    status = db.Column(db.Enum('pending', 'paid', 'cancelled', name='status'))
+
+    def __init__(self, assoc_id=None, pay_type='cash', status='pending'):
         self.assoc_id = assoc_id
         self.pay_type = pay_type
+        self.status = status
