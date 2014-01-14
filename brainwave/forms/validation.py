@@ -6,18 +6,18 @@ import re
 class Validation():
     """ Class that contains validation functions """
 
-    def validate_username(username):
+    def validate_username(form, field):
         """ Validates username. Must start with a letter, follow by letters,
         numbers, - or _. Minimum length is 5 characters.
         """
-        return re.match(r'[A-Za-z]+[A-Za-z0-9_-]{4,}', username)
+        return re.match(r'[A-Za-z]+[A-Za-z0-9_-]{4,}', field.data)
 
-    def validate_password(password):
+    def validate_password(form, field):
         """ Validates password. Minimum length is 8 characters, can contain
         letters, numbers, @, #, $, %, ^ & + and =.
         """
-        return re.match(r'[A-Za-z0-9@#$%^&+=]{8,}', password)
+        return re.match(r'[A-Za-z0-9@#$%^&+=]{8,}', field.data)
 
-    def validate_email(email):
+    def validate_email(form, field):
         # Yet to be implemented
-        return False
+        pass
