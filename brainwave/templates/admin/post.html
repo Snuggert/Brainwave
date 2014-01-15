@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+$(document).ready(function(){
+    $.ajax({
+      type: "POST",
+      contentType: "application/json; charset=utf-8",
+      url: "http://localhost:5000/api/transaction/new",
+      data: '{"pay_type": "cash", "items": [{ "product_id": "1", "action": "sell"}, { "product_id": "2", "action": "sell"}, { "product_id": "2", "action": "sell"}, { "product_id": "2", "action": "refund"}]}',
+      success: function (data) {
+        console.log(data);
+      },
+      dataType: "json"
+    });
+});
+</script>
+</head>
+<body>
+Done
+</body>
+</html>
