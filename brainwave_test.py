@@ -26,54 +26,73 @@ class brainwaveTestCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
- 
-    # def test_customer_api(self):
-    #     customer_dict = {'name': 'Test de Test'}
-    #     customer = CustomerAPI.create(customer_dict)
-    #     assert customer.id
+    def test_customer_controller(self):
+        customer_dict = {'name': 'Test de Test'}
+        customer = CustomerController.create(customer_dict)
+        assert customer.id
 
-    #     customer_dict = serialize_sqla(customer)
-    #     new_name = 'Test de Test2'
-    #     customer_dict['name'] = new_name
-    #     customer = CustomerAPI.update(customer_dict)
-    #     assert customer.name == new_name
+        customer_dict = serialize_sqla(customer)
+        new_name = 'Test de Test2'
+        customer_dict['name'] = new_name
+        customer = CustomerController.update(customer_dict)
+        assert customer.name == new_name
 
-    #     customer_id = customer.id
-    #     customer = CustomerAPI.get(customer_id)
-    #     assert customer
-    #     assert customer.id == customer_id
+        customer_id = customer.id
+        customer = CustomerController.get(customer_id)
+        assert customer
+        assert customer.id == customer_id
 
-    #     CustomerAPI.delete(customer)
-    #     assert not CustomerAPI.get(customer_id)
+        # Test association coupling.
+        association = Association('via')
+        db.session.add(association)
+        db.session.commit()
+        assert not CustomerController.get_associations(customer).all()
+        assert not CustomerController.association_is_coupled(customer,
+                                                             association)
 
-    # def test_customer_controller(self):
-    #     with app.test_client() as c, app.app_context():
-    #         customer_dict = {'name': 'Test de Test'}
-    #         resp = c.post('/api/customer', content_type='application/json',
-    #                       data=json.dumps(customer_dict))
-    #         data = json.loads(resp.data)
-    #         assert 'id' in data
+        CustomerController.add_association(customer, association)
+        assert CustomerController.association_is_coupled(customer, association)
+        assert CustomerController.get_associations(customer)\
+            .first() == association
 
-    #         customer_id = data['id']
-    #         customer_dict['id'] = customer_id
+        CustomerController.remove_association(customer, association)
+        assert not CustomerController.get_associations(customer).all()
+        assert not CustomerController.association_is_coupled(customer,
+                                                             association)
 
-    #         new_name = 'Test de Test2'
-    #         customer_dict['name'] = new_name
-    #         resp = c.put('/api/customer/%d' % (customer_id),
-    #                      content_type='application/json',
-    #                      data=json.dumps(customer_dict))
-    #         data = json.loads(resp.data)
+        AssociationController.delete(association)
 
-    #         resp = c.get('/api/customer/%d' % (customer_id))
-    #         data = json.loads(resp.data)
-    #         assert 'customer' in data
-    #         assert data['customer']['id'] == customer_id
-    #         assert data['customer']['name'] == new_name
+        CustomerController.delete(customer)
+        assert not CustomerController.get(customer_id)
 
-    #         resp = c.delete('/api/customer/%d' % (customer_id))
-    #         resp = c.get('/api/customer/%d' % (customer_id))
-    #         data = json.loads(resp.data)
-    #         assert not 'customer' in data
+    def test_customer_api(self):
+        with app.test_client() as c, app.app_context():
+            customer_dict = {'name': 'Test de Test'}
+            resp = c.post('/api/customer', content_type='application/json',
+                          data=json.dumps(customer_dict))
+            data = json.loads(resp.data)
+            assert 'id' in data
+
+            customer_id = data['id']
+            customer_dict['id'] = customer_id
+
+            new_name = 'Test de Test2'
+            customer_dict['name'] = new_name
+            resp = c.put('/api/customer/%d' % (customer_id),
+                         content_type='application/json',
+                         data=json.dumps(customer_dict))
+            data = json.loads(resp.data)
+
+            resp = c.get('/api/customer/%d' % (customer_id))
+            data = json.loads(resp.data)
+            assert 'customer' in data
+            assert data['customer']['id'] == customer_id
+            assert data['customer']['name'] == new_name
+
+            resp = c.delete('/api/customer/%d' % (customer_id))
+            resp = c.get('/api/customer/%d' % (customer_id))
+            data = json.loads(resp.data)
+            assert not 'customer' in data
 
     # def test_stock_api(self):
     #     stock_dict = {'name': 'Hertog Jan fust', 'quantity': 30}
@@ -284,9 +303,8 @@ class brainwaveTestCase(unittest.TestCase):
         # email
         # role
 
-        user_dict = {'login_name' : 'test',
-                     'password' : 'blala',
-                     'email' : 'bla@bla.nl'}
+        user_dict = {'login_name': 'test', 'password': 'blala',
+                     'email': 'bla@bla.nl'}
 
         user = UserController.create(user_dict)
         assert user
@@ -301,9 +319,8 @@ class brainwaveTestCase(unittest.TestCase):
 
         user6 = UserController.get_by_email('bla@bla.nl')
         assert user6
-        user_dict = {'login_name' : 'test',
-                     'password' : 'blalal',
-                     'email' : 'bla@bla.nl'}
+        user_dict = {'login_name': 'test', 'password': 'blalal',
+                     'email': 'bla@bla.nl'}
 
         user8 = UserController.create(user_dict)
         assert user8
@@ -320,12 +337,33 @@ class brainwaveTestCase(unittest.TestCase):
 
     def test_association_controller(self):
         # Jaap's Task
-        pass
+
+        # Test customer coupling.
+        association = Association('via')  # This can be removed when the rest
+                                          # of this test is written.
+        customer = Customer('Bas')
+        db.session.add(association)
+        db.session.add(customer)
+        db.session.commit()
+        assert not AssociationController.get_customers(association).all()
+        assert not AssociationController.customer_is_coupled(association,
+                                                             customer)
+
+        AssociationController.add_customer(association, customer)
+        assert AssociationController.customer_is_coupled(association, customer)
+        assert AssociationController.get_customers(association)\
+            .first() == customer
+
+        AssociationController.remove_customer(association, customer)
+        assert not AssociationController.get_customers(association).all()
+        assert not AssociationController.customer_is_coupled(association,
+                                                             customer)
+
+        CustomerController.delete(customer)
 
     def test_association_api(self):
         # Jaap's Task
         pass
-
 
 
 if __name__ == '__main__':

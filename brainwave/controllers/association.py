@@ -7,6 +7,20 @@ from brainwave import db
 
 class AssociationController:
     """The Controller for association manipulation."""
+    class CustomerAlreadyCoupled(Exception):
+        """Exception for when the association is already coupled to a
+        customer."""
+        def __init__(self):
+            """Initialize with standard message."""
+            self.error = 'The association is already coupled with the '\
+                         'customer'
+
+    class CustomerNotCoupled(Exception):
+        """Exception for when the association is not coupled to a customer."""
+        def __init__(self):
+            """Initialize with standard message."""
+            self.error = 'The association is not coupled with the customer.'
+
     @staticmethod
     def create(association_dict):
         """Create a new association."""
@@ -36,3 +50,39 @@ class AssociationController:
     def get_all():
         """Get all associations."""
         return Association.query.all()
+
+    @staticmethod
+    def get_customers(association):
+        """Get customers the association is coupled to."""
+        return association.customers
+
+    @staticmethod
+    def customer_is_coupled(association, customer):
+        """Check if the association is coupled to the customer."""
+        try:
+            association.customers.all().index(customer)
+        except ValueError:
+            return False
+
+        return True
+
+    @staticmethod
+    def add_customer(association, customer):
+        """Couple a customer to the association."""
+        if AssociationController.customer_is_coupled(association, customer):
+            raise AssociationController.CustomerAlreadyCoupled()
+
+        association.customers.append(customer)
+        db.session.add(association)
+        db.session.commit()
+
+    @staticmethod
+    def remove_customer(association, customer):
+        """Remove a customer the association is coupled to."""
+        try:
+            association.customers.remove(customer)
+        except ValueError:
+            raise AssociationController.CustomerNotCoupled()
+
+        db.session.add(association)
+        db.session.commit()

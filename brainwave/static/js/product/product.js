@@ -5,11 +5,11 @@ $(function(){
     var $button;
     $('button.remove').on("click", function(event){
         $button = $(this);
-        $('div#remove_modal').modal('show')
+        $('div#remove_modal').modal('show');
         $.each(brainwave.products, function( key, value ) {
             if(value.id == $button.attr('data-id')){
-                $('div#remove_modal').find('div.modal-body').html(value.name)
-                $('div#remove_modal').find('button.finalremove').attr('data-id', value.id)
+                $('div#remove_modal').find('div.modal-body').html(value.name);
+                $('div#remove_modal').find('button.finalremove').attr('data-id', value.id);
             }
         });
     });
@@ -19,6 +19,7 @@ $(function(){
             type: "DELETE",
             url: "/api/product/" + $button.attr('data-id'),
             }).success(function(msg) {
+                $("button.remove[data-id=" + $button.attr('data-id') + "]").parent().parent().remove();
                 clearflash();
                 flash('Het product is verwijderd', 'success');
         });

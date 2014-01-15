@@ -1,51 +1,93 @@
-"""customer.py - Controller for customer."""
-from flask import Blueprint, jsonify, request
-from brainwave.api.customer import CustomerAPI
-from brainwave.utils import serialize_sqla
-
-customer_controller = Blueprint('customer_controller', __name__,
-                                url_prefix='/api/customer')
+"""customer.py - Controller calls for customer."""
+from brainwave.models.customer import Customer
+from brainwave import db
 
 
-@customer_controller.route('', methods=['POST'])
-def create():
-    """Create a new customer."""
-    customer_dict = request.json
+class CustomerController:
+    """The Controller for customer manipulation."""
+    class AssociationAlreadyCoupled(Exception):
+        """Exception for when the customer is already coupled to an
+        association."""
+        def __init__(self):
+            """Initialize with standard message."""
+            self.error = 'The customer is already coupled with the '\
+                         'association'
 
-    customer = CustomerAPI.create(customer_dict)
+    class AssociationNotCoupled(Exception):
+        """Exception for when the customer is not coupled to an assocation."""
+        def __init__(self):
+            """Initialize with standard message."""
+            self.error = 'The customer is not coupled with the assocation'
 
-    return jsonify(id=customer.id)
+    @staticmethod
+    def create(customer_dict):
+        """Create a new customer."""
+        customer = Customer.new_dict(customer_dict)
 
+        db.session.add(customer)
+        db.session.commit()
 
-@customer_controller.route('/<int:customer_id>', methods=['PUT'])
-def update(customer_id):
-    """Update a customer."""
-    customer_dict = request.json
+        return customer
 
-    CustomerAPI.update(customer_dict)
+    @staticmethod
+    def update(customer_dict):
+        """Update a customer."""
+        customer = Customer.merge_dict(customer_dict)
 
-    return jsonify()
+        db.session.add(customer)
+        db.session.commit()
 
+        return customer
 
-@customer_controller.route('/<int:customer_id>', methods=['DELETE'])
-def delete(customer_id):
-    """Delete a customer."""
-    customer = CustomerAPI.get(customer_id)
+    @staticmethod
+    def delete(customer):
+        """Delete a customer."""
+        db.session.delete(customer)
+        db.session.commit()
 
-    if not customer:
-        return jsonify(error='Customer not found'), 500
+    @staticmethod
+    def get(customer_id):
+        """Get a customer by its id."""
+        return Customer.query.get(customer_id)
 
-    CustomerAPI.delete(customer)
+    @staticmethod
+    def get_all():
+        """Get all customers."""
+        return Customer.query.all()
 
-    return jsonify()
+    @staticmethod
+    def get_associations(customer):
+        """Get associations the customer is coupled to."""
+        return customer.associations
 
+    @staticmethod
+    def association_is_coupled(customer, association):
+        """Check if the customer is coupled to the association."""
+        try:
+            customer.associations.all().index(association)
+        except ValueError:
+            return False
 
-@customer_controller.route('/<int:customer_id>', methods=['GET'])
-def get(customer_id):
-    """Get a customer."""
-    customer = CustomerAPI.get(customer_id)
+        return True
 
-    if not customer:
-        return jsonify(error='Customer not found'), 500
+    @staticmethod
+    def add_association(customer, association):
+        """Couple an association to the customer."""
+        # Check if the customer is already coupled to the association.
+        if CustomerController.association_is_coupled(customer, association):
+            raise CustomerController.AssociationAlreadyCoupled()
 
-    return jsonify(customer=serialize_sqla(customer))
+        customer.associations.append(association)
+        db.session.add(customer)
+        db.session.commit()
+
+    @staticmethod
+    def remove_association(customer, association):
+        """Remove an association the customer is coupled to."""
+        try:
+            customer.associations.remove(association)
+        except ValueError:
+            raise CustomerController.AssociationNotCoupled()
+
+        db.session.add(customer)
+        db.session.commit()

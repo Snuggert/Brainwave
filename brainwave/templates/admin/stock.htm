@@ -2,13 +2,14 @@
 
 {% block includes %}
     <script src="/static/js/stock/search_stock.js"></script>
+    <script src="/static/js/ajax_search.js"></script>
 {% endblock %}
 
 {% block content %}
     <div class="row">
         <div class="col-lg-11  ">
             <div class="input-group">
-                <input type="text" class="form-control">
+                <input type="text" id="search_field" class="form-control">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button">
                         <span style="margin: 3px;" class="glyphicon glyphicon-search"></span>
@@ -29,7 +30,7 @@
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
-            <tbody id="products">
+            <tbody id="stock_results">
             	{% for item in data.stock %}
                     <tr>
                         <td>{{item.id}}</td>

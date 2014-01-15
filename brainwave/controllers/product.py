@@ -1,58 +1,47 @@
-"""product.py - Controller for Product."""
-from flask import Blueprint, jsonify, request
-from brainwave.api import ProductAPI
-from brainwave.utils import serialize_sqla
-
-product_controller = Blueprint('product_controller', __name__,
-                               url_prefix='/api/product')
+"""product.py - Controller calls for products."""
+from brainwave import db
+import difflib
+from brainwave.models import Product
 
 
-@product_controller.route('', methods=['POST'])
-def create():
-    """ Create new product """
-    product_dict = request.json
-    if product_dict:
-        if product_dict['price'] == '':
-            product_dict['price'] = 0.0
-        if product_dict['volume'] == '':
-            product_dict['product_dict'] = 0.0
-    print product_dict
-    product = ProductAPI.create(product_dict)
-    return jsonify(id=product.id)
+class ProductController:
+    """The Controller for product manipulation."""
+    @staticmethod
+    def create(product_dict):
+        """Create product."""
+        product = Product.new_dict(product_dict)
 
+        db.session.add(product)
+        db.session.commit()
 
-@product_controller.route('/<int:product_id>', methods=['DELETE'])
-def delete(product_id):
-    """ Delete product """
-    product = ProductAPI.get(product_id)
+        return product
 
-    if not product:
-        return jsonify(error='Product not found'), 500
+    @staticmethod
+    def get(product_id):
+        """Get a product by its id."""
+        return Product.query.get(product_id)
 
-    ProductAPI.delete(product)
+    @staticmethod
+    def get_all():
+        """Get all product items."""
+        return Product.query.all()
 
-    return jsonify()
+    @staticmethod
+    def get_all_from(query):
+        """ Get all product objects searched by query """
 
+        products = Product.query.all()
+        items = [item.name for item in products]
 
-@product_controller.route('/<int:product_id>', methods=['GET'])
-def get(product_id):
-    """ Get product """
-    product = ProductAPI.get(product_id)
+        result_names = difflib.get_close_matches(query, items, len(items),
+                                                 0.25)
 
-    if not product:
-        return jsonify(error='Product not found'), 500
+        results = Product.query.filter(Product.name.in_(result_names)).all()
 
-    return jsonify(product=serialize_sqla(product))
+        return results
 
-
-@product_controller.route('/all', methods=['GET'])
-def get_all():
-    """ Get all products unfiltered """
-    # At this point, the association_id should be gotten, so that not ALL
-    # products are listed, but only those related to the relevant association.
-    products = ProductAPI.get_all()
-
-    if not products:
-        return jsonify(error='No products were found'), 500
-
-    return jsonify(products=serialize_sqla(products))
+    @staticmethod
+    def delete(product):
+        """ Delete product item """
+        db.session.delete(product)
+        db.session.commit()

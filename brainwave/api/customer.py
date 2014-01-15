@@ -1,42 +1,51 @@
-"""customer.py - API calls for customer."""
-from brainwave.models.customer import Customer
-from brainwave import db
+"""customer.py - Controller for customer."""
+from flask import Blueprint, jsonify, request
+from brainwave.controllers import CustomerController
+from brainwave.utils import serialize_sqla
+
+customer_api = Blueprint('customer_api', __name__,
+                         url_prefix='/api/customer')
 
 
-class CustomerAPI:
-    """The API for customer manipulation."""
-    @staticmethod
-    def create(customer_dict):
-        """Create a new customer."""
-        customer = Customer.new_dict(customer_dict)
+@customer_api.route('', methods=['POST'])
+def create():
+    """Create a new customer."""
+    customer_dict = request.json
 
-        db.session.add(customer)
-        db.session.commit()
+    customer = CustomerController.create(customer_dict)
 
-        return customer
+    return jsonify(id=customer.id)
 
-    @staticmethod
-    def update(customer_dict):
-        """Update a customer."""
-        customer = Customer.merge_dict(customer_dict)
 
-        db.session.add(customer)
-        db.session.commit()
+@customer_api.route('/<int:customer_id>', methods=['PUT'])
+def update(customer_id):
+    """Update a customer."""
+    customer_dict = request.json
 
-        return customer
+    CustomerController.update(customer_dict)
 
-    @staticmethod
-    def delete(customer):
-        """Delete a customer."""
-        db.session.delete(customer)
-        db.session.commit()
+    return jsonify()
 
-    @staticmethod
-    def get(customer_id):
-        """Get a customer by its id."""
-        return Customer.query.get(customer_id)
 
-    @staticmethod
-    def get_all():
-        """Get all customers."""
-        return Customer.query.all()
+@customer_api.route('/<int:customer_id>', methods=['DELETE'])
+def delete(customer_id):
+    """Delete a customer."""
+    customer = CustomerController.get(customer_id)
+
+    if not customer:
+        return jsonify(error='Customer not found'), 500
+
+    CustomerController.delete(customer)
+
+    return jsonify()
+
+
+@customer_api.route('/<int:customer_id>', methods=['GET'])
+def get(customer_id):
+    """Get a customer."""
+    customer = CustomerController.get(customer_id)
+
+    if not customer:
+        return jsonify(error='Customer not found'), 500
+
+    return jsonify(customer=serialize_sqla(customer))

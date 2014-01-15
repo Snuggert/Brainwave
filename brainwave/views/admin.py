@@ -2,8 +2,8 @@
 from flask import render_template
 from flask import Blueprint
 from flask.ext.login import login_required
-from brainwave.api import StockAPI, TransInAPI, ProductAPI, ProductCategoryAPI
-from brainwave.controllers import AssociationController
+from brainwave.controllers import AssociationController, StockController, \
+    TransInController, ProductController, ProductCategoryController
 from brainwave.utils import serialize_sqla
 from brainwave.models import Stock
 
@@ -25,9 +25,9 @@ def view_association(association_id=None):
 @login_required
 def view_stock(user_id=None, query=""):
     if query != "":
-        stock = StockAPI.get_all_from(query)
+        stock = StockController.get_all_from(query)
     else:
-        stock = StockAPI.get_all()
+        stock = StockController.get_all()
 
     return render_template('admin/stock.htm', data={'stock': stock})
 
@@ -44,14 +44,14 @@ def new_stock(user_id=None):
 @admin_blueprint.route('/trans_in', methods=['GET'])
 @login_required
 def view_trans_in(user_id=None):
-    trans_in = TransInAPI.get_all()
+    trans_in = TransInController.get_all()
     return render_template('admin/trans_in.htm', data={'trans_in': trans_in})
 
 
 @admin_blueprint.route('/product', methods=['GET'])
 @login_required
 def view_product(user_id=None):
-    products = ProductAPI.get_all()
+    products = ProductController.get_all()
     return render_template('admin/product.htm', data={'products': products})
 
 
@@ -64,7 +64,7 @@ def view_post_tmp(user_id=None):
 @login_required
 def new_product(user_id=None):
     stocks = Stock.query.all()
-    product_categories = ProductCategoryAPI.get_all()
+    product_categories = ProductCategoryController.get_all()
     associations = AssociationController.get_all()
     return render_template('admin/new_product.htm',
                            data={'stocks': stocks,
