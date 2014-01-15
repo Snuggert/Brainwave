@@ -2,7 +2,6 @@
 from brainwave import db
 from brainwave.models import Transaction
 from brainwave.controllers.transaction_piece import TransactionPieceController
-# Change product api to controller when the switch has been made
 from brainwave.controllers.product import ProductController
 
 
@@ -11,8 +10,9 @@ class TransactionController:
     def create(dict):
         # Temporarily set assoc_id to 1, should be changed later
         transaction = Transaction.new_dict({'assoc_id': '1',
-                                            'pay_type': dict['pay_type'],
+                                            'pay_type': 'cash',
                                             'status': 'pending'})
+
         if not transaction:
             return False
 
@@ -24,11 +24,11 @@ class TransactionController:
             # Add transaction_id to the piece
             piece['transaction_id'] = transaction.id
             # Verify that the product exists (and use it to get the price)
-            # product = ProductController.get(piece['product_id'])
-            # if not product:
-            #     return False
-            # piece['price'] = product.price
-            ## Temporarily set the price to a static 2.00 euro
+            product = ProductController.get(piece['product_id'])
+            if not product:
+                return False
+            piece['price'] = product.price
+            # Temporarily set the price to a static 2.00 euro
             piece['price'] = 2.00
 
             transaction_piece = TransactionPieceController.create(piece)

@@ -13,7 +13,9 @@ class Transaction(db.Model, BaseEntity):
 
     status = db.Column(db.Enum('pending', 'paid', 'cancelled', name='status'))
 
-    def __init__(self, assoc_id=None, pay_type='cash', status='pending'):
+    transactions = db.relationship('TransactionPiece', backref='transaction')
+
+    def __init__(self, assoc_id=None, pay_type='cash', status='cancelled'):
         self.assoc_id = assoc_id
         self.pay_type = pay_type
         self.status = status
