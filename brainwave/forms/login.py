@@ -16,10 +16,9 @@ class LoginForm(Form):
         self.user = None
 
     def validate(self):
-        user = UserController.get_by_name(
-            username=self.username.data)
+        user = UserController.get_by_name(username=self.username.data)
 
-        if user is None:
+        if not user:
             return False
 
         if not UserController.check_password(user, self.password.data):

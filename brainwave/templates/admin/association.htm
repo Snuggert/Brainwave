@@ -17,30 +17,25 @@
     <div class="row col-md-12 custyle">
         <table class="table table-striped custab">
             <thead>
-            <a href="#" class="btn btn-primary btn-xs pull-right"><b>+</b> Add new user</a>
+            <a href="#" class="btn btn-primary btn-xs pull-right"><b>+</b> Add new association</a>
                 <tr>
                     <th>ID</th>
-                    <th>Username</th>
                     <th>Name</th>
-                    <th>Crediet</th>
-                    <th class="text-center">Action</th>
                 </tr>
             </thead>
-        	{% for user in data.users %}
-                <tr>
-                    <td>{{user.id}}</td>
-                    <td>{{user.username}}</td>
-                    <td>{{user.name}}</td>
-                    <td>€{{10}}</td>
-                    <td class="text-center">
+        	{% for association in data.associations %}
+                <tr data-id='{{ association.id }}'>
+                    <td>{{association.id}}</td>
+                    <td>{{association.name}}</td>
+                    <td class='text-right'>
                         <a class='btn btn-info btn-xs' href="#">
                             <span class="glyphicon glyphicon glyphicon-usd">
                             </span>
-                        </a> 
-                        <a class='btn btn-info btn-xs' href="#">
-                            <span class="glyphicon glyphicon-edit"></span> 
                         </a>
-                        <a href="#" class="btn btn-danger btn-xs">
+                        <a class='btn btn-info btn-xs' href="#">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </a>
+                        <a href="#" class="btn btn-danger btn-xs remove">
                             <span class="glyphicon glyphicon-remove"></span>
                         </a>
                     </td>
@@ -48,4 +43,6 @@
         	{% endfor %}
         </table>
     </div>
+
+    <script src='/static/js/admin/association.js'></script>
 {% endblock %}
