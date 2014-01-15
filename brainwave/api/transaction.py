@@ -21,7 +21,7 @@ transaction_api = Blueprint('transaction_api', __name__,
 # }
 #
 # pay_type can be either cash or pin (credit should become option 3, later)
-# action can be sell, refund or git
+# action can be sell, refund or gift
 @transaction_api.route('/new', methods=['POST'])
 def create():
     """Create a new transaction."""

@@ -1,27 +1,25 @@
 .sale-container {
-    margin-top: 50px;
+    margin-top: 75px;
     margin-left: 0px;
     margin-bottom: 0px;
     width: 100%;
-    background-color: blue;
 }
 
 #product-list {
-    background-color: red; 
+    border: solid black 1px;
 }
 
 .product {
     width: 15%;
     margin-right: 25px;
-    background-color: green;
 }
 
 #number-pad {
-    background-color: green;
+    border: solid black 1px;
 }
 
 #receipt {
-    background-color: purple;
+    border: solid black 1px;
 }
 
 
