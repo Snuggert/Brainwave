@@ -28,8 +28,6 @@ class TransactionController:
             if not product:
                 return False
             piece['price'] = product.price
-            # Temporarily set the price to a static 2.00 euro
-            piece['price'] = 2.00
 
             transaction_piece = TransactionPieceController.create(piece)
             if not transaction_piece:
