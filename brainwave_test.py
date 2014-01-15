@@ -89,6 +89,38 @@ class brainwaveTestCase(unittest.TestCase):
             assert data['customer']['id'] == customer_id
             assert data['customer']['name'] == new_name
 
+            association = Association('via')
+            db.session.add(association)
+            db.session.commit()
+
+            resp = c.get('/api/customer/association/%d' % (customer_id))
+            data = json.loads(resp.data)
+            assert 'associations' in data
+            assert not data['associations']
+
+            resp = c.post('/api/customer/association/%d' % (customer_id),
+                          content_type='application/json',
+                          data=json.dumps({'association_id': association.id}))
+            data = json.loads(resp.data)
+            assert not data
+
+            resp = c.get('/api/customer/association/%d' % (customer_id))
+            data = json.loads(resp.data)
+            assert 'associations' in data
+            assert data['associations'][0]['id'] == association.id
+
+            resp = c.delete('/api/customer/association/%d' % (customer_id),
+                            content_type='application/json',
+                            data=json.dumps({'association_id':
+                                             association.id}))
+            data = json.loads(resp.data)
+            assert not data
+
+            resp = c.get('/api/customer/association/%d' % (customer_id))
+            data = json.loads(resp.data)
+            assert 'associations' in data
+            assert not data['associations']
+
             resp = c.delete('/api/customer/%d' % (customer_id))
             resp = c.get('/api/customer/%d' % (customer_id))
             data = json.loads(resp.data)
