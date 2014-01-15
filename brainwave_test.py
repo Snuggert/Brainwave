@@ -263,7 +263,8 @@ class brainwaveTestCase(unittest.TestCase):
     #         data = json.loads(resp.data)
     #         assert data['product_category']['id'] == product_category_id
 
-    #         resp = c.delete('/api/product_category/%d' % (product_category_id))
+    #         resp = c.delete('/api/product_category/%d' %
+    #               (product_category_id))
     #         resp = c.get('/api/product_category/%d' % (product_category_id),
     #                      content_type='application/json')
     #         data = json.loads(resp.data)
@@ -306,7 +307,8 @@ class brainwaveTestCase(unittest.TestCase):
     #     stock = StockAPI.create(stock_dict)
 
     #     with app.test_client() as c, app.app_context():
-    #         product_dict = {'name': 'Hertog Jan 30cl', 'shortname': 'HJ 30cl',
+    #         product_dict = {'name': 'Hertog Jan 30cl',
+    #                         'shortname': 'HJ 30cl',
     #                         'price': 1.0, 'volume': 1, 'loss': None,
     #                         'product_category_id': product_category.id,
     #                         'stock_id': stock.id}
@@ -444,6 +446,40 @@ class brainwaveTestCase(unittest.TestCase):
 
         transaction2 = TransactionController.get(transaction.id)
         assert transaction2
+
+    def test_credit_controller(self):
+        customer = Customer('Bas')
+        association = Association('via')
+        db.session.add(customer)
+        db.session.add(association)
+        db.session.commit()
+
+        CustomerController.add_association(customer, association)
+
+        credit = CreditController.create(customer, association)
+        assert credit
+        assert credit.id
+        assert credit.credit == 0.0
+
+        credit_id = credit.id
+
+        credit = CreditController.get(credit_id)
+        assert credit
+        assert credit.id == credit_id
+
+        CreditController.add(credit, 20.0)
+        assert credit.credit == 20.0
+
+        CreditController.add(credit, -5.0)
+        assert credit.credit == 15.0
+
+        CreditController.delete(credit)
+        assert not CreditController.get(credit_id)
+
+        # Cleanup.
+        CustomerController.remove_association(customer, association)
+        CustomerController.delete(customer)
+        AssociationController.delete(customer)
 
 
 if __name__ == '__main__':
