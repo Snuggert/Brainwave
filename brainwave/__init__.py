@@ -1,6 +1,6 @@
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.login import LoginManager
+from flask.ext.login import LoginManager, login_required
 from sqlite3 import dbapi2 as sqlite3
 
 # Startup stuff
@@ -30,6 +30,11 @@ app.register_blueprint(customer_api)
 app.register_blueprint(admin_blueprint)
 app.register_blueprint(sale_blueprint)
 app.register_blueprint(transaction_api)
+
+@app.errorhandler(404)
+@login_required
+def page_not_found(e):
+    return render_template('404.htm'), 404
 
 # Add methods and modules to jinja environment
 from brainwave.utils import serialize_sqla

@@ -89,6 +89,40 @@ class brainwaveTestCase(unittest.TestCase):
             assert data['customer']['id'] == customer_id
             assert data['customer']['name'] == new_name
 
+            # Test association coupling.
+
+            association = Association('via')
+            db.session.add(association)
+            db.session.commit()
+
+            resp = c.get('/api/customer/association/%d' % (customer_id))
+            data = json.loads(resp.data)
+            assert 'associations' in data
+            assert not data['associations']
+
+            resp = c.post('/api/customer/association/%d' % (customer_id),
+                          content_type='application/json',
+                          data=json.dumps({'association_id': association.id}))
+            data = json.loads(resp.data)
+            assert not data
+
+            resp = c.get('/api/customer/association/%d' % (customer_id))
+            data = json.loads(resp.data)
+            assert 'associations' in data
+            assert data['associations'][0]['id'] == association.id
+
+            resp = c.delete('/api/customer/association/%d' % (customer_id),
+                            content_type='application/json',
+                            data=json.dumps({'association_id':
+                                             association.id}))
+            data = json.loads(resp.data)
+            assert not data
+
+            resp = c.get('/api/customer/association/%d' % (customer_id))
+            data = json.loads(resp.data)
+            assert 'associations' in data
+            assert not data['associations']
+
             resp = c.delete('/api/customer/%d' % (customer_id))
             resp = c.get('/api/customer/%d' % (customer_id))
             data = json.loads(resp.data)
@@ -229,7 +263,8 @@ class brainwaveTestCase(unittest.TestCase):
     #         data = json.loads(resp.data)
     #         assert data['product_category']['id'] == product_category_id
 
-    #         resp = c.delete('/api/product_category/%d' % (product_category_id))
+    #         resp = c.delete('/api/product_category/%d' %
+    #               (product_category_id))
     #         resp = c.get('/api/product_category/%d' % (product_category_id),
     #                      content_type='application/json')
     #         data = json.loads(resp.data)
@@ -272,7 +307,8 @@ class brainwaveTestCase(unittest.TestCase):
     #     stock = StockAPI.create(stock_dict)
 
     #     with app.test_client() as c, app.app_context():
-    #         product_dict = {'name': 'Hertog Jan 30cl', 'shortname': 'HJ 30cl',
+    #         product_dict = {'name': 'Hertog Jan 30cl',
+    #                         'shortname': 'HJ 30cl',
     #                         'price': 1.0, 'volume': 1, 'loss': None,
     #                         'product_category_id': product_category.id,
     #                         'stock_id': stock.id}
@@ -332,11 +368,9 @@ class brainwaveTestCase(unittest.TestCase):
         assert not user8
 
     def test_user_api(self):
-        # Jaap's Task
         pass
 
     def test_association_controller(self):
-        # Jaap's Task
 
         # Test customer coupling.
         association = Association('via')  # This can be removed when the rest
@@ -360,10 +394,45 @@ class brainwaveTestCase(unittest.TestCase):
                                                              customer)
 
         CustomerController.delete(customer)
+        AssociationController.delete(association)  # This can also be removed.
 
     def test_association_api(self):
-        # Jaap's Task
-        pass
+
+        with app.test_client() as c, app.app_context():
+            # Test customer coupling.
+            association = Association('via')  # This can be removed when the
+                                              # rest of this test is written.
+            customer = Customer('Bas')
+            db.session.add(association)
+            db.session.add(customer)
+            db.session.commit()
+
+            resp = c.get('/api/association/customer/%d' % (association.id))
+            data = json.loads(resp.data)
+            assert 'customers' in data
+            assert not data['customers']
+
+            resp = c.post('/api/association/customer/%d' % (association.id),
+                          content_type='application/json',
+                          data=json.dumps({'customer_id': customer.id}))
+            data = json.loads(resp.data)
+            assert not data
+
+            resp = c.get('/api/association/customer/%d' % (association.id))
+            data = json.loads(resp.data)
+            assert 'customers' in data
+            assert data['customers'][0]['id'] == customer.id
+
+            resp = c.delete('/api/association/customer/%d' % (association.id),
+                            content_type='application/json',
+                            data=json.dumps({'customer_id': customer.id}))
+            data = json.loads(resp.data)
+            assert not data
+
+            resp = c.get('/api/association/customer/%d' % (association.id))
+            data = json.loads(resp.data)
+            assert 'customers' in data
+            assert not data['customers']
 
     def test_transaction_controller(self):
         transaction_dict = {'pay_type': 'cash',
@@ -377,6 +446,40 @@ class brainwaveTestCase(unittest.TestCase):
 
         transaction2 = TransactionController.get(transaction.id)
         assert transaction2
+
+    def test_credit_controller(self):
+        customer = Customer('Bas')
+        association = Association('via')
+        db.session.add(customer)
+        db.session.add(association)
+        db.session.commit()
+
+        CustomerController.add_association(customer, association)
+
+        credit = CreditController.create(customer, association)
+        assert credit
+        assert credit.id
+        assert credit.credit == 0.0
+
+        credit_id = credit.id
+
+        credit = CreditController.get(credit_id)
+        assert credit
+        assert credit.id == credit_id
+
+        CreditController.add(credit, 20.0)
+        assert credit.credit == 20.0
+
+        CreditController.add(credit, -5.0)
+        assert credit.credit == 15.0
+
+        CreditController.delete(credit)
+        assert not CreditController.get(credit_id)
+
+        # Cleanup.
+        CustomerController.remove_association(customer, association)
+        CustomerController.delete(customer)
+        AssociationController.delete(customer)
 
 
 if __name__ == '__main__':

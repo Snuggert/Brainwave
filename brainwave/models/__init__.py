@@ -9,3 +9,4 @@ from .user import User
 from .transaction import Transaction
 from .transaction_piece import TransactionPiece
 from .customer import Customer
+from .credit import Credit
