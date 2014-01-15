@@ -7,3 +7,4 @@ from .product_category import product_category_api
 from .customer import customer_api
 from .user import user_api
 from .transaction import transaction_api
+from .credit import credit_api

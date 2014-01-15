@@ -19,7 +19,6 @@ from brainwave.views.admin import admin_blueprint
 from brainwave.views.sale import sale_blueprint
 from brainwave.views.login import *
 
-
 app.register_blueprint(user_api)
 app.register_blueprint(association_api)
 app.register_blueprint(stock_api)
@@ -27,9 +26,11 @@ app.register_blueprint(trans_in_api)
 app.register_blueprint(product_category_api)
 app.register_blueprint(product_api)
 app.register_blueprint(customer_api)
+app.register_blueprint(credit_api)
 app.register_blueprint(admin_blueprint)
 app.register_blueprint(sale_blueprint)
 app.register_blueprint(transaction_api)
+
 
 @app.errorhandler(404)
 @login_required

@@ -4,7 +4,6 @@ from flask import Blueprint
 from flask.ext.login import login_required
 from brainwave.controllers import AssociationController, StockController, \
     TransInController, ProductController, ProductCategoryController
-from brainwave.utils import serialize_sqla
 from brainwave.models import Stock
 
 admin_blueprint = Blueprint('admin', __name__,

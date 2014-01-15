@@ -1,4 +1,4 @@
-"""customer.py - Controller for customer."""
+"""customer.py - API for customer."""
 from flask import Blueprint, jsonify, request
 from brainwave.controllers import CustomerController, AssociationController
 from brainwave.utils import serialize_sqla

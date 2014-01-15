@@ -2,18 +2,25 @@
 from brainwave import db
 from brainwave.models.credit import Credit
 from brainwave.controllers.customer import CustomerController
+from brainwave.controllers.association import AssociationController
 
 
 class CreditController:
     """The controller for credit manipulation."""
     @staticmethod
-    def create(customer, association):
+    def create(credit_dict):
         """Create a credit for a customer of an association."""
+        customer_id = credit_dict['customer_id']
+        customer = CustomerController.get(customer_id)
+
+        association_id = credit_dict['association_id']
+        association = AssociationController.get(association_id)
+
         if not CustomerController.association_is_coupled(customer,
                                                          association):
             raise CustomerController.AssociationNotCoupled()
 
-        credit = Credit(0.0, customer, association)
+        credit = Credit.new_dict(credit_dict)
         db.session.add(credit)
         db.session.commit()
 

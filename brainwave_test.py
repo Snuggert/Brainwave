@@ -456,7 +456,9 @@ class brainwaveTestCase(unittest.TestCase):
 
         CustomerController.add_association(customer, association)
 
-        credit = CreditController.create(customer, association)
+        credit_dict = {'credit': 0.0, 'customer_id': customer.id,
+                       'association_id': association.id}
+        credit = CreditController.create(credit_dict)
         assert credit
         assert credit.id
         assert credit.credit == 0.0
@@ -481,6 +483,63 @@ class brainwaveTestCase(unittest.TestCase):
         CustomerController.delete(customer)
         AssociationController.delete(customer)
 
+    def test_credit_api(self):
+        customer = Customer('Bas')
+        association = Association('via')
+        db.session.add(customer)
+        db.session.add(association)
+        db.session.commit()
+
+        CustomerController.add_association(customer, association)
+
+        with app.test_client() as c, app.app_context():
+            credit_dict = {'credit': 0.0, 'customer_id': customer.id,
+                           'association_id': association.id}
+            resp = c.post('/api/credit', content_type='application/json',
+                          data=json.dumps(credit_dict))
+            data = json.loads(resp.data)
+            assert 'id' in data
+
+            credit_id = data['id']
+            credit_dict['id'] = credit_id
+
+            resp = c.get('/api/credit/%d' % (credit_id))
+            data = json.loads(resp.data)
+            assert 'credit' in data
+            assert 'id' in data['credit']
+            assert data['credit']['id'] == credit_id
+
+            resp = c.post('/api/credit/add/%d' % (credit_id),
+                          content_type='application/json',
+                          data=json.dumps({'amount': 20.0}))
+            data = json.loads(resp.data)
+            assert 'new_credit' in data
+            assert data['new_credit'] == 20.0
+
+            credit_dict['credit'] = data['new_credit']
+
+            resp = c.post('/api/credit/add/%d' % (credit_id),
+                          content_type='application/json',
+                          data=json.dumps({'amount': -5.0}))
+            data = json.loads(resp.data)
+            assert 'new_credit' in data
+            assert data['new_credit'] == 15.0
+
+            credit_dict['credit'] = data['new_credit']
+
+            resp = c.delete('/api/credit/%d' % (credit_id))
+            data = json.loads(resp.data)
+            assert not data
+
+            resp = c.get('/api/credit/%d' % (credit_id))
+            data = json.loads(resp.data)
+            assert data
+            assert 'error' in data
+            assert data['error'] == 'Credit not found'
+
+        CustomerController.remove_association(customer, association)
+        CustomerController.delete(customer)
+        AssociationController.delete(association)
 
 if __name__ == '__main__':
     unittest.main()
