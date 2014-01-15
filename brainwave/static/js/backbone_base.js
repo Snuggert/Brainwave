@@ -34,7 +34,7 @@ models.Product = Backbone.Model.extend({
 });
 
 models.Stock = Backbone.Model.extend({
-    urlRoot: '/',
+    urlRoot: '/api/stock',
     defaults: function(){
         return{
             stock: null,

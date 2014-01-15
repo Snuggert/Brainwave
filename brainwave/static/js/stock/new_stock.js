@@ -9,12 +9,13 @@ $(function(){
         var button = $(this).find('button.save');
         button.button('loading');
         button.button('reset');
-        set_form_values(product, $(this));
+        set_form_values(stock, $(this));
 
-        save_werr(product, {}, function(model, response, options) {
+        save_werr(stock, {}, function(model, response, options) {
             clearflash();
             button.button('reset');
-            flash('Het product is aangemaakt', 'success');
+            flash('De stock is aangemaakt', 'success');
+            redirect('/admin/stock')
         }, button);
     });
 })
