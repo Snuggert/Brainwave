@@ -366,11 +366,9 @@ class brainwaveTestCase(unittest.TestCase):
         assert not user8
 
     def test_user_api(self):
-        # Jaap's Task
         pass
 
     def test_association_controller(self):
-        # Jaap's Task
 
         # Test customer coupling.
         association = Association('via')  # This can be removed when the rest
@@ -397,7 +395,6 @@ class brainwaveTestCase(unittest.TestCase):
         AssociationController.delete(association)  # This can also be removed.
 
     def test_association_api(self):
-        # Jaap's Task
 
         with app.test_client() as c, app.app_context():
             # Test customer coupling.
