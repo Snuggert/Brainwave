@@ -1,6 +1,6 @@
 """association.py - Controller for association."""
 from flask import Blueprint, jsonify, request
-from brainwave.controllers.association import AssociationController
+from brainwave.controllers import AssociationController, CustomerController
 from brainwave.utils import serialize_sqla
 
 association_api = Blueprint('association_api', __name__,
@@ -52,3 +52,60 @@ def get(association_id):
         return jsonify(error='Association not found'), 500
 
     return jsonify(association=serialize_sqla(association))
+
+
+@association_api.route('/customer/<int:association_id>', methods=['GET'])
+def get_customers(association_id):
+    """Get customers the associations is coupled to."""
+    association = AssociationController.get(association_id)
+
+    if not association:
+        return jsonify(error='Association not found'), 500
+
+    customers = AssociationController.get_customers(association).all()
+
+    return jsonify(customers=serialize_sqla(customers))
+
+
+@association_api.route('/customer/<int:association_id>', methods=['POST'])
+def add_customer(association_id):
+    """Couple a customer to the association."""
+    association = AssociationController.get(association_id)
+
+    if not association:
+        return jsonify(error='Association not found'), 500
+
+    customer_id = request.json['customer_id']
+    customer = CustomerController.get(customer_id)
+
+    if not customer:
+        return jsonify(error='Customer not found'), 500
+
+    try:
+        AssociationController.add_customer(association, customer)
+    except AssociationController.CustomerAlreadyCoupled as e:
+        return jsonify(error=e.error)
+
+    return jsonify()
+
+
+@association_api.route('/customer/<int:association_id>', methods=['DELETE'])
+def remove_customer(association_id):
+    """Remove a customer the association is coupled to."""
+    association = AssociationController.get(association_id)
+
+    if not association:
+        return jsonify(error='Association not found'), 500
+
+    customer_id = request.json['customer_id']
+    customer = CustomerController.get(customer_id)
+
+    if not customer:
+        return jsonify(error='Customer not found'), 500
+
+    try:
+        AssociationController.remove_customer(association, customer)
+    except AssociationController.CustomerNotCoupled as e:
+        return jsonify(error=e.error)
+
+    return jsonify()

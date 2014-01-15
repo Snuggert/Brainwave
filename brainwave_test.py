@@ -89,6 +89,8 @@ class brainwaveTestCase(unittest.TestCase):
             assert data['customer']['id'] == customer_id
             assert data['customer']['name'] == new_name
 
+            # Test association coupling.
+
             association = Association('via')
             db.session.add(association)
             db.session.commit()
@@ -392,10 +394,46 @@ class brainwaveTestCase(unittest.TestCase):
                                                              customer)
 
         CustomerController.delete(customer)
+        AssociationController.delete(association)  # This can also be removed.
 
     def test_association_api(self):
         # Jaap's Task
-        pass
+
+        with app.test_client() as c, app.app_context():
+            # Test customer coupling.
+            association = Association('via')  # This can be removed when the
+                                              # rest of this test is written.
+            customer = Customer('Bas')
+            db.session.add(association)
+            db.session.add(customer)
+            db.session.commit()
+
+            resp = c.get('/api/association/customer/%d' % (association.id))
+            data = json.loads(resp.data)
+            assert 'customers' in data
+            assert not data['customers']
+
+            resp = c.post('/api/association/customer/%d' % (association.id),
+                          content_type='application/json',
+                          data=json.dumps({'customer_id': customer.id}))
+            data = json.loads(resp.data)
+            assert not data
+
+            resp = c.get('/api/association/customer/%d' % (association.id))
+            data = json.loads(resp.data)
+            assert 'customers' in data
+            assert data['customers'][0]['id'] == customer.id
+
+            resp = c.delete('/api/association/customer/%d' % (association.id),
+                            content_type='application/json',
+                            data=json.dumps({'customer_id': customer.id}))
+            data = json.loads(resp.data)
+            assert not data
+
+            resp = c.get('/api/association/customer/%d' % (association.id))
+            data = json.loads(resp.data)
+            assert 'customers' in data
+            assert not data['customers']
 
     def test_transaction_controller(self):
         transaction_dict = {'pay_type': 'cash',
