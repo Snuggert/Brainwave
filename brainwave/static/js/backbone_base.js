@@ -42,3 +42,19 @@ models.Stock = Backbone.Model.extend({
         };
     }
 });
+
+models.Association = Backbone.Model.extend({
+    urlRoot: '/api/association',
+    defaults: function() {
+        return {
+            name: '',
+        };
+    }
+});
+
+/* Collections. */
+var collections = {};
+
+collections.Associations = Backbone.Collection.extend({
+    model: models.Association
+});

@@ -13,11 +13,27 @@
             </div><!-- /input-group -->
         </div>
     </div>
+
     <br />
+
+    <div id='new-association' class='row col-md-12 custyle'>
+        <button class="btn btn-primary btn-xs pull-right">
+            <b>+</b> Add new association
+        </button>
+        <div id='new-association-form'>
+            <h3>New association</h3>
+            <div class='form-group'>
+                <label for='new-association-name'>Name</label>
+                <input type='text' class='form-control' id='new-association-name' data-property='name' placeholder='Name' />
+            </div>
+
+            <button id='save-new-association' class='btn btn-primary'>Save</button>
+            <button id='cancel-new-association' class='btn btn-danger'>Cancel</button>
+        </div>
+    </div>
     <div class="row col-md-12 custyle">
         <table class="table table-striped custab">
             <thead>
-            <a href="#" class="btn btn-primary btn-xs pull-right"><b>+</b> Add new association</a>
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
@@ -26,18 +42,21 @@
         	{% for association in data.associations %}
                 <tr data-id='{{ association.id }}'>
                     <td>{{association.id}}</td>
-                    <td>{{association.name}}</td>
+                    <td class='field-view' data-property='name'>{{association.name}}</td>
+                    <td class='field-edit'><input type='text' class='form-control' data-property='name' value='{{association.name}}' /></td>
                     <td class='text-right'>
-                        <a class='btn btn-info btn-xs' href="#">
-                            <span class="glyphicon glyphicon glyphicon-usd">
-                            </span>
-                        </a>
-                        <a class='btn btn-info btn-xs' href="#">
-                            <span class="glyphicon glyphicon-edit"></span>
-                        </a>
-                        <a href="#" class="btn btn-danger btn-xs remove">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </a>
+                        <button class='edit field-view btn btn-info btn-xs'>
+                            <span class='glyphicon glyphicon-edit'></span>
+                        </button>
+                        <button class='save field-edit btn btn-success btn-xs'>
+                            <span class='glyphicon glyphicon-ok'></span>
+                        </button>
+                        <button class='cancel field-edit btn btn-danger btn-xs'>
+                            <span class='glyphicon glyphicon-remove-circle'></span>
+                        </button>
+                        <button class='remove field-view btn btn-danger btn-xs'>
+                            <span class='glyphicon glyphicon-remove'></span>
+                        </button>
                     </td>
                 </tr>
         	{% endfor %}

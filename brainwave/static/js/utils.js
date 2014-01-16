@@ -27,7 +27,7 @@ function clearflash() {
 //---------------------- Form automation --------------------------------------
 function set_form_values(model, $form) {
     var $input_fields = $form
-            .find('.form_field, .form_timepicker, .form_select')
+            .find('.form-control, .form_timepicker, .form_select')
             .not('.select2-offscreen');
     var $select2 = $form.find('select.form_select.select2-offscreen');
     var $check_boxes = $form.find('.form_check');
@@ -61,11 +61,7 @@ function set_form_values(model, $form) {
     });
 }
 
-function ajax_error_handler(response, $save_button, no_clear) {
-    if ($save_button) {
-        $save_button.button('reset');
-    }
-
+function ajax_error_handler(response, no_clear) {
     if (!no_clear) {
         clearflash();
     }
@@ -82,11 +78,11 @@ function ajax_error_handler(response, $save_button, no_clear) {
 }
 
 /* Wrapper that automatically handlers error responses from a save call. */
-function save_werr(obj, attrs, success, button) {
+function save_werr(obj, attrs, success) {
     obj.save(attrs, {
         success: success,
         error: function(model, response, options) {
-            ajax_error_handler(response, button);
+            ajax_error_handler(response);
         }
     });
 }
@@ -108,4 +104,9 @@ function get_error_text(response) {
         return 'Er is een error voorgekomen die niet bekend was, laat dit ' +
             'weten aan de ICT mensen';
     }
+}
+
+/* Find the element's parent tr. */
+function find_tr($element) {
+    return $element.parents('tr');
 }

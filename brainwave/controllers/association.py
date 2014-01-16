@@ -24,12 +24,20 @@ class AssociationController:
     @staticmethod
     def create(association_dict):
         """Create a new association."""
-
         association_dict['role'] = ROLE_ASSOCIATION
         user = UserController.create(association_dict)
         association_dict['user_id'] = user.id
 
         association = Association.new_dict(association_dict)
+        db.session.add(association)
+        db.session.commit()
+
+        return association
+
+    @staticmethod
+    def update(association_dict):
+        """Update the association."""
+        association = Association.merge_dict(association_dict)
         db.session.add(association)
         db.session.commit()
 

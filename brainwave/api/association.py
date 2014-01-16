@@ -25,9 +25,9 @@ def update(association_id):
     """Update an association."""
     association_dict = request.json
 
-    association = AssociationController.update(association_dict)
+    AssociationController.update(association_dict)
 
-    return jsonify(pw_hash=association.pw_hash)
+    return jsonify()
 
 
 @association_api.route('/<int:association_id>', methods=['DELETE'])
