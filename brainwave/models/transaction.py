@@ -14,9 +14,7 @@ class Transaction(db.Model, BaseEntity):
 
     pieces = db.relationship('TransactionPiece', backref='transaction')
 
-    def __init__(self, pay_type='cash', status='pending', association=None,
-                 trans_in=False):
+    def __init__(self, pay_type='cash', status='pending', association=None):
         self.pay_type = pay_type
         self.status = status
         self.association = association
-        self.trans_in = trans_in
