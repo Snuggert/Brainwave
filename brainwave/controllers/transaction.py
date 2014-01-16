@@ -10,7 +10,7 @@ class TransactionController:
     def create(dict):
         # Temporarily set assoc_id to 1, should be changed later
         transaction = Transaction.new_dict({'assoc_id': '1',
-                                            'pay_type': 'cash',
+                                            'pay_type': dict['pay_type'],
                                             'status': 'pending'})
 
         if not transaction:
