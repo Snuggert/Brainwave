@@ -7,7 +7,6 @@ class Transaction(db.Model, BaseEntity):
     """Transaction model."""
     __tablename__ = 'transaction'
 
-    trans_in = db.Column(db.Boolean)
     pay_type = db.Column(db.Enum('cash', 'pin', name='pay_type'))
     status = db.Column(db.Enum('pending', 'paid', 'cancelled', name='status'))
     assoc_id = db.Column(db.Integer, db.ForeignKey('association.id'))
