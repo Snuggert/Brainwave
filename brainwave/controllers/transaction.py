@@ -45,6 +45,12 @@ class TransactionController:
         return Transaction.query.get(transaction_id)
 
     @staticmethod
+    def get_between(date_1, date_2):
+        """ Get a Transaction objects between date_1 and date_2 """
+        return Transaction.query.filter(Transaction.created >= date_1).\
+            filter(Transaction.created <= date_2).all()
+
+    @staticmethod
     def set_status(transaction_id, status):
         """ Set the status of a transaction """
         Transaction.query.filter_by(id=transaction_id) \

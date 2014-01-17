@@ -1,0 +1,17 @@
+{% extends "content.htm" %}
+
+{% block includes %}
+    <link rel="stylesheet" href="/static/css/rickshaw.min.css">
+    <script src="/static/js/d3.min.js"></script>
+    <script src="/static/js/d3.layout.min.js"></script>
+    <script src="/static/js/rickshaw.min.js"></script>
+    <script src="/static/js/admin/analysis/analysis.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <p><h1>Week {{data.weeknumber}}</h1></p>
+    </div>
+    <div class="chart_div">
+    </div>
+{% endblock %}

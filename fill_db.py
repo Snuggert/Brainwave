@@ -47,3 +47,12 @@ product2 = Product('Hertog Jan 50cL', 'HJ 50cL', 1.00, 500, product_category1,
 db.session.add(product1)
 db.session.add(product2)
 db.session.commit()
+
+# Dummy transactions
+trans1 = Transaction('cash', 'paid', assoc1)
+db.session.add(trans1)
+db.session.commit()
+
+trans1_piece1 = TransactionPiece(trans1, product1, product1.price, 'sell')
+db.session.add(trans1_piece1)
+db.session.commit()

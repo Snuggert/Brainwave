@@ -1,13 +1,14 @@
 """admin.py - View for administration."""
+from datetime import date, timedelta, datetime
 from flask import render_template
 from flask import Blueprint
 from flask.ext.login import login_required
 from brainwave.controllers import AssociationController, StockController, \
-    TransInController, ProductController, ProductCategoryController
+    TransInController, ProductController, ProductCategoryController, \
+    TransactionController
 from brainwave.models import Stock
 
-admin_blueprint = Blueprint('admin', __name__,
-                            url_prefix='/admin')
+admin_blueprint = Blueprint('admin', __name__, url_prefix='/admin')
 
 
 @admin_blueprint.route('/', methods=['GET'])
@@ -69,3 +70,36 @@ def new_product(user_id=None):
                            data={'stocks': stocks,
                                  'product_categories': product_categories,
                                  'product': {}, 'associations': associations})
+
+
+@admin_blueprint.route('/analysis', methods=['GET'])
+@login_required
+def view_analysis(user_id=None):
+    week_year, week_number, week_day = date.today().isocalendar()
+    week_monday = first_monday(week_year, week_number)
+    week_transactions = TransactionController.\
+        get_between(week_monday, week_monday + timedelta(7))
+
+    datetime_monday = datetime.combine(week_monday, datetime.min.time())
+    epoch_week_start = (datetime_monday - datetime(1970, 1, 1)).total_seconds()
+    epoch_week_end = ((datetime_monday + timedelta(7)) -
+                      datetime(1970, 1, 1)).total_seconds()
+    graphdata = []
+    graphdata.append({'x': epoch_week_start, 'y': 0})
+    for transaction in week_transactions:
+        epoch_seconds = (transaction.created -
+                         datetime(1970, 1, 1)).total_seconds()
+        sale_price = 0
+        for piece in transaction.pieces:
+            sale_price += piece.price
+        graphdata.append({'x': epoch_seconds, 'y': sale_price})
+    graphdata.append({'x': epoch_week_end, 'y': 0})
+
+    return render_template('admin/analysis.htm',
+                           data={'graphdata': graphdata,
+                                 'week_number': week_number, })
+
+
+def first_monday(year, week):
+    d = date(year, 1, 4)  # The Jan 4th must be in week 1  according to ISO
+    return d + timedelta(weeks=(week - 1), days =- d.weekday())

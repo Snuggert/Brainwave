@@ -1,5 +1,9 @@
 {% extends "content.htm" %}
 
+{% block includes %}
+    <script src='/static/js/admin/association.js'></script>
+{% endblock %}
+
 {% block content %}
     <div class="row">
         <div class="col-lg-11  ">
@@ -62,6 +66,4 @@
         	{% endfor %}
         </table>
     </div>
-
-    <script src='/static/js/admin/association.js'></script>
 {% endblock %}

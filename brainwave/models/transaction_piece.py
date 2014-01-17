@@ -15,9 +15,9 @@ class TransactionPiece(db.Model, BaseEntity):
 
     action = db.Column(db.Enum('sell', 'refund', 'gift', name='action'))
 
-    def __init__(self, transaction_id=None, product_id=None, price=None,
+    def __init__(self, transaction=None, product=None, price=None,
                  action='sell'):
-        self.transaction_id = transaction_id
-        self.product_id = product_id
+        self.transaction = transaction
+        self.product = product
         self.price = price
         self.action = action
