@@ -1,14 +1,27 @@
-customers = new collections.Customers(brainwave.customers);
+var customerViewView;
+
+$(function() {
+    customerViewView = new CustomerViewView();
+
+    $('#new-btn').click(function() {
+        $(this).hide();
+        var customerNewView = new CustomerNewView();
+    });
+});
 
 CustomerViewView = Backbone.View.extend({
-    el: '#customers tbody',
     initialize: function() {
         this.render();
     },
     render: function() {
-        var template = _.template($('#customer-view-template').html(),
-            {customers: customers.models});
-        this.$el.html(template);
+        $.get('/api/customer/all', {}, function(data) {
+            customers = new collections.Customers(data.customers);
+            customerViewView.render();
+
+            var template = _.template($('#customer-view-template').html(),
+                {customers: customers.models});
+            $('#customers tbody').html(template);
+        });
     },
     events: {
         'click button.edit': 'edit',
@@ -125,22 +138,3 @@ CustomerNewView = Backbone.View.extend({
         $('#new-btn').show();
     }
 });
-
-var customerViewView;
-
-$(function() {
-    customerViewView = new CustomerViewView();
-
-    $('#new-btn').click(function() {
-        $(this).hide();
-        var customerNewView = new CustomerNewView();
-    });
-});
-
-function reload_list() {
-    $.get('/api/customer/all', {}, function(data) {
-        brainwave.customers = data.customers;
-        customers = new collections.Customers(brainwave.customers);
-        customerViewView.render();
-    });
-}
