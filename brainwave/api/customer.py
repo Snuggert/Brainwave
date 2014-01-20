@@ -51,6 +51,14 @@ def get(customer_id):
     return jsonify(customer=serialize_sqla(customer))
 
 
+@customer_api.route('/all', methods=['GET'])
+def get_all():
+    """Get all customers."""
+    customers = CustomerController.get_all()
+
+    return jsonify(customers=serialize_sqla(customers))
+
+
 @customer_api.route('/association/<int:customer_id>', methods=['GET'])
 def get_associations(customer_id):
     """Get associations the customer is coupled to."""

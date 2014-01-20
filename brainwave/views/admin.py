@@ -5,16 +5,23 @@ from flask import Blueprint
 from flask.ext.login import login_required
 from brainwave.controllers import AssociationController, StockController, \
     TransInController, ProductController, ProductCategoryController, \
-    TransactionController
+    TransactionController, CustomerController
 from brainwave.models import Stock
 
 admin_blueprint = Blueprint('admin', __name__, url_prefix='/admin')
 
 
+@admin_blueprint.route('/customer', methods=['GET'])
+@login_required
+def view_customers():
+    customers = CustomerController.get_all()
+    return render_template('admin/customer.htm', data={'customers': customers})
+
+
 @admin_blueprint.route('/', methods=['GET'])
 @admin_blueprint.route('/association', methods=['GET'])
 @login_required
-def view_association(association_id=None):
+def view_associations():
     associations = AssociationController.get_all()
     return render_template('admin/association.htm',
                            data={'associations': associations})

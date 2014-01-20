@@ -1,7 +1,7 @@
 {% extends "content.htm" %}
 
 {% block includes %}
-    <script src='/static/js/admin/association.js'></script>
+<script src='/static/js/admin/association.js'></script>
 {% endblock %}
 
 {% block content %}
@@ -22,12 +22,11 @@
 
 <div class='row col-md-12'>
     <button id='new-btn' class='btn btn-primary btn-xs pull-right'>
-        <b>+</b> Add new association
+        <strong>+</strong> Add new association
     </button>
 </div>
 
-<div id='new-association' class='row col-md-12 custyle'>
-</div>
+<div id='new-association' class='row col-md-12 custyle'></div>
 
 <div class='row col-md-12 custyle'>
     <table id='associations' class='table table-striped custab'>
@@ -35,6 +34,7 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -58,6 +58,7 @@
     </tr>
 <% }); %>
 </script>
+
 <script type='text/template' id='association-edit-template'>
 <td><%= association.get('id') %></td>
 <td><input type='text' class='form-control' data-property='name' value='<%= association.get('name') %>' /></td>
@@ -70,13 +71,16 @@
     </button>
 </td>
 </script>
+
 <script type='text/template' id='association-new-template'>
 <div id='new-association-form'>
     <h3>New association</h3>
     <div class='form-group'>
         <label for='new-association-name'>Name</label>
-        <input type='text' class='form-control' data-property='name' placeholder='Name' />
-        <input type='password' class='form-control' data-property='password' placeholder='Password' />
+        <input type='text' class='form-control' id='new-association-name' data-property='name' placeholder='Name' />
+
+        <label for='new-association-password'>Password</label>
+        <input type='password' class='form-control' id='new-association-password' data-property='password' placeholder='Password' />
     </div>
 
     <button id='save-new' class='btn btn-primary'>Save</button>

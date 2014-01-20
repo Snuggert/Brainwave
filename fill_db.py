@@ -12,6 +12,10 @@ from werkzeug.security import generate_password_hash
 assoc1 = Association("VIA")
 db.session.add(assoc1)
 
+# Dummy customer
+custo1 = Customer('Bas van den Heuvel')
+db.session.add(custo1)
+
 # Dummy product categories
 product_category1 = ProductCategory('Bier')
 product_category2 = ProductCategory('Wijn')

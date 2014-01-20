@@ -2,7 +2,6 @@
 from flask import Blueprint, jsonify, request
 from brainwave.controllers import AssociationController, CustomerController,\
     UserController
-from brainwave.models.association import Association
 from brainwave.utils import serialize_sqla
 
 association_api = Blueprint('association_api', __name__,
@@ -59,8 +58,7 @@ def get(association_id):
 @association_api.route('/all', methods=['GET'])
 def get_all():
     """Get all associations."""
-    # TODO do this through the controller.
-    associations = Association.query.all()
+    associations = AssociationController.get_all()
 
     return jsonify(associations=serialize_sqla(associations))
 

@@ -52,9 +52,22 @@ models.Association = Backbone.Model.extend({
     }
 });
 
+models.Customer = Backbone.Model.extend({
+    urlRoot: '/api/customer',
+    defaults: function() {
+        return {
+            name: '',
+        };
+    }
+});
+
 /* Collections. */
 var collections = {};
 
 collections.Associations = Backbone.Collection.extend({
     model: models.Association
+});
+
+collections.Customers = Backbone.Collection.extend({
+    model: models.Customer
 });
