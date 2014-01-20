@@ -34,18 +34,3 @@ class Authentication():
             return render_template('403.htm')
 
         return wrapped_func
-
-
-
-    # @staticmethod
-    # def auth_association(func):
-    #     def wrapper(*args, **kwargs):
-    #         #user_id = AssociationController.get(args[0]).user_id
-    #         logged_in = True
-    #         #if session['user_id'] == user_id or session['user_role'] > 8:
-    #         if logged_in:
-    #             return func(*args, **kwargs)
-    #         else:
-    #             return redirect(url_for('login'))
-
-    #     return wrapper
