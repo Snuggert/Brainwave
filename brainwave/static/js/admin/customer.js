@@ -22,6 +22,9 @@ CustomerViewView = Backbone.View.extend({
 
         var customerEditView = new CustomerEditView({model: customer,
             el: $tr});
+
+        /* Hide other edit and remove buttons. */
+        $('.edit, .remove').hide();
     },
     remove: function(event) {
         if (!confirm('Are you sure?')) {
@@ -72,7 +75,7 @@ CustomerEditView = Backbone.View.extend({
                 flash('Customer saved successfully', 'success');
 
                 reload_list();
-            }, error: function(response) {
+            }, error: function(model, response) {
                 ajax_error_handler(response);
             }
         });

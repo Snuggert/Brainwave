@@ -5,6 +5,11 @@ from brainwave import db
 
 class CustomerController:
     """The Controller for customer manipulation."""
+    class NoNameGiven(Exception):
+        """Exception for when no name is given for a customer."""
+        def __init__(self):
+            self.error = 'No name was given for the customer'
+
     class AssociationAlreadyCoupled(Exception):
         """Exception for when the customer is already coupled to an
         association."""
@@ -24,6 +29,9 @@ class CustomerController:
         """Create a new customer."""
         customer = Customer.new_dict(customer_dict)
 
+        if not customer.name:
+            raise CustomerController.NoNameGiven()
+
         db.session.add(customer)
         db.session.commit()
 
@@ -33,6 +41,9 @@ class CustomerController:
     def update(customer_dict):
         """Update a customer."""
         customer = Customer.merge_dict(customer_dict)
+
+        if not customer.name:
+            raise CustomerController.NoNameGiven()
 
         db.session.add(customer)
         db.session.commit()

@@ -98,6 +98,9 @@ function edit_click($el) {
     var association = associations.get(id);
     var associationEditView = new AssociationEditView({model: association,
         el: $tr});
+
+    /* Hide other edit and remove buttons. */
+    $('.edit, .remove').hide();
 }
 
 function reset_list() {

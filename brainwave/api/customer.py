@@ -12,7 +12,10 @@ def create():
     """Create a new customer."""
     customer_dict = request.json
 
-    customer = CustomerController.create(customer_dict)
+    try:
+        customer = CustomerController.create(customer_dict)
+    except CustomerController.NoNameGiven as e:
+        return jsonify(error=e.error), 500
 
     return jsonify(id=customer.id)
 
@@ -22,7 +25,10 @@ def update(customer_id):
     """Update a customer."""
     customer_dict = request.json
 
-    CustomerController.update(customer_dict)
+    try:
+        CustomerController.update(customer_dict)
+    except CustomerController.NoNameGiven as e:
+        return jsonify(error=e.error), 500
 
     return jsonify()
 
