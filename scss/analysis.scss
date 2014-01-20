@@ -1,5 +1,12 @@
-.chart_container{
+.chart_container {
 }
-.chart_div{
+.detail_swatch {
+    float: right;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin: 0 4px 0 0
+}
+.chart_div {
     height:100px;
 }

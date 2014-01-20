@@ -93,7 +93,8 @@ def view_analysis(user_id=None):
         for piece in transaction.pieces:
             sale_price += piece.price
         graphdata[transaction.association.name].append([epoch_seconds,
-                                                        sale_price])
+                                                        sale_price,
+                                                        transaction.id])
 
     return render_template('admin/analysis.htm',
                            data={'graphdata': graphdata,
