@@ -124,7 +124,7 @@ function save_click($el) {
             flash('Association saved successfully', 'success');
 
             reset_list();
-        }, error: function(response) {
+        }, error: function(model, response) {
             ajax_error_handler(response);
         }
     });

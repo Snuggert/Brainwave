@@ -15,6 +15,8 @@ def create():
 
     try:
         association = AssociationController.create(association_dict)
+    except AssociationController.NoNameGiven as e:
+        return jsonify(error=e.error), 500
     except UserController.NoPassword as e:
         return jsonify(error=e.error), 500
 
@@ -26,7 +28,10 @@ def update(association_id):
     """Update an association."""
     association_dict = request.json
 
-    AssociationController.update(association_dict)
+    try:
+        AssociationController.update(association_dict)
+    except AssociationController.NoNameGiven as e:
+        return jsonify(error=e.error), 500
 
     return jsonify()
 

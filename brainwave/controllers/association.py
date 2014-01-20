@@ -7,6 +7,11 @@ from brainwave import db
 
 class AssociationController:
     """The Controller for association manipulation."""
+    class NoNameGiven(Exception):
+        """Exception for when no name is given for an association."""
+        def __init__(self):
+            self.error = 'No name was given for the association'
+
     class CustomerAlreadyCoupled(Exception):
         """Exception for when the association is already coupled to a
         customer."""
@@ -29,6 +34,10 @@ class AssociationController:
         association_dict['user_id'] = user.id
 
         association = Association.new_dict(association_dict)
+
+        if not association.name:
+            raise AssociationController.NoNameGiven()
+
         db.session.add(association)
         db.session.commit()
 
@@ -38,6 +47,10 @@ class AssociationController:
     def update(association_dict):
         """Update the association."""
         association = Association.merge_dict(association_dict)
+
+        if not association.name:
+            raise AssociationController.NoNameGiven()
+
         db.session.add(association)
         db.session.commit()
 
