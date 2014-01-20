@@ -22,9 +22,7 @@ def view_customers():
 @admin_blueprint.route('/association', methods=['GET'])
 @login_required
 def view_associations():
-    associations = AssociationController.get_all()
-    return render_template('admin/association.htm',
-                           data={'associations': associations})
+    return render_template('admin/association.htm')
 
 
 @admin_blueprint.route('/stock', methods=['GET'])

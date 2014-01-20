@@ -1,16 +1,27 @@
+var associationViewView;
+
+$(function() {
+    associationViewView = new AssociationViewView();
+
+    $('#new-btn').click(function() {
+        $(this).hide();
+        var associationNewView = new AssociationNewView();
+    });
+});
+
 /* Backbone stuff. */
-associations = new collections.Associations(brainwave.associations);
-
 AssociationViewView = Backbone.View.extend({
-    el: '#associations tbody',
-
     initialize: function() {
         this.render();
     },
     render: function() {
-        var template = _.template($('#association-view-template').html(),
-            {associations: associations.models});
-        this.$el.html(template);
+        $.get('/api/association/all', {}, function(data) {
+            associations = new collections.Associations(data.associations);
+
+            var template = _.template($('#association-view-template').html(),
+                {associations: associations.models});
+            $('#associations tbody').html(template);
+        });
     },
     events: {
         'click button.edit': 'edit',
@@ -43,7 +54,7 @@ AssociationViewView = Backbone.View.extend({
                 clearflash();
                 flash('Association removed successfully', 'success');
 
-                reload_list();
+                this.render();
             }, error: function(response) {
                 ajax_error_handler(response);
             }
@@ -65,7 +76,7 @@ AssociationEditView = Backbone.View.extend({
         'click button.save': 'save'
     },
     cancel: function(event) {
-        reload_list();
+        associationViewView.render();
     },
     save: function(event) {
         var $this = $(event.currentTarget);
@@ -79,7 +90,7 @@ AssociationEditView = Backbone.View.extend({
                 clearflash();
                 flash('Association saved successfully', 'success');
 
-                reload_list();
+                associationViewView.render();
             }, error: function(model, response) {
                 ajax_error_handler(response);
             }
@@ -118,7 +129,7 @@ AssociationNewView = Backbone.View.extend({
                 flash('Association successfully saved', 'success');
 
                 view.cancel();
-                reload_list();
+                associationViewView.render();
             }, error: function(model, response) {
                 ajax_error_handler(response);
                 $('button#save-new').attr('disabled', false);
@@ -126,22 +137,3 @@ AssociationNewView = Backbone.View.extend({
         });
     }
 });
-
-var associationViewView;
-
-$(function() {
-    associationViewView = new AssociationViewView();
-
-    $('#new-btn').click(function() {
-        $(this).hide();
-        var associationNewView = new AssociationNewView();
-    });
-});
-
-function reload_list() {
-    $.get('/api/association/all', {}, function(data) {
-        brainwave.associations = data.associations;
-        associations = new collections.Associations(brainwave.associations);
-        associationViewView.render();
-    });
-}
