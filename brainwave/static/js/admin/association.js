@@ -1,28 +1,116 @@
 /* Backbone stuff. */
 associations = new collections.Associations(brainwave.associations);
 
-var $field_view = $('.field-view');
-var $field_edit = $('.field-edit');
+AssociationViewView = Backbone.View.extend({
+    el: '#associations tbody',
 
-/* Hide inline edit fields. */
-$field_edit.hide();
-
-/* Reset old values. */
-function reset_old_vals($tr) {
-    var orig_name = $tr.find('td[data-property=name]').text();
-    $tr.find('input[data-property=name]').val(orig_name);
-}
-
-/* What happens when the edit button is clicked. */
-$('.edit').click(function() {
-    // Hide view td's, show edit td's.
-    $field_view.hide();
-    $field_edit.show();
+    initialize: function() {
+        this.render();
+    },
+    render: function() {
+        var template = _.template($('#association-view-template').html(),
+            {associations: associations.models});
+        this.$el.html(template);
+    },
+    events: {
+        'click button.edit': 'edit',
+        'click button.remove': 'remove'
+    },
+    edit: function(event) {
+        edit_click($(event.currentTarget));
+    },
+    remove: function(event) {
+        remove_click($(event.currentTarget));
+    }
 });
 
+AssociationEditView = Backbone.View.extend({
+    initialize: function() {
+        this.render();
+    },
+    render: function() {
+        var template = _.template($('#association-edit-template').html(),
+            {association: this.model});
+        this.$el.html(template);
+    },
+    events: {
+        'click button.cancel': 'cancel',
+        'click button.save': 'save'
+    },
+    cancel: function(event) {
+        reset_list();
+    },
+    save: function(event) {
+        save_click($(event.currentTarget));
+    }
+});
+
+AssociationNewView = Backbone.View.extend({
+    el: '#new-association',
+
+    initialize: function() {
+        this.render();
+    },
+    render: function() {
+        var template = _.template($('#association-new-template').html());
+        this.$el.html(template);
+    },
+    events: {
+        'click button#cancel-new': 'cancel',
+        'click button#save-new': 'save'
+    },
+    cancel: function(event) {
+        this.$el.empty();
+        $('#new-btn').show();
+    },
+    save: function(event) {
+        $('button#save-new').attr('disabled', true);
+
+        var association = new models.Association();
+        set_form_values(association, $('#new-association-form'));
+
+        var view = this;
+        association.save({}, {
+            success: function() {
+                clearflash();
+                flash('Association successfully saved', 'success');
+
+                view.cancel();
+                reset_list();
+            }, error: function(model, response) {
+                ajax_error_handler(response);
+                $('button#save-new').attr('disabled', false);
+            }
+        });
+    }
+});
+
+var associationViewView;
+
+$(function() {
+    associationViewView = new AssociationViewView();
+});
+
+/* What happens when the edit button is clicked. */
+function edit_click($el) {
+    var $tr = find_tr($el);
+    var id = $tr.data('id');
+    var association = associations.get(id);
+    var associationEditView = new AssociationEditView({model: association,
+        el: $tr});
+}
+
+function reset_list() {
+    $.get('/api/association/all', {}, function(data) {
+        brainwave.associations = data.associations;
+        associations = new collections.Associations(brainwave.associations);
+        associationViewView.render();
+    });
+}
+
 /* What happens when the save button is clicked. */
-$('.save').click(function() {
-    var $tr = find_tr($(this));
+function save_click($el) {
+    var $tr = find_tr($el);
     var id = $tr.data('id');
     var association = associations.get(id);
 
@@ -31,67 +119,39 @@ $('.save').click(function() {
         success: function() {
             clearflash();
             flash('Association saved successfully', 'success');
+
+            reset_list();
         }, error: function(response) {
             ajax_error_handler(response);
-            reset_old_vals($tr);
         }
     });
-
-    $tr.find('td[data-property=name]').text(association.get('name'));
-
-    // Hide edit td's, show view td's.
-    $field_view.show();
-    $field_edit.hide();
-});
-
-/* What happens when the cancel button is clicked. */
-$('.cancel').click(function() {
-    var $tr = find_tr($(this));
-
-    // Reset field value.
-    reset_old_vals($tr);
-
-    // Hide edit td's, show view td's.
-    $field_view.show();
-    $field_edit.hide();
-});
+}
 
 /* What happens when the remove button is clicked. */
-$('.remove').click(function() {
-    var $this = $(this);
+function remove_click($el) {
+    if (!confirm('Are you sure?')) {
+        return;
+    }
 
-    var id = $this.parents('tr').data('id');
+    var $tr = find_tr($el);
+    var id = $tr.data('id');
+    var association = associations.get(id);
 
-    // TODO Actually remove the association.
-});
+    association.destroy({
+        success: function() {
+            clearflash();
+            flash('Association removed successfully', 'success');
 
-var $new_assoc_btn = $('#new-association>button');
-var $new_assoc_form = $('#new-association>div#new-association-form');
+            reset_list();
+        }, error: function(response) {
+            ajax_error_handler(response);
+        }
+    });
+}
 
-/* Hide new association form. */
-$new_assoc_form.hide();
-
-/* What happens when the new association button is clicked. */
-$new_assoc_btn.click(function() {
-    // Hide button, show form.
-    $new_assoc_btn.hide();
-    $new_assoc_form.show();
-});
-
-/* What happens when the new association save button is clicked. */
-$('#save-new-association').click(function() {
-    // TODO Actually save the association.
-
-    // Show button, hide form. (Later only on success)
-    $new_assoc_btn.show();
-    $new_assoc_form.hide();
-});
-
-/* What happens when the new association cancel button is clicked. */
-$('#cancel-new-association').click(function() {
-    // TODO Reset form fields.
-
-    // Show button, hide form.
-    $new_assoc_btn.show();
-    $new_assoc_form.hide();
+$(function() {
+    $('#new-btn').click(function() {
+        $(this).hide();
+        var associationNewView = new AssociationNewView();
+    });
 });

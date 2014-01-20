@@ -5,65 +5,83 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-lg-11  ">
-            <div class="input-group">
-                <input type="text" class="form-control">
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">
-                        <span style="margin: 3px;" class="glyphicon glyphicon-search"></span>
-                    </button>
-                </span>
-            </div><!-- /input-group -->
-        </div>
+<div class="row">
+    <div class="col-lg-11  ">
+        <div class="input-group">
+            <input type="text" class="form-control">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button">
+                    <span style="margin: 3px;" class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div><!-- /input-group -->
+    </div>
+</div>
+
+<br />
+
+<div class='row col-md-12'>
+    <button id='new-btn' class='btn btn-primary btn-xs pull-right'>
+        <b>+</b> Add new association
+    </button>
+</div>
+
+<div id='new-association' class='row col-md-12 custyle'>
+</div>
+
+<div class='row col-md-12 custyle'>
+    <table id='associations' class='table table-striped custab'>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<script type='text/template' id='association-view-template'>
+<% _.each(associations, function(association) { %>
+    <tr data-id='<%= association.get('id') %>'>
+        <td><%= association.get('id') %></td>
+        <td><%= association.get('name') %></td>
+        <td class='text-right'>
+            <button class='edit btn btn-info btn-xs'>
+                <span class='glyphicon glyphicon-edit'></span>
+            </button>
+            <button class='remove btn btn-danger btn-xs'>
+                <span class='glyphicon glyphicon-remove'></span>
+            </button>
+        </td>
+    </tr>
+<% }); %>
+</script>
+<script type='text/template' id='association-edit-template'>
+<td><%= association.get('id') %></td>
+<td><input type='text' class='form-control' data-property='name' value='<%= association.get('name') %>' /></td>
+<td class='text-right'>
+    <button class='save btn btn-primary btn-xs'>
+        <span class='glyphicon glyphicon-ok'></span>
+    </button>
+    <button class='cancel btn btn-danger btn-xs'>
+        <span class='glyphicon glyphicon-ban-circle'></span>
+    </button>
+</td>
+</script>
+<script type='text/template' id='association-new-template'>
+<div id='new-association-form'>
+    <h3>New association</h3>
+    <div class='form-group'>
+        <label for='new-association-name'>Name</label>
+        <input type='text' class='form-control' data-property='name' placeholder='Name' />
+        <input type='password' class='form-control' data-property='password' placeholder='Password' />
     </div>
 
-    <br />
+    <button id='save-new' class='btn btn-primary'>Save</button>
+    <button id='cancel-new' class='btn btn-danger'>Cancel</button>
+</div>
+</script>
 
-    <div id='new-association' class='row col-md-12 custyle'>
-        <button class="btn btn-primary btn-xs pull-right">
-            <b>+</b> Add new association
-        </button>
-        <div id='new-association-form'>
-            <h3>New association</h3>
-            <div class='form-group'>
-                <label for='new-association-name'>Name</label>
-                <input type='text' class='form-control' id='new-association-name' data-property='name' placeholder='Name' />
-            </div>
-
-            <button id='save-new-association' class='btn btn-primary'>Save</button>
-            <button id='cancel-new-association' class='btn btn-danger'>Cancel</button>
-        </div>
-    </div>
-    <div class="row col-md-12 custyle">
-        <table class="table table-striped custab">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                </tr>
-            </thead>
-        	{% for association in data.associations %}
-                <tr data-id='{{ association.id }}'>
-                    <td>{{association.id}}</td>
-                    <td class='field-view' data-property='name'>{{association.name}}</td>
-                    <td class='field-edit'><input type='text' class='form-control' data-property='name' value='{{association.name}}' /></td>
-                    <td class='text-right'>
-                        <button class='edit field-view btn btn-info btn-xs'>
-                            <span class='glyphicon glyphicon-edit'></span>
-                        </button>
-                        <button class='save field-edit btn btn-success btn-xs'>
-                            <span class='glyphicon glyphicon-ok'></span>
-                        </button>
-                        <button class='cancel field-edit btn btn-danger btn-xs'>
-                            <span class='glyphicon glyphicon-remove-circle'></span>
-                        </button>
-                        <button class='remove field-view btn btn-danger btn-xs'>
-                            <span class='glyphicon glyphicon-remove'></span>
-                        </button>
-                    </td>
-                </tr>
-        	{% endfor %}
-        </table>
-    </div>
 {% endblock %}

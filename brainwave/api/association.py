@@ -1,6 +1,8 @@
 """association.py - Controller for association."""
 from flask import Blueprint, jsonify, request
-from brainwave.controllers import AssociationController, CustomerController
+from brainwave.controllers import AssociationController, CustomerController,\
+    UserController
+from brainwave.models.association import Association
 from brainwave.utils import serialize_sqla
 
 association_api = Blueprint('association_api', __name__,
@@ -14,10 +16,10 @@ def create():
 
     try:
         association = AssociationController.create(association_dict)
-    except AssociationController.NoPassword as e:
+    except UserController.NoPassword as e:
         return jsonify(error=e.error), 500
 
-    return jsonify(id=association.id, pw_hash=association.pw_hash)
+    return jsonify(id=association.id)
 
 
 @association_api.route('/<int:association_id>', methods=['PUT'])
@@ -52,6 +54,15 @@ def get(association_id):
         return jsonify(error='Association not found'), 500
 
     return jsonify(association=serialize_sqla(association))
+
+
+@association_api.route('/all', methods=['GET'])
+def get_all():
+    """Get all associations."""
+    # TODO do this through the controller.
+    associations = Association.query.all()
+
+    return jsonify(associations=serialize_sqla(associations))
 
 
 @association_api.route('/customer/<int:association_id>', methods=['GET'])
