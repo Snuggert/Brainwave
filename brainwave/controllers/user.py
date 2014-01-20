@@ -34,13 +34,25 @@ class UserController:
         def __init__(self):
             self.error = 'Passwords don\'t match'
 
+    class PasswordIncorrect(Exception):
+        """Exception when password is incorrect """
+        def __init__(self):
+            self.error = 'Password incorrect'
+
     @staticmethod
     def create(user_dict):
         """Create a new user."""
         password = user_dict.pop('password', None)
-
         if not password:
             raise UserController.NoPassword()
+
+        user = UserController.get_by_name(user_dict['login_name'])
+        if user:
+            raise UserController.UsernameTaken()
+
+        user = UserController.get_by_email(user_dict['email'])
+        if user:
+            raise UserController.EmailInUse()
 
         user = User.new_dict(user_dict)
 
@@ -113,6 +125,8 @@ class UserController:
                 session['user_id'] == user.id
                 session['user_role'] == user.role
                 return user
+        else:
+            raise UserController.PasswordIncorrect()
 
         return False
 
@@ -121,3 +135,18 @@ class UserController:
         logout_user()
 
         return
+
+    @staticmethod
+    def is_admin(user):
+        if user.role == User.ROLE_ADMIN:
+            print "Is admin"
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def is_association(user):
+        if user.role == User.ROLE_ASSOCIATION:
+            return User.association
+        else:
+            return False

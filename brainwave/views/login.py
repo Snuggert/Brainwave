@@ -11,7 +11,16 @@ def login():
     if form.validate_on_submit():
         session['user_id'] = form.user.id
 
+        return redirect('/admin')
         # Do something good with it.
-        return redirect(request.args.get('next') or url_for('index'))
+        #return redirect(request.args.get('next') or url_for('index'))
 
     return render_template('login.htm', form=form)
+
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session['user_id'] = None
+    session['user_role'] = None
+
+    return redirect(url_for('login'))

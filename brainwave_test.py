@@ -346,26 +346,36 @@ class brainwaveTestCase(unittest.TestCase):
         assert user
 
         user_dict['login_name'] = 'test2'
-        user2 = UserController.update(user_dict)
-        user4 = UserController.get(user2.id)
-        assert user4
+        user = UserController.update(user_dict)
+        assert user.login_name == 'test2'
 
-        user5 = UserController.get_by_name('test2')
-        assert user5
+        user_id = user.id
+        user = UserController.get(user_id)
+        assert user
 
-        user6 = UserController.get_by_email('bla@bla.nl')
-        assert user6
+        user = UserController.get_by_name('test2')
+        assert user
+
+        user = UserController.get_by_email('bla@bla.nl')
+        assert user
+
         user_dict = {'login_name': 'test', 'password': 'blalal',
                      'email': 'bla@bla.nl'}
 
-        user8 = UserController.create(user_dict)
-        assert user8
-        user7 = UserController.login('test', 'blalal', False)
-        assert user7
-        user_id = user2.id
-        UserController.delete(user2)
-        user8 = UserController.get(user_id)
-        assert not user8
+        with self.assertRaises(UserController.UsernameTaken):
+            user = UserController.create(user_dict)
+
+        with self.assertRaises(UserController.PasswordIncorrect):
+            user = UserController.login('test', 'blalal', False)
+
+        user = UserController.login('test', 'blala', False)
+        assert user
+
+        user_id = user.id
+        UserController.delete(user)
+
+        user = UserController.get(user_id)
+        assert not user
 
     def test_user_api(self):
         pass

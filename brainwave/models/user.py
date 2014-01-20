@@ -2,21 +2,23 @@
 from brainwave.utils.base_model import BaseEntity
 from brainwave import db
 
-ROLE_NONE = 0
-ROLE_CUSTOMER = 1
-ROLE_BAR_TEAM = 2
-ROLE_ASSOCIATION = 4
-ROLE_ADMIN = 8
-
 
 class User(db.Model, BaseEntity):
     """User model."""
+    ROLE_NONE = 0
+    ROLE_CUSTOMER = 1
+    ROLE_BAR_TEAM = 2
+    ROLE_ASSOCIATION = 4
+    ROLE_ADMIN = 8
+
     __tablename__ = 'user'
 
     login_name = db.Column(db.String(256))
     pw_hash = db.Column(db.String(66))
     email = db.Column(db.String(120))
     role = db.Column(db.Integer())
+    # Association is when user is association
+    association = db.relationship('Association', backref='user')
 
     def __init__(self, login_name='', pw_hash='', email='', role=ROLE_NONE):
         """Initialize the User."""

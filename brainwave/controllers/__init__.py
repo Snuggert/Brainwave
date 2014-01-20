@@ -10,3 +10,4 @@ from .transaction import TransactionController
 from .user import UserController
 from .transaction_piece import TransactionPieceController
 from .credit import CreditController
+from .authentication import Authentication
