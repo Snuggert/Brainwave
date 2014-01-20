@@ -78,23 +78,28 @@ def view_analysis(user_id=None):
         get_between(week_monday, week_monday + timedelta(7))
 
     datetime_monday = datetime.combine(week_monday, datetime.min.time())
-    epoch_week_start = (datetime_monday - datetime(1970, 1, 1)).total_seconds()
+    epoch_week_start = (datetime_monday -
+                        datetime(1970, 1, 1)).total_seconds() * 1000
     epoch_week_end = ((datetime_monday + timedelta(7)) -
-                      datetime(1970, 1, 1)).total_seconds()
-    graphdata = []
-    graphdata.append({'x': epoch_week_start, 'y': 0})
+                      datetime(1970, 1, 1)).total_seconds() * 1000
+    graphdata = {}
+    for association in AssociationController.get_all():
+        graphdata[association.name] = []
+
     for transaction in week_transactions:
         epoch_seconds = (transaction.created -
-                         datetime(1970, 1, 1)).total_seconds()
+                         datetime(1970, 1, 1)).total_seconds() * 1000
         sale_price = 0
         for piece in transaction.pieces:
             sale_price += piece.price
-        graphdata.append({'x': epoch_seconds, 'y': sale_price})
-    graphdata.append({'x': epoch_week_end, 'y': 0})
+        graphdata[transaction.association.name].append([epoch_seconds,
+                                                        sale_price])
 
     return render_template('admin/analysis.htm',
                            data={'graphdata': graphdata,
-                                 'week_number': week_number, })
+                                 'week_number': week_number,
+                                 'epoch_week_start': epoch_week_start,
+                                 'epoch_week_end': epoch_week_end})
 
 
 def first_monday(year, week):
