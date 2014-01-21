@@ -2,31 +2,28 @@
 from datetime import date, timedelta, datetime
 from flask import render_template
 from flask import Blueprint
-from flask.ext.login import login_required
 from brainwave.controllers import AssociationController, StockController, \
     TransInController, ProductController, ProductCategoryController, \
-    TransactionController
+    TransactionController, Authentication
 from brainwave.models import Stock
 
 admin_blueprint = Blueprint('admin', __name__, url_prefix='/admin')
 
 
-@admin_blueprint.route('/customer', methods=['GET'])
-@login_required
-def view_customers():
+@admin_blueprint.route('/<int:ass_id>/customer', methods=['GET'])
+@Authentication(admin=True, association=True)
+def view_customers(ass_id):
     return render_template('admin/customer.htm')
 
 
 @admin_blueprint.route('/', methods=['GET'])
 @admin_blueprint.route('/association', methods=['GET'])
-@login_required
 def view_associations():
     return render_template('admin/association.htm')
 
 
 @admin_blueprint.route('/stock', methods=['GET'])
 @admin_blueprint.route('/stock/<string:query>', methods=['GET'])
-@login_required
 def view_stock(user_id=None, query=""):
     if query != "":
         stock = StockController.get_all_from(query)
@@ -37,7 +34,6 @@ def view_stock(user_id=None, query=""):
 
 
 @admin_blueprint.route('/stock/new', methods=['GET'])
-@login_required
 def new_stock(user_id=None):
     associations = AssociationController.get_all()
     return render_template('admin/new_stock.htm',
@@ -46,14 +42,12 @@ def new_stock(user_id=None):
 
 
 @admin_blueprint.route('/trans_in', methods=['GET'])
-@login_required
 def view_trans_in(user_id=None):
     trans_in = TransInController.get_all()
     return render_template('admin/trans_in.htm', data={'trans_in': trans_in})
 
 
 @admin_blueprint.route('/product', methods=['GET'])
-@login_required
 def view_product(user_id=None):
     products = ProductController.get_all()
     return render_template('admin/product.htm', data={'products': products})
@@ -65,7 +59,6 @@ def view_post_tmp(user_id=None):
 
 
 @admin_blueprint.route('/product/new', methods=['GET'])
-@login_required
 def new_product(user_id=None):
     stocks = Stock.query.all()
     product_categories = ProductCategoryController.get_all()
@@ -77,7 +70,6 @@ def new_product(user_id=None):
 
 
 @admin_blueprint.route('/analysis', methods=['GET'])
-@login_required
 def view_analysis(user_id=None):
     week_year, week_number, week_day = date.today().isocalendar()
     week_monday = first_monday(week_year, week_number)
@@ -85,23 +77,29 @@ def view_analysis(user_id=None):
         get_between(week_monday, week_monday + timedelta(7))
 
     datetime_monday = datetime.combine(week_monday, datetime.min.time())
-    epoch_week_start = (datetime_monday - datetime(1970, 1, 1)).total_seconds()
+    epoch_week_start = (datetime_monday -
+                        datetime(1970, 1, 1)).total_seconds() * 1000
     epoch_week_end = ((datetime_monday + timedelta(7)) -
-                      datetime(1970, 1, 1)).total_seconds()
-    graphdata = []
-    graphdata.append({'x': epoch_week_start, 'y': 0})
+                      datetime(1970, 1, 1)).total_seconds() * 1000
+    graphdata = {}
+    for association in AssociationController.get_all():
+        graphdata[association.name] = []
+
     for transaction in week_transactions:
         epoch_seconds = (transaction.created -
-                         datetime(1970, 1, 1)).total_seconds()
+                         datetime(1970, 1, 1)).total_seconds() * 1000
         sale_price = 0
         for piece in transaction.pieces:
             sale_price += piece.price
-        graphdata.append({'x': epoch_seconds, 'y': sale_price})
-    graphdata.append({'x': epoch_week_end, 'y': 0})
+        graphdata[transaction.association.name].append([epoch_seconds,
+                                                        sale_price,
+                                                        transaction.id])
 
     return render_template('admin/analysis.htm',
                            data={'graphdata': graphdata,
-                                 'week_number': week_number, })
+                                 'week_number': week_number,
+                                 'epoch_week_start': epoch_week_start,
+                                 'epoch_week_end': epoch_week_end})
 
 
 def first_monday(year, week):

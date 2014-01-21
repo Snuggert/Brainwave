@@ -24,7 +24,7 @@ db.session.add(product_category2)
 db.session.commit()
 
 # Dummy users
-user = User('pietje', generate_password_hash('lalala'), 'lala@lala.la')
+user = User('pietje', generate_password_hash('lalala'), 'lala@lala.la', 1)
 db.session.add(user)
 db.session.commit()
 
