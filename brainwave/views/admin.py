@@ -43,8 +43,17 @@ def new_stock(user_id=None):
 
 @admin_blueprint.route('/trans_in', methods=['GET'])
 def view_trans_in(user_id=None):
+    stocks = Stock.query.all()
+    product_categories = ProductCategoryController.get_all()
+    associations = AssociationController.get_all()
+    print stocks
+    print product_categories
+    print associations
     trans_in = TransInController.get_all()
-    return render_template('admin/trans_in.htm', data={'trans_in': trans_in})
+    return render_template('admin/trans_in.htm',
+                           data={'trans_in': trans_in, 'stocks': stocks,
+                                 'product_categories': product_categories,
+                                 'product': {}, 'associations': associations})
 
 
 @admin_blueprint.route('/product', methods=['GET'])
@@ -63,6 +72,7 @@ def new_product(user_id=None):
     stocks = Stock.query.all()
     product_categories = ProductCategoryController.get_all()
     associations = AssociationController.get_all()
+
     return render_template('admin/new_product.htm',
                            data={'stocks': stocks,
                                  'product_categories': product_categories,

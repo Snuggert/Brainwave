@@ -61,6 +61,18 @@ models.Customer = Backbone.Model.extend({
     }
 });
 
+models.Trans_in = Backbone.Model.extend({
+    urlRoot: '/api/trans_in',
+    defauts: function() {
+        return {
+            price: null,
+            volume: null,
+            in_stock: null,
+            stock_id: null,
+        };
+    }
+});
+
 /* Collections. */
 var collections = {};
 
