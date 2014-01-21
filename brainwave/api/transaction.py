@@ -12,10 +12,12 @@ transaction_api = Blueprint('transaction_api', __name__,
 #    "items":[
 #       {
 #          "product_id":"1",
+#          "quantity": "7",
 #          "action":"sell"
 #       },
 #       {
 #          "product_id":"2",
+#          "quantity": "100",
 #          "action":"sell"
 #       }
 #    ]
