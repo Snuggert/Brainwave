@@ -1,5 +1,5 @@
 from brainwave.views.login import *
-from flask import session, redirect, url_for, request
+from flask import session, redirect, url_for, request, jsonify
 from brainwave.controllers import UserController
 from brainwave.models import User
 from functools import wraps
@@ -13,6 +13,9 @@ class Authentication():
         @wraps(func)
         def wrapped_func(*args, **kwargs):
             if not session['user_id']:
+                if request.json:
+                    return jsonify(error='Not logged in'), 403
+
                 return redirect(url_for('login'))
 
             if session['user_role'] >= self.role:
