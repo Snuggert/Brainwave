@@ -14,8 +14,16 @@
     margin-right: 25px;
 }
 
+.number-key {
+}
+
 #number-pad {
     border: solid black 1px;
+}
+
+#receipt-items {
+    border: solid black 1px;
+    overflow: auto;
 }
 
 #receipt {

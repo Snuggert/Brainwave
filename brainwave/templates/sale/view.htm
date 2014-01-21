@@ -7,17 +7,20 @@
 
 {% block page %}
     <div class="container sale-container">
-        <div id="product-list" class="col-md-8">
+        <div id="product-list" class="col-md-9">
         </div>
 
-        <div class="col-md-4">
-            <div id="number-pad">
-                asd
+        <div class="col-md-2 col-md-offset-1">
+            <div id="number-pad" class="row">
+                
             </div>
-            <div id="receipt">
-                <a href="#" onclick="complete_transaction('cash')" class="btn btn-default§">Cash</a>
-                <a href="#" onclick="complete_transaction('pin')" class="btn btn-default">Pin</a>
-                <a href="#" onclick="complete_transaction('gift')" class="btn btn-default">Gift</a>
+            <div id="receipt" class="row">
+                <div id="receipt-items">
+                </div>
+                <div>
+                    <a href="#" onclick="complete_transaction('cash')" class="btn btn-default">Cash</a>
+                    <a href="#" onclick="complete_transaction('pin')" class="btn btn-default">Pin</a>
+                </div>
             </div>
         </div>
     </div>
