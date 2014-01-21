@@ -122,8 +122,9 @@ class UserController:
 
         if UserController.check_password(user, password):
             if login_user(user, remember):
-                session['user_id'] == user.id
-                session['user_role'] == user.role
+                session.user_id = user.id
+                session.user_role = user.role
+
                 return user
         else:
             raise UserController.PasswordIncorrect()
@@ -133,20 +134,28 @@ class UserController:
     @staticmethod
     def logout():
         logout_user()
+        session.user_role = User.ROLE_NONE
+        session.user_id = None
 
         return
 
     @staticmethod
     def is_admin(user):
         if user.role == User.ROLE_ADMIN:
-            print "Is admin"
             return True
         else:
-            return False
+            return None
 
     @staticmethod
     def is_association(user):
         if user.role == User.ROLE_ASSOCIATION:
-            return User.association
+            return user.association
         else:
-            return False
+            return None
+
+    @staticmethod
+    def is_customer(user):
+        if user.role == User.ROLE_CUSTOMER:
+            return user.customer
+        else:
+            return None

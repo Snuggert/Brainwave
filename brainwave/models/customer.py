@@ -15,6 +15,7 @@ class Customer(db.Model, BaseEntity):
     __tablename__ = 'customer'
 
     name = db.Column(db.String(256))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     associations = db.relationship('Association',
                                    secondary=customer_association,
