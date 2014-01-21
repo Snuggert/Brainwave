@@ -10,9 +10,8 @@ from brainwave.models import Stock
 admin_blueprint = Blueprint('admin', __name__, url_prefix='/admin')
 
 
-@admin_blueprint.route('/<int:ass_id>/customer', methods=['GET'])
-@Authentication(admin=True, association=True)
-def view_customers(ass_id):
+@admin_blueprint.route('/customer', methods=['GET'])
+def view_customers():
     return render_template('admin/customer.htm')
 
 

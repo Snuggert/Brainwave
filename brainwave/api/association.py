@@ -98,7 +98,7 @@ def add_customer(association_id):
     try:
         AssociationController.add_customer(association, customer)
     except AssociationController.CustomerAlreadyCoupled as e:
-        return jsonify(error=e.error)
+        return jsonify(error=e.error), 500
 
     return jsonify()
 
