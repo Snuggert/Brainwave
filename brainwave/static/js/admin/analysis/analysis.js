@@ -11,25 +11,37 @@ $(function(){
     });
     var plot = $.plot(".chart_div", data,
         {
-        series: {
-            lines: {
-                show: true
+            series: {
+                points: {
+                    show: true,
+                    fill: true,
+                }
             },
-            points: {
-                show: true
-            }
-        },
-        grid: {
-            hoverable: true,
-            clickable: true
-        },
-        xaxis: {
-            min: brainwave.epoch_week_start,
-            max: brainwave.epoch_week_end,
-            mode: "time",
-            timeformat: "%d/%m/%Y"
+            grid: {
+                hoverable: true,
+                clickable: true
+            },
+            xaxis: {
+                panRange: [brainwave.epoch_week_start, brainwave.epoch_week_end],
+                zoomRange: [10000, brainwave.epoch_week_end - brainwave.epoch_week_start],
+                min: brainwave.epoch_week_start,
+                max: brainwave.epoch_week_end,
+                mode: "time",
+                timeformat: "%d/%m/%Y %H:%M"
+            },
+            yaxis: {
+                min: 0.0,
+                zoomRange: [0.1, 100],
+                panRange: [0, 100],
+            },
+            zoom: {
+                interactive: true
+            },
+            pan: {
+                interactive: true
+            } 
         }
-    });
+    );
      $(".chart_div").bind("plotclick", function (event, pos, item) {
         if(item) {
             console.log(item)
