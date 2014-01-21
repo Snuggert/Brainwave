@@ -70,7 +70,6 @@ def new_product(user_id=None):
 
 
 @admin_blueprint.route('/analysis', methods=['GET'])
-@Authentication(admin=True, association=True)
 def view_analysis(user_id=None):
     week_year, week_number, week_day = date.today().isocalendar()
     week_monday = first_monday(week_year, week_number)

@@ -57,7 +57,7 @@ $(function(){
             var content = swatch + item.series.label + ": €" + y + '<br>' + date;
 
             $("#tooltip").html(content)
-                .css({top: item.pageY+5, left: item.pageX+5})
+                .css({top: item.pageY+20, left: item.pageX+5})
                 .fadeIn(200);
         } else {
             $("#tooltip").hide();
