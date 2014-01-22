@@ -17,7 +17,7 @@ def create():
     return jsonify(id=trans_in.id)
 
 
-@trans_in_api.route('/<int:trans_in_id>', methods=['DELETE'])
+@trans_in_api.route('/delete/<int:trans_in_id>', methods=['DELETE'])
 def delete(trans_in_id):
     """Delete trans_in item."""
     trans_in = TransInController.get(trans_in_id)
@@ -39,3 +39,14 @@ def get(trans_in_id):
         return jsonify(error='Transaction-in item not found'), 500
 
     return jsonify(trans_in=serialize_sqla(trans_in))
+
+
+@trans_in_api.route('/all', methods=['GET'])
+def get_all():
+    """Get trans_in item."""
+    trans_in_list = TransInController.get_all()
+
+    if not trans_in_list:
+        return jsonify(error='Transaction-in items not found'), 500
+
+    return jsonify(trans_in=serialize_sqla(trans_in_list))
