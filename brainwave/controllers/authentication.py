@@ -12,13 +12,13 @@ class Authentication():
     def __call__(self, func):
         @wraps(func)
         def wrapped_func(*args, **kwargs):
-            if not session['user_id']:
+            if not 'user_id' in session:
                 if request.json:
                     return jsonify(error='Not logged in'), 403
 
                 return redirect(url_for('login'))
 
-            if session['user_role'] >= self.role:
+            if 'user_role' in session and session['user_role'] >= self.role:
                 return func(*args, **kwargs)
 
             if request.json:

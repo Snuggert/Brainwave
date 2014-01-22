@@ -551,6 +551,5 @@ class brainwaveTestCase(unittest.TestCase):
         CustomerController.delete(customer)
         AssociationController.delete(association)
 
-
 if __name__ == '__main__':
     unittest.main()

@@ -147,14 +147,14 @@ class UserController:
             return None
 
     @staticmethod
-    def is_association(user):
+    def get_association(user):
         if user.role == User.ROLE_ASSOCIATION:
             return user.association
         else:
             return None
 
     @staticmethod
-    def is_customer(user):
+    def get_customer(user):
         if user.role == User.ROLE_CUSTOMER:
             return user.customer
         else:
