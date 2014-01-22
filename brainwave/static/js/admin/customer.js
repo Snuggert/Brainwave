@@ -1,11 +1,13 @@
-var customerViewView;
+var customerViewView, customerNewView;
 
 $(function() {
     customerViewView = new CustomerViewView({el: '#customers tbody'});
+    customerNewView = new CustomerNewView();
+    customerAssociationView = new CustomerAssociationView();
 
     $('#new-btn').click(function() {
         $(this).hide();
-        var customerNewView = new CustomerNewView();
+        customerNewView.show();
     });
 });
 
@@ -39,9 +41,8 @@ CustomerViewView = Backbone.View.extend({
         var id = $tr.data('id');
         var customer = this.customers.get(id);
 
-        var customerAssociationView =
-            new CustomerAssociationView({model: customer,
-                                         el: '#customer-associations'});
+        customerAssociationView.model = customer;
+        customerAssociationView.show();
 
         $('.associations, .edit, .remove').hide();
     },
@@ -49,13 +50,12 @@ CustomerViewView = Backbone.View.extend({
         var $this = $(event.currentTarget);
         var $tr = find_tr($this);
         var id = $tr.data('id');
-        var customer = customers.get(id);
+        var customer = this.customers.get(id);
 
         var customerEditView = new CustomerEditView({model: customer,
             el: $tr});
 
-        /* Hide other edit and remove buttons. */
-        $('.edit, .remove').hide();
+        $('.associations, .edit, .remove').hide();
     },
     remove: function(event) {
         if (!confirm('Are you sure?')) {
@@ -66,7 +66,7 @@ CustomerViewView = Backbone.View.extend({
         var $this = $(event.currentTarget);
         var $tr = find_tr($this);
         var id = $tr.data('id');
-        var customer = customers.get(id);
+        var customer = this.customers.get(id);
 
         customer.destroy({
             success: function() {
@@ -95,17 +95,17 @@ CustomerEditView = Backbone.View.extend({
         'click button.cancel': 'cancel'
     },
     save: function(event) {
+        var me = this;
         var $this = $(event.currentTarget);
         var $tr = find_tr($this);
-        var id = $tr.data('id');
-        var customer = customers.get(id);
 
-        set_form_values(customer, $tr);
-        customer.save({}, {
+        set_form_values(this.model, $tr);
+        this.model.save({}, {
             success: function() {
                 clearflash();
                 flash('Customer saved successfully', 'success');
 
+                me.remove();
                 customerViewView.update();
             }, error: function(model, response) {
                 ajax_error_handler(response);
@@ -113,6 +113,7 @@ CustomerEditView = Backbone.View.extend({
         });
     },
     cancel: function(event) {
+        this.remove();
         customerViewView.update();
     }
 });
@@ -120,7 +121,16 @@ CustomerEditView = Backbone.View.extend({
 CustomerNewView = Backbone.View.extend({
     el: '#new-customer',
     initialize: function() {
+        this.hide();
+    },
+    show: function() {
+        this.$el.show();
+        this.delegateEvents();
         this.render();
+    },
+    hide: function() {
+        this.$el.hide();
+        this.undelegateEvents();
     },
     render: function() {
         var template = _.template($('#customer-new-template').html());
@@ -144,7 +154,9 @@ CustomerNewView = Backbone.View.extend({
                 clearflash();
                 flash('Customer saved successfully', 'success');
 
-                me.cancel();
+                me.hide();
+                $('#new-btn').show();
+
                 customerViewView.update();
             }, error: function(model, response) {
                 ajax_error_handler(response);
@@ -153,14 +165,24 @@ CustomerNewView = Backbone.View.extend({
         });
     },
     cancel: function(event) {
-        this.$el.empty();
+        this.hide();
         $('#new-btn').show();
     }
 });
 
 CustomerAssociationView = Backbone.View.extend({
+    el: '#customer-associations',
     all_associations: new collections.Associations(),
     initialize: function() {
+        this.hide();
+    },
+    hide: function() {
+        this.$el.hide();
+        this.undelegateEvents();
+    },
+    show: function() {
+        this.$el.show();
+        this.delegateEvents();
         this.update();
     },
     update: function() {
@@ -266,7 +288,7 @@ CustomerAssociationView = Backbone.View.extend({
         });
     },
     close: function(event) {
+        this.hide();
         $('.associations, .edit, .remove').show();
-        this.$el.empty();
     }
 });
