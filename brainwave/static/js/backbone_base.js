@@ -37,6 +37,7 @@ models.Stock = Backbone.Model.extend({
     urlRoot: '/api/stock',
     defaults: function(){
         return{
+            id: null,
             stock: null,
             stock_type: null,
         };
@@ -80,6 +81,18 @@ collections.Associations = Backbone.Collection.extend({
     model: models.Association
 });
 
+collections.Trans_in_list = Backbone.Collection.extend({
+    model: models.Trans_in
+});
+
 collections.Customers = Backbone.Collection.extend({
     model: models.Customer
+});
+
+collections.Stocks = Backbone.Collection.extend({
+    model: models.Stock
+});
+
+collections.Users = Backbone.Collection.extend({
+    model: models.User
 });

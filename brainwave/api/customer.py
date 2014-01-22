@@ -2,12 +2,15 @@
 from flask import Blueprint, jsonify, request
 from brainwave.controllers import CustomerController, AssociationController
 from brainwave.utils import serialize_sqla
+from brainwave.models import User
+from brainwave.controllers.authentication import Authentication
 
 customer_api = Blueprint('customer_api', __name__,
                          url_prefix='/api/customer')
 
 
 @customer_api.route('', methods=['POST'])
+@Authentication(User.ROLE_ASSOCIATION)
 def create():
     """Create a new customer."""
     customer_dict = request.json
@@ -21,6 +24,7 @@ def create():
 
 
 @customer_api.route('/<int:customer_id>', methods=['PUT'])
+@Authentication(User.ROLE_ASSOCIATION)
 def update(customer_id):
     """Update a customer."""
     customer_dict = request.json
@@ -34,6 +38,7 @@ def update(customer_id):
 
 
 @customer_api.route('/<int:customer_id>', methods=['DELETE'])
+@Authentication(User.ROLE_ASSOCIATION)
 def delete(customer_id):
     """Delete a customer."""
     customer = CustomerController.get(customer_id)
@@ -47,6 +52,7 @@ def delete(customer_id):
 
 
 @customer_api.route('/<int:customer_id>', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
 def get(customer_id):
     """Get a customer."""
     customer = CustomerController.get(customer_id)
@@ -58,6 +64,7 @@ def get(customer_id):
 
 
 @customer_api.route('/all', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
 def get_all():
     """Get all customers."""
     customers = CustomerController.get_all()
@@ -66,6 +73,7 @@ def get_all():
 
 
 @customer_api.route('/association/<int:customer_id>', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
 def get_associations(customer_id):
     """Get associations the customer is coupled to."""
     customer = CustomerController.get(customer_id)
@@ -79,6 +87,7 @@ def get_associations(customer_id):
 
 
 @customer_api.route('/association/<int:customer_id>', methods=['POST'])
+@Authentication(User.ROLE_ASSOCIATION)
 def add_association(customer_id):
     """Couple an association to the customer."""
     customer = CustomerController.get(customer_id)
@@ -101,6 +110,7 @@ def add_association(customer_id):
 
 
 @customer_api.route('/association/<int:customer_id>', methods=['DELETE'])
+@Authentication(User.ROLE_ASSOCIATION)
 def remove_association(customer_id):
     """Remove an association the customer is coupled to."""
     customer = CustomerController.get(customer_id)

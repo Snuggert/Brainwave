@@ -2,11 +2,14 @@
 from flask import Blueprint, jsonify, request
 from brainwave.controllers import CreditController, CustomerController
 from brainwave.utils import serialize_sqla
+from brainwave.controllers.authentication import Authentication
+from brainwave.models import User
 
 credit_api = Blueprint('credit_api', __name__, url_prefix='/api/credit')
 
 
 @credit_api.route('', methods=['POST'])
+@Authentication(User.ROLE_ASSOCIATION)
 def create():
     """Create a new credit."""
     credit_dict = request.json
@@ -20,6 +23,7 @@ def create():
 
 
 @credit_api.route('/<credit_id>', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
 def get(credit_id):
     """Get a credit by its id."""
     credit = CreditController.get(credit_id)
@@ -31,6 +35,7 @@ def get(credit_id):
 
 
 @credit_api.route('/add/<credit_id>', methods=['POST'])
+@Authentication(User.ROLE_ASSOCIATION)
 def add(credit_id):
     """Add to the credit."""
     credit = CreditController.get(credit_id)
@@ -45,6 +50,7 @@ def add(credit_id):
 
 
 @credit_api.route('/<credit_id>', methods=['DELETE'])
+@Authentication(User.ROLE_ASSOCIATION)
 def delete(credit_id):
     """Delete a credit."""
     credit = CreditController.get(credit_id)

@@ -2,12 +2,15 @@
 from flask import Blueprint, jsonify, request
 from brainwave.controllers import StockController
 from brainwave.utils import serialize_sqla
+from brainwave.controllers.authentication import Authentication
+from brainwave.models import User
 
 stock_api = Blueprint('stock_api', __name__,
                       url_prefix='/api/stock')
 
 
 @stock_api.route('', methods=['POST'])
+@Authentication(User.ROLE_ASSOCIATION)
 def create():
     """Create new stock item."""
     stock_dict = request.json
@@ -18,6 +21,7 @@ def create():
 
 
 @stock_api.route('/<int:stock_id>/<int:quantity>', methods=['PUT'])
+@Authentication(User.ROLE_ASSOCIATION)
 def add(stock_id, quantity):
     """Add items to stock."""
     stock = StockController.get(stock_id)
@@ -31,6 +35,7 @@ def add(stock_id, quantity):
 
 
 @stock_api.route('/<int:stock_id>', methods=['DELETE'])
+@Authentication(User.ROLE_ASSOCIATION)
 def delete(stock_id):
     """Delete stock item."""
     stock = StockController.get(stock_id)
@@ -44,6 +49,7 @@ def delete(stock_id):
 
 
 @stock_api.route('/<int:stock_id>', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
 def get(stock_id):
     """Get stock item."""
     stock = StockController.get(stock_id)
@@ -55,6 +61,7 @@ def get(stock_id):
 
 
 @stock_api.route('/all', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
 def get_all():
     """ Get all stock items unfiltered """
     stock = StockController.get_all()
@@ -67,6 +74,7 @@ def get_all():
 
 @stock_api.route('/search/', methods=['GET'])  # temp
 @stock_api.route('/search/<string:query>', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
 def get_all_from(query=""):
     """ Get all stock objects filter by query """
     if query == "":

@@ -110,3 +110,18 @@ function get_error_text(response) {
 function find_tr($element) {
     return $element.parents('tr');
 }
+
+
+/* Get object from json array */
+function getObjects(obj, key, val) {
+    var objects = [];
+    for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) continue;
+        if (typeof obj[i] == 'object') {
+            objects = objects.concat(getObjects(obj[i], key, val));
+        } else if (i == key && obj[key] == val) {
+            objects.push(obj);
+        }
+    }
+    return objects;
+}

@@ -4,6 +4,7 @@
 
 {% block includes %}
     <script src="/static/js/admin/trans_in/new_trans_in.js"></script>
+    <script src="/static/js/admin/trans_in/trans_in.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -21,7 +22,7 @@
     </div>
     <br />
     <div class="row col-md-12 custyle">
-        <table class="table table-striped custab">
+        <table class="table table-striped custab" id="trans_in_list">
             <thead>
             <a href="#" class="btn btn-primary btn-xs pull-right" data-toggle="modal" data-target="#trans_in"><b>+</b> Add new transaction</a>
                 <tr>
@@ -32,22 +33,9 @@
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
-        	{% for item in data.trans_in %}
-                <tr>
-                    <td>{{item.id}}</td>
-                    <td>{{item.volume}}</td>
-                    <td>€{{item.price}}</td>
-                    <td><a href="#">{{item.stock.name}}</a></td>
-                    <td class="text-center">
-                        <a class='btn btn-info btn-xs' href="#">
-                            <span class="glyphicon glyphicon-edit"></span> 
-                        </a>
-                        <a href="#" class="btn btn-danger btn-xs">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </a>
-                    </td>
-                </tr>
-        	{% endfor %}
+            <tbody>
+
+            </tbody>
         </table>
     </div>
 
@@ -60,7 +48,11 @@
         <h4 class="modal-title" id="myModalLabel">Add new transaction</h4>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal col-md-12" id="new_product" action="#">
+        <div class="form-group">
+            <label for="volume">Units</label>
+            <input class="form_field form-control" type='text' id="units", placeholder="units", data-property="volume"/>
+        </div>
+        <form class="form-horizontal col-md-12" id="new_trans_in" action="#">
             <div class="form-group">
                 <label for="price">Price per unit</label>
                 <input class="form_field form-control" type='text' id="price", placeholder="1.23", data-property="price"/>
@@ -69,10 +61,6 @@
                 <label for="volume">Volume per unit</label>
                 <input class="form_field form-control" type='text' id="volume", placeholder="volume in mL per unit", data-property="volume"/>
             </div>        
-            <div class="form-group">
-                <label for="volume">Units</label>
-                <input class="form_field form-control" type='text' id="units", placeholder="units", data-property="volume"/>
-            </div>
             <div class="form-group">
                 <label for="stock_id">Stock</label><br/>
                 <select id="stock_id" class="form_select select2-offscreen" data-property="stock_id" tabindex="-1">
@@ -101,4 +89,24 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<script type='text/template' id='trans-in-view-template'>
+<% _.each(trans_in_list, function(trans_in) { %>
+    <tr data-id='<%= trans_in.get('id') %>'>
+        <td><%= trans_in.get('id') %></td>
+        <td><%= trans_in.get('volume') %></td>
+        <td><%= trans_in.get('price') %></td>
+        <td><%= trans_in.get('name_id') %></td>
+        <td class='text-right'>
+            <button class='edit btn btn-info btn-xs'>
+                <span class='glyphicon glyphicon-edit'></span>
+            </button>
+            <button class='remove btn btn-danger btn-xs'>
+                <span class='glyphicon glyphicon-remove'></span>
+            </button>
+        </td>
+    </tr>
+<% }); %>
+</script>
+
 {% endblock %}

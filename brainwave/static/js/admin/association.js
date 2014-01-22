@@ -6,12 +6,16 @@ $(function() {
     $('#new-btn').click(function() {
         $(this).parents('.panel-body').hide();
         var associationNewView = new AssociationNewView();
+        $(this).hide();
+        // var associationNewView = new AssociationNewView();
     });
 });
 
 /* Backbone stuff. */
 AssociationViewView = Backbone.View.extend({
     associations: new collections.Associations(),
+    users: new collections.Users(),
+
     initialize: function() {
         this.update();
     },
@@ -20,12 +24,22 @@ AssociationViewView = Backbone.View.extend({
 
         $.get('/api/association/all', {}, function(data) {
             me.associations = new collections.Associations(data.associations);
-            me.render();
+
+            $.get('/api/user/all', {}, function(data) {
+                var users = new collections.Users(data.users);
+
+                _.each(me.associations.models, function(association) {
+                    association.user = users.get(association.get('user_id'));
+                });
+
+                me.render();
+            });
         });
     },
     render: function() {
-        var template = _.template($('#association-view-template').html(),
-            {associations: this.associations.models});
+        var template = _.template($('#association-view-template').html(), {
+            associations: this.associations.models, users: this.users
+        });
         this.$el.html(template);
     },
     events: {
@@ -65,6 +79,7 @@ AssociationViewView = Backbone.View.extend({
         var me = this;
 
         var $this = $(event.currentTarget);
+        $this.prop('disabled', true);
         var $tr = find_tr($this);
         var id = $tr.data('id');
         var association = this.associations.get(id);
@@ -77,6 +92,7 @@ AssociationViewView = Backbone.View.extend({
                 me.update();
             }, error: function(response) {
                 ajax_error_handler(response);
+                $this.prop('disabled', false);
             }
         });
     }
@@ -110,7 +126,7 @@ AssociationEditView = Backbone.View.extend({
                 clearflash();
                 flash('Association saved successfully', 'success');
 
-                associationViewView.render();
+                associationViewView.update();
             }, error: function(model, response) {
                 ajax_error_handler(response);
             }
@@ -194,8 +210,18 @@ AssociationCustomerView = Backbone.View.extend({
         'click button#close-customer': 'close'
     },
     add: function(event) {
+        var $this = $(event.currentTarget);
+        $this.prop('disabled', true);
         var me = this;
         var customer_id = $('#customer-id').val();
+
+        if (!customer_id) {
+            clearflash();
+            flash('No customer selected', 'danger');
+            $this.prop('disabled', false);
+
+            return;
+        }
 
         $.ajax('/api/association/customer/' + this.model.get('id'), {
             type: 'POST',
@@ -209,6 +235,7 @@ AssociationCustomerView = Backbone.View.extend({
             },
             error: function(response) {
                 ajax_error_handler(response);
+                $this.prop('disabled', false);
             }
         });
     },

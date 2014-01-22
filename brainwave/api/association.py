@@ -11,6 +11,7 @@ association_api = Blueprint('association_api', __name__,
 
 
 @association_api.route('', methods=['POST'])
+@Authentication(User.ROLE_ASSOCIATION)
 def create():
     """Create a new association."""
     association_dict = request.json
@@ -40,6 +41,7 @@ def update(association_id):
 
 
 @association_api.route('/<int:association_id>', methods=['DELETE'])
+@Authentication(User.ROLE_ASSOCIATION)
 def delete(association_id):
     """Delete an association."""
     association = AssociationController.get(association_id)
@@ -65,6 +67,7 @@ def get(association_id):
 
 
 @association_api.route('/all', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
 def get_all():
     """Get all associations."""
     associations = AssociationController.get_all()
@@ -73,6 +76,7 @@ def get_all():
 
 
 @association_api.route('/customer/<int:association_id>', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
 def get_customers(association_id):
     """Get customers the associations is coupled to."""
     association = AssociationController.get(association_id)
@@ -86,6 +90,7 @@ def get_customers(association_id):
 
 
 @association_api.route('/customer/<int:association_id>', methods=['POST'])
+@Authentication(User.ROLE_ASSOCIATION)
 def add_customer(association_id):
     """Couple a customer to the association."""
     association = AssociationController.get(association_id)
@@ -108,6 +113,7 @@ def add_customer(association_id):
 
 
 @association_api.route('/customer/<int:association_id>', methods=['DELETE'])
+@Authentication(User.ROLE_ASSOCIATION)
 def remove_customer(association_id):
     """Remove a customer the association is coupled to."""
     association = AssociationController.get(association_id)

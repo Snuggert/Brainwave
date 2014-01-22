@@ -2,12 +2,15 @@
 from flask import Blueprint, jsonify, request
 from brainwave.controllers import ProductController
 from brainwave.utils import serialize_sqla
+from brainwave.controllers.authentication import Authentication
+from brainwave.models import User
 
 product_api = Blueprint('product_api', __name__,
                         url_prefix='/api/product')
 
 
 @product_api.route('', methods=['POST'])
+@Authentication(User.ROLE_ASSOCIATION)
 def create():
     """ Create new product """
     product_dict = request.json
@@ -22,6 +25,7 @@ def create():
 
 
 @product_api.route('/<int:product_id>', methods=['DELETE'])
+@Authentication(User.ROLE_ASSOCIATION)
 def delete(product_id):
     """ Delete product """
     product = ProductController.get(product_id)
@@ -35,6 +39,7 @@ def delete(product_id):
 
 
 @product_api.route('/<int:product_id>', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
 def get(product_id):
     """ Get product """
     product = ProductController.get(product_id)
@@ -46,6 +51,7 @@ def get(product_id):
 
 
 @product_api.route('/all', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
 def get_all():
     """ Get all products unfiltered """
     # At this point, the association_id should be gotten, so that not ALL
@@ -60,6 +66,7 @@ def get_all():
 
 @product_api.route('/search/', methods=['GET'])  # temp
 @product_api.route('/search/<string:query>', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
 def get_all_from(query=""):
     """ Get all products objects filter by query """
     if query == "":

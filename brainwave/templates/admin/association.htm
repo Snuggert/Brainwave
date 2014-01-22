@@ -27,6 +27,8 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
                 <th></th>
             </tr>
         </thead>
@@ -40,6 +42,8 @@
     <tr data-id='<%= association.get('id') %>'>
         <td><%= association.get('id') %></td>
         <td><%= association.get('name') %></td>
+        <td><%= association.user.get('login_name') %></td>
+        <td><%= association.user.get('email') %></td>
         <td class='text-right'>
             <button class='members btn btn-default btn-xs'>
                 <span class='glyphicon glyphicon-user'></span>
@@ -58,6 +62,8 @@
 <script type='text/template' id='association-edit-template'>
 <td><%= association.get('id') %></td>
 <td><input type='text' class='form-control' data-property='name' value='<%= association.get('name') %>' /></td>
+<td><input type='text' class='form-control' data-property='login_name' value='<%= association.user.get('login_name') %>' /></td>
+<td><input type='text' class='form-control' data-property='email' value='<%= association.user.get('email') %>' /></td>
 <td class='text-right'>
     <button class='save btn btn-primary btn-xs'>
         <span class='glyphicon glyphicon-ok'></span>
@@ -121,7 +127,7 @@
 
                     <tbody>
                         <% _.each(customers, function(customer) { %>
-                            <tr data-id='<%= customer.get('id') %>' class='table table-striped custab'>
+                            <tr data-id='<%= customer.get('id') %>'>
                                 <td><%= customer.get('id') %></td>
                                 <td><%= customer.get('name') %></td>
                                 <td class='text-right'>
@@ -156,9 +162,7 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 </script>
-
 {% endblock %}
