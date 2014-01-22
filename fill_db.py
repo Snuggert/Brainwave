@@ -7,10 +7,12 @@ the system.
 from brainwave import db
 from brainwave.models import *
 from werkzeug.security import generate_password_hash
+from brainwave.controllers import AssociationController
 
 # Dummy association
-assoc1 = Association("VIA")
-db.session.add(assoc1)
+assoc1 = AssociationController.create({'name': 'via', 'login_name': 'via',
+                                       'password': 'via',
+                                       'email': 'bestuur@svia.nl'})
 
 # Dummy customer
 custo1 = Customer('Bas van den Heuvel')

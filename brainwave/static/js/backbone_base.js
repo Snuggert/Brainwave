@@ -55,9 +55,13 @@ models.Association = Backbone.Model.extend({
 
 models.Customer = Backbone.Model.extend({
     urlRoot: '/api/customer',
-    defaults: function() {
-        return {
-            name: '',
+    defaults: {id: null, name: ''},
+    initialize: function() {
+        var me = this;
+
+        this.associations = new collections.Associations();
+        this.associations.url = function() {
+            return me.urlRoot + '/association/' + me.get('id');
         };
     }
 });
@@ -78,7 +82,11 @@ models.Trans_in = Backbone.Model.extend({
 var collections = {};
 
 collections.Associations = Backbone.Collection.extend({
-    model: models.Association
+    model: models.Association,
+    url: '/api/association/all',
+    parse: function(response) {
+        return response.associations;
+    }
 });
 
 collections.Trans_in_list = Backbone.Collection.extend({
