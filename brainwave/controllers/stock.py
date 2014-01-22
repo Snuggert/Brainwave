@@ -2,6 +2,7 @@
 from brainwave import db
 import difflib
 from brainwave.models import Stock
+# from brainwave.controllers import TransInController
 
 
 class StockController:

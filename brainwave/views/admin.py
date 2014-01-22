@@ -2,7 +2,7 @@
 from datetime import date, timedelta, datetime
 from flask import render_template
 from flask import Blueprint
-from brainwave.controllers import AssociationController, StockController, \
+from brainwave.controllers import AssociationController, \
     TransInController, ProductController, ProductCategoryController, \
     TransactionController
 from brainwave.models import Stock, User
@@ -28,10 +28,12 @@ def view_associations():
 @admin_blueprint.route('/stock/<string:query>', methods=['GET'])
 @Authentication(User.ROLE_ASSOCIATION)
 def view_stock(user_id=None, query=""):
-    if query != "":
-        stock = StockController.get_all_from(query)
-    else:
-        stock = StockController.get_all()
+    # if query != "":
+    #     stock = StockController.get_all_from(query)
+    # else:
+    #     stock = StockController.get_all()
+
+    stock = TransInController.get_all_merged(query)
 
     return render_template('admin/stock.htm', data={'stock': stock})
 
@@ -51,9 +53,7 @@ def view_trans_in(user_id=None):
     stocks = Stock.query.all()
     product_categories = ProductCategoryController.get_all()
     associations = AssociationController.get_all()
-    print stocks
-    print product_categories
-    print associations
+
     trans_in = TransInController.get_all()
     return render_template('admin/trans_in.htm',
                            data={'trans_in': trans_in, 'stocks': stocks,

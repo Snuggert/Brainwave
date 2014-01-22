@@ -1,6 +1,6 @@
 """stock.py - Controller for stock."""
 from flask import Blueprint, jsonify, request
-from brainwave.controllers import StockController
+from brainwave.controllers import StockController, TransInController
 from brainwave.utils import serialize_sqla
 from brainwave.controllers.authentication import Authentication
 from brainwave.models import User
@@ -48,6 +48,19 @@ def delete(stock_id):
     return jsonify()
 
 
+@stock_api.route('/consume/<int:stock_id>', methods=['DELETE'])
+def consume(stock_id):
+    """Delete stock item."""
+    stock = StockController.get(stock_id)
+
+    if not stock:
+        return jsonify(error='Stock item not found'), 500
+
+    StockController.delete(stock)
+
+    return jsonify()
+
+
 @stock_api.route('/<int:stock_id>', methods=['GET'])
 @Authentication(User.ROLE_ASSOCIATION)
 def get(stock_id):
@@ -77,11 +90,9 @@ def get_all():
 @Authentication(User.ROLE_ASSOCIATION)
 def get_all_from(query=""):
     """ Get all stock objects filter by query """
-    if query == "":
-        stock = StockController.get_all()
-    else:
-        stock = StockController.get_all_from(query)
+    stock = TransInController.get_all_merged(query)
     # stock = StockController.get_all()
+    print stock
 
     if not stock:
         return jsonify(error='Stock item not found'), 200

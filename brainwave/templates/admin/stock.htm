@@ -1,7 +1,7 @@
 {% extends "content.htm" %}
 
 {% block includes %}
-    <script src="/static/js/stock/search_stock.js"></script>
+    <script src="/static/js/admin/stock/search_stock.js"></script>
     <script src="/static/js/ajax_search.js"></script>
 {% endblock %}
 
@@ -26,6 +26,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Value</th>
                     <th>Quantity</th>
                     <th class="text-center">Action</th>
                 </tr>
@@ -35,7 +36,8 @@
                     <tr>
                         <td>{{item.id}}</td>
                         <td>{{item.name}}</td>
-                        <td>{{item.quantity}}</td>
+                        <td>€{{item.pricesum[0][0]}}</td>
+                        <td>{{item.amount[0][0]}} units = {{item.volumesum[0][0]}} ml</td>
                         <td class="text-center">
                             <a class='btn btn-info btn-xs' href="#">
                                 <span class="glyphicon glyphicon-edit"></span> 
@@ -52,7 +54,10 @@
 
 <script type="text/template" id="stock-template">
 <tr>
-    <td><%= id %></td><td><%= name %></td><td><%= quantity %></td>
+    <td><%= id %></td>
+    <td><%= name %></td>
+    <td><%= pricesum[0][0] %></td>
+    <td><%= item.amount[0][0] %> units = <%= item.volumesum[0][0] %> = </td>
     <td class="text-center">
         <a class='btn btn-info btn-xs' href="#">
             <span class="glyphicon glyphicon-edit"></span> 

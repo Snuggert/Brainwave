@@ -46,6 +46,22 @@ def get(trans_in_id):
     return jsonify(trans_in=serialize_sqla(trans_in))
 
 
+@trans_in_api.route('/remove/<int:glob_product_id>',
+                    methods=['GET'])
+@trans_in_api.route('/remove/<int:glob_product_id>/amount/<int:amount>',
+                    methods=['GET'])
+def remove_from_stock(glob_product_id, amount=1):
+    """Get trans_in item."""
+    for x in xrange(0, amount):
+        trans_in_succes = TransInController.remove_from_stock(glob_product_id)
+
+        if not trans_in_succes:
+            return jsonify(error=str(x) + ' item(s) removed, empty stock',
+                           amount=x), 500
+
+    return jsonify(succes='Item removed from stock'), 200
+
+
 @trans_in_api.route('/all', methods=['GET'])
 @Authentication(User.ROLE_ASSOCIATION)
 def get_all():
