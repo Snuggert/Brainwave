@@ -38,7 +38,7 @@ AssociationViewView = Backbone.View.extend({
     },
     render: function() {
         var template = _.template($('#association-view-template').html(), {
-            associations: this.associations.models, users: this.users
+            associations: this.associations.models
         });
         this.$el.html(template);
     },
