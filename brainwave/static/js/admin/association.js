@@ -6,6 +6,8 @@ $(function() {
     $('#new-btn').click(function() {
         $(this).parents('.panel-body').hide();
         var associationNewView = new AssociationNewView();
+        $(this).hide();
+        // var associationNewView = new AssociationNewView();
     });
 });
 
