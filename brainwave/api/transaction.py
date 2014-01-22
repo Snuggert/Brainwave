@@ -5,16 +5,19 @@ from brainwave.controllers.transaction import TransactionController
 transaction_api = Blueprint('transaction_api', __name__,
                             url_prefix='/api/transaction')
 
+
 # Dictionary format example:
 # {
 #    "pay_type":"cash",
 #    "items":[
 #       {
 #          "product_id":"1",
+#          "quantity": "7",
 #          "action":"sell"
 #       },
 #       {
 #          "product_id":"2",
+#          "quantity": "100",
 #          "action":"sell"
 #       }
 #    ]
@@ -22,7 +25,7 @@ transaction_api = Blueprint('transaction_api', __name__,
 #
 # pay_type can be either cash or pin (credit should become option 3, later)
 # action can be sell, refund or gift
-@transaction_api.route('/new', methods=['POST'])
+@transaction_api.route('', methods=['POST'])
 def create():
     """Create a new transaction."""
     dict = request.json

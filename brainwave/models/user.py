@@ -19,6 +19,8 @@ class User(db.Model, BaseEntity):
     role = db.Column(db.Integer())
     # Association is when user is association
     association = db.relationship('Association', backref='user')
+    # Customer is when user is customer
+    customer = db.relationship('Customer', backref='user')
 
     def __init__(self, login_name='', pw_hash='', email='', role=ROLE_NONE):
         """Initialize the User."""

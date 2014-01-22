@@ -3,6 +3,8 @@ from flask import Blueprint, jsonify, request
 from brainwave.controllers import AssociationController, CustomerController,\
     UserController
 from brainwave.utils import serialize_sqla
+from brainwave.controllers.authentication import Authentication
+from brainwave.models.user import User
 
 association_api = Blueprint('association_api', __name__,
                             url_prefix='/api/association')
@@ -24,6 +26,7 @@ def create():
 
 
 @association_api.route('/<int:association_id>', methods=['PUT'])
+@Authentication(User.ROLE_ASSOCIATION)
 def update(association_id):
     """Update an association."""
     association_dict = request.json
@@ -50,6 +53,7 @@ def delete(association_id):
 
 
 @association_api.route('/<int:association_id>', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
 def get(association_id):
     """Get an association."""
     association = AssociationController.get(association_id)
@@ -98,7 +102,7 @@ def add_customer(association_id):
     try:
         AssociationController.add_customer(association, customer)
     except AssociationController.CustomerAlreadyCoupled as e:
-        return jsonify(error=e.error)
+        return jsonify(error=e.error), 500
 
     return jsonify()
 
