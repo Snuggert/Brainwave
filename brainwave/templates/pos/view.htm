@@ -1,0 +1,66 @@
+{% extends "base.htm" %}
+
+{% block page %}
+    <script type='text/template' id='productbutton-view-template'>
+    <% _.each(products, function(product) { %>
+        <div class="col-xs-6 col-sm-3">
+            <div class="item-btn item-btn-active category-<%= product.get('product_category_id') %>" product-id="<%= product.get('id') %>" product-price="<%= product.get('price') %>">
+                <div class="item-btn-name"><%= product.get('name') %></div>
+                <div class="item-btn-amount-now"></div>
+                <div class="item-btn-price">&euro; <%= product.get('price').toFixed(2).replace('.', ',') %></div>
+            </div>
+        </div>
+    <% }); %>
+    </script>
+
+    <script type='text/template' id='receipt-view-template'>
+        <ul class="list-group item-list">
+            <li class="list-group-item">Receipt <span>&euro; <span id="receipt-total">0,00</span></span></li>
+            <li class="list-group-item item-list-placeholder">No items</li>
+        </ul>
+    </script>
+
+    <div class="container">
+        <div class="row product-list">
+            <div class="col-xs-12 col-sm-8">
+                <div class="row item-row" id="pos-item-container"></div>
+            </div>
+            <div class="col-xs-12 col-sm-4">
+                <div class="numpad">
+                    <div class="row">
+                        <div class="col-xs-4 numpad-btn">1</div>
+                        <div class="col-xs-4 numpad-btn">2</div>
+                        <div class="col-xs-4 numpad-btn">3</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4 numpad-btn">4</div>
+                        <div class="col-xs-4 numpad-btn">5</div>
+                        <div class="col-xs-4 numpad-btn">6</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4 numpad-btn">7</div>
+                        <div class="col-xs-4 numpad-btn">8</div>
+                        <div class="col-xs-4 numpad-btn">9</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4 numpad-btn"></div>
+                        <div class="col-xs-4 numpad-btn">0</div>
+                        <div class="col-xs-4 numpad-btn">CL</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 numpad-btn-big" id="numpad-display"></div>
+                        <div class="col-xs-6 numpad-btn-big" id="numpad-set">Set amount</div>
+                    </div>
+                </div>
+
+                <div class="pay-btn">
+                    <div class="row">
+                        <div class="col-xs-12">Pay</div>
+                    </div>
+                </div>
+                
+                <div class="receipt" id="receipt"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
