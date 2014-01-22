@@ -19,7 +19,7 @@ def login():
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
-    session['user_id'] = None
-    session['user_role'] = None
+    del session['user_id']
+    del session['user_role']
 
     return redirect(url_for('login'))

@@ -134,8 +134,8 @@ class UserController:
     @staticmethod
     def logout():
         logout_user()
-        session.user_role = User.ROLE_NONE
-        session.user_id = None
+        del session['user_id']
+        del session['user_role']
 
         return
 
