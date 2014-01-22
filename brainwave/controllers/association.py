@@ -29,10 +29,13 @@ class AssociationController:
     @staticmethod
     def create(association_dict):
         """Create a new association."""
-        association_dict['role'] = User.ROLE_ASSOCIATION
-        user = UserController.create(association_dict)
-        association_dict['user_id'] = user.id
+        user_dict = {'role': User.ROLE_ASSOCIATION,
+                     'login_name': association_dict.pop('login_name', None),
+                     'password': association_dict.pop('password', None),
+                     'email': association_dict.pop('email', None)}
+        user = UserController.create(user_dict)
 
+        association_dict['user_id'] = user.id
         association = Association.new_dict(association_dict)
 
         if not association.name:
@@ -46,6 +49,11 @@ class AssociationController:
     @staticmethod
     def update(association_dict):
         """Update the association."""
+        user_dict = {'id': association_dict['user_id'],
+                     'login_name': association_dict.pop('login_name', None),
+                     'email': association_dict.pop('email', None)}
+        UserController.update(user_dict)
+
         association = Association.merge_dict(association_dict)
 
         if not association.name:
