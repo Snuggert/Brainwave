@@ -53,6 +53,14 @@ def get(user_id):
     return jsonify(user=serialize_sqla(user))
 
 
+@user_api.route('/all', methods=['GET'])
+def get_all():
+    """Get all users."""
+    users = UserController.get_all()
+
+    return jsonify(users=serialize_sqla(users))
+
+
 @user_api.route('/login', methods=['POST'])
 def login():
     username = request.form['username']

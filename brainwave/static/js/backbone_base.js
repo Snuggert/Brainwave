@@ -92,3 +92,7 @@ collections.Customers = Backbone.Collection.extend({
 collections.Stocks = Backbone.Collection.extend({
     model: models.Stock
 });
+
+collections.Users = Backbone.Collection.extend({
+    model: models.User
+});

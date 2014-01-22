@@ -17,6 +17,7 @@ class User(db.Model, BaseEntity):
     pw_hash = db.Column(db.String(66))
     email = db.Column(db.String(120))
     role = db.Column(db.Integer())
+
     # Association is when user is association
     association = db.relationship('Association', backref='user')
     # Customer is when user is customer
