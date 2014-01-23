@@ -39,14 +39,14 @@ var TransactionModel = Backbone.Model.extend({
             /* Create a new model in the entries collection */
             this.get('entries').add(new EntryModel(data));
         }
-   },
-   delete_entry: function(data) {
+    },
+    delete_entry: function(data) {
         var model = this.get('entries').where({product_id: data.product_id});
         this.get('entries').remove(model);
         /* Tell the ProductButtonView to clear the amount on the button */
-        var jsonData = {'product_id': data.product_id, 'quantity': 0};
-        Backbone.pubSub.trigger('entry_deleted', jsonData);
-   }
+        Backbone.pubSub.trigger('entry_deleted',
+                                {'product_id': data.product_id, 'quantity': 0});
+    }
 });
 
 var EntryModel = Backbone.Model.extend({
@@ -125,8 +125,8 @@ var ProductButtonView = Backbone.View.extend({
         /* The button overlays have to be sized/shaped with jQuery. */
         $().shape_overlays();
     },
-    events: {
-        'click .item-btn': 'prepare_entry'
+    hammerEvents: {
+        'tap .item-btn': 'prepare_entry'
     },
     prepare_entry: function (event) {
         var $this    = $(event.currentTarget)
@@ -163,8 +163,9 @@ var ProductButtonView = Backbone.View.extend({
 var ReceiptView = Backbone.View.extend({
     transaction: new TransactionModel(),
     initialize: function() {
-        /* Listen to a custom event from the ProductButtonView */
+        /* Listen to custom events from the ProductButtonView */
         Backbone.pubSub.on('add_entry_init', this.new_entry, this);
+        Backbone.pubSub.on('entry_deleted', this.render, this);
         /* Listen to a custom event from the PayButtonView */
         Backbone.pubSub.on('pay_init', this.pay_init, this);
         /* Start a new transaction and render an empty list */
@@ -185,6 +186,7 @@ var ReceiptView = Backbone.View.extend({
         var total = 0.0;
         _.each(this.transaction.get('entries').models, function(entry) {
             total += (entry.get('price') * entry.get('quantity'));
+            /* Scale the delete button */
         });
         $('#receipt-total').text(total.toFixed(2).replace('.', ','));
 
@@ -199,10 +201,34 @@ var ReceiptView = Backbone.View.extend({
             Backbone.pubSub.trigger('add_entry_finish', jsonData);
         }
     },
+    hammerEvents: {
+        'swipeleft .list-entry': 'show_delete',
+        'tap .list-entry': 'hide_delete',
+        'tap .list-delete': 'delete_entry'
+    },
     new_entry: function(data) {
         /* Add a new entryModel to the collection in the transaction model */
         this.transaction.new_entry(data);
         this.render();
+    },
+    hide_delete: function(event) {
+        var $this = $(event.currentTarget);
+        /* Hide all delete buttons */
+        $this.parent().find('.list-delete').hide();
+    },
+    show_delete: function(event) {
+        var $this = $(event.currentTarget);
+        /* Hide all delete buttons */
+        this.hide_delete(event);
+        /* Scale the button and show it with a slide */
+        $this.find('.list-delete').css('line-height', $this.find('.list-delete').height() + 'px');
+        $this.find('.list-delete').show('slide', {direction: 'right'}, 250);
+    },
+    delete_entry: function(event) {
+        var $this  = $(event.currentTarget)
+        ,   id     = $this.parent().find('.item-count').attr('product-id');
+
+        this.transaction.delete_entry({'product_id': parseInt(id)});
     },
     pay_init: function() {
         var me = this;
@@ -224,8 +250,13 @@ var NumpadView = Backbone.View.extend({
     initialize: function() {
         /* Listen to a custom event from the ProductButtonView */
         Backbone.pubSub.on('request_numpad_val', this.push_value, this);
+        /* Listen to a custom event from the ReceiptView */
+        Backbone.pubSub.on('pay_finish', this.reset, this);
         /* Set the numpad to a default value */
         this.reset();
+    },
+    hammerEvents: {
+        'tap .numpad-btn': 'tapped'
     },
     reset: function() {
         this.numpad.set({'display': '', 'real': 1});
@@ -234,9 +265,6 @@ var NumpadView = Backbone.View.extend({
     },
     render: function() {
         $('#numpad-display').html(this.numpad.get('display'));
-    },
-    events: {
-        'click .numpad-btn': 'tapped'
     },
     tapped: function(event) {
         var $this = $(event.currentTarget);
@@ -253,14 +281,14 @@ var NumpadView = Backbone.View.extend({
         var numpad_id = $this.attr('numpad-id');
 
         /* If the invert sign button was tapped, call another function. */
-        if (numpad_id == 'neg') {
+        if (numpad_id == 'neg')
             this.invert_sign();
-            return;
-        } else if (numpad_id == 'cl') {
+        else if (numpad_id == 'cl')
             this.reset();
-        } else {
+        else {
             var val = parseInt($('#numpad-display').html() + numpad_id);
-                val = (val > 999) ? 1000 : val;
+                val =  (val > 999)  ? 1000 :
+                      ((val < -999) ? -1000 : val);
 
             this.numpad.set({'display': val, 'real': val});
             this.render();
@@ -293,8 +321,8 @@ var NumpadView = Backbone.View.extend({
 var PayButtonView = Backbone.View.extend({
     initialize: function() {
     },
-    events: {
-        'click': 'tapped'
+    hammerEvents: {
+        'tap': 'tapped'
     },
     tapped: function(event) {
         /* Tell the ReceiptView to save the transaction to the server */

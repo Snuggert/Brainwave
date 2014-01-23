@@ -3,7 +3,6 @@ html {
     padding: 0px;
     width: 100%;
     height: 100%;
-    overflow: auto;
 }
 
 body {
@@ -19,6 +18,7 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    overflow: auto;
 }
 
 .item-row > div {
