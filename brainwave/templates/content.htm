@@ -1,30 +1,84 @@
 {% extends "base.htm" %}
 
 {% block page %}
-<div class="container" style="padding-top: 70px">
+<div class="container" style="margin-top: 70px">
+
     <div class="row">
-        <div class="col-md-3">
-            <ul class="nav nav-pills nav-stacked admin-menu">
-                <li class="active"><a href="#" data-target-id="home">Home</a></li>
-                <li class='dropdown'>
-                    <a class="dropdown-toggle" type="button" id="Admindropdown" data-toggle="dropdown">
-                        Admin
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="nav nav-pills nav-stacked admin-menu dropdown-menu" role="menu" aria-labelledby="Admindropdown">
-                        <li role="presentation"><a href="{{url_for('admin.view_product')}}" data-target-id="Product">Product</a></li>
-                        <li role="presentation"><a href="{{url_for('admin.view_stock')}}" data-target-id="Stock">Stock</a></li>
-                        <li role="presentation"><a href="{{url_for('admin.view_trans_in')}}" data-target-id="Stock-In">Stock-In</a></li>
-                        
-                        <li role="presentation"><a href="{{url_for('admin.view_associations')}}" data-target-id="Vereniging">Association</a></li>
-                        <li role="presentation"><a href="{{url_for('admin.view_analysis')}}" data-target-id="Analysis">Analyse</a></li>
-                        <li role="presentation"><a href="{{url_for('admin.view_product_category')}}" data-target-id="Product Category">Product Category</a></li>
-                        <li role="presentation"><a href="{{url_for('admin.view_customers')}}" data-target-id="Customers">Customers</a></li>
-                    </ul>
-                </li>
-                <li><a href="#" data-target-id="">Template Category</a></li>
-                <li><a href="{{url_for('logout')}}">Log out</a></li>
-            </ul>
+                <div class="col-sm-3 col-md-3">
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-euro">
+                            </span>Sales administration</a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr>
+                                    <td>
+                                        <span class="glyphicon glyphicon glyphicon-shopping-cart"></span><a href="{{url_for('admin.view_product')}}">Products</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="glyphicon glyphicon-tags"></span><a href="{{url_for('admin.view_stock')}}">Stock</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="glyphicon glyphicon-file"></span><a href="{{url_for('admin.view_trans_in')}}">Stock transactions</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-user">
+                            </span>User adminstration</a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr>
+                                    <td>
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                        <a href="{{url_for('admin.view_associations')}}">Association</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="glyphicon glyphicon-user"></span>
+                                        <a href="{{url_for('admin.view_customers')}}">Customers</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-parent="#accordion" href="{{url_for('admin.view_analysis')}}"><span class="glyphicon glyphicon-stats">
+                            </span>Analytics</a>
+                        </h4>
+                    </div>
+                </div>                
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-parent="#accordion" href="{{url_for('logout')}}"><span class="glyphicon glyphicon-off">
+                            </span>Logout</a>
+                        </h4>
+                    </div>
+                </div>
+                
+            </div>
         </div>
         <div class="col-md-9 well">
             <div class="messages"></div>

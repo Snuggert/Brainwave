@@ -2,7 +2,6 @@
 
 {% block includes %}
     <script src="/static/js/admin/stock/search_stock.js"></script>
-    <script src="/static/js/ajax_search.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -37,7 +36,7 @@
                         <td>{{item.id}}</td>
                         <td>{{item.name}}</td>
                         <td>€{{item.pricesum[0][0]}}</td>
-                        <td>{{item.amount[0][0]}} units = {{item.volumesum[0][0]}} ml</td>
+                        <td>{{item.amount[0][0]}} units = {{item.volumesum[0][0]}} {{item.unit}}</td>
                         <td class="text-center">
                             <a class='btn btn-info btn-xs' href="#">
                                 <span class="glyphicon glyphicon-edit"></span> 

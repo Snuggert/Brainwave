@@ -56,13 +56,13 @@ def new_stock(user_id=None):
 @admin_blueprint.route('/trans_in', methods=['GET'])
 @Authentication(User.ROLE_ASSOCIATION)
 def view_trans_in(user_id=None):
-    stocks = Stock.query.all()
+    stock = TransInController.get_all_merged()
     product_categories = ProductCategoryController.get_all()
     associations = AssociationController.get_all()
 
     trans_in = TransInController.get_all()
     return render_template('admin/trans_in.htm',
-                           data={'trans_in': trans_in, 'stocks': stocks,
+                           data={'trans_in': trans_in, 'stock': stock,
                                  'product_categories': product_categories,
                                  'product': {}, 'associations': associations})
 

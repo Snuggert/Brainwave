@@ -81,11 +81,27 @@ db.session.add(stock7)
 db.session.add(stock8)
 db.session.add(stock9)
 db.session.add(stock10)
+
+stock1 = Stock('Hertog Jan', "ml", assoc1)
+stock2 = Stock('Jupiler', "ml", assoc1)
+stock3 = Stock('Rode wijn', "ml", assoc1)
+stock4 = Stock('Paprika chips', "gram", assoc1)
+
+db.session.add(stock1)
+db.session.add(stock2)
+db.session.add(stock3)
+db.session.commit()
 db.session.commit()
 
 # Dummy trans_in
-trans_in1 = TransIn(100.50, 10000, stock1)
+trans_in1 = TransIn(100.50, 20000, stock1)
+trans_in2 = TransIn(90.54, 20000, stock2)
+trans_in3 = TransIn(15.40, 1000, stock3)
+trans_in4 = TransIn(0.20, 1, stock4)
 db.session.add(trans_in1)
+db.session.add(trans_in2)
+db.session.add(trans_in3)
+db.session.add(trans_in4)
 db.session.commit()
 
 # Dummy products

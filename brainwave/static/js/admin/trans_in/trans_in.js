@@ -26,6 +26,11 @@ $(function() {
         $(this).hide();
         // var associationNewView = new TransInViewView();
     });
+
+    $(document).on('change', '#stock_id', function() {
+        var unit = $("#stock_id option:selected").attr("brainwave-unit");
+        $("#volume").attr("placeholder", "volume in " + unit + " per unit");
+    });
 });
 
 
@@ -35,15 +40,17 @@ TransInViewView = Backbone.View.extend({
     },
     update: function() {
         var me = this;
+        
 
         $.get('/api/trans_in/all', {}, function(data) {
+            me.global_stock = new collections.Stocks(brainwave.stock);
             me.trans_in_list = new collections.Trans_in_list(data.trans_in);
             me.render();
         });
     },
     render: function() {
         var template = _.template($('#trans-in-view-template').html(),
-            {trans_in_list: this.trans_in_list.models});
+            {trans_in_list: this.trans_in_list.models, global_stock: this.global_stock});
         $('#trans_in_list tbody').html(template);
     },
     events: {

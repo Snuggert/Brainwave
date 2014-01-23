@@ -17,7 +17,7 @@ def create():
 
     trans_in = TransInController.create(trans_in_dict)
 
-    return jsonify(id=trans_in.id)
+    return jsonify(id=trans_in.id), 200
 
 
 @trans_in_api.route('/delete/<int:trans_in_id>', methods=['DELETE'])
@@ -52,12 +52,19 @@ def get(trans_in_id):
                     methods=['GET'])
 def remove_from_stock(glob_product_id, amount=1):
     """Get trans_in item."""
+    i = 0
+
     for x in xrange(0, amount):
         trans_in_succes = TransInController.remove_from_stock(glob_product_id)
 
+        print "test1"
+
         if not trans_in_succes:
-            return jsonify(error=str(x) + ' item(s) removed, empty stock',
-                           amount=x), 500
+            print "neuuu"
+            i += 1
+
+    return jsonify(error=str(amount - i) + ' item(s) removed, empty stock',
+                   amount=amount - i), 500
 
     return jsonify(succes='Item removed from stock'), 200
 

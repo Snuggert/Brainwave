@@ -18,18 +18,6 @@ class StockController:
         return stock
 
     @staticmethod
-    def add(item, quantity):
-        """ Add a certain quantity to stock. Use negative to remove items from
-        stock
-        """
-        item.quantity = item.quantity + quantity
-
-        db.session.add(item)
-        db.session.commit()
-
-        return item
-
-    @staticmethod
     def get(stock_id):
         """ Get a stock object by its id """
 
