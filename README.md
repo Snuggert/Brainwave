@@ -28,6 +28,7 @@ Specifications
 * SQLAlchemy - http://www.sqlalchemy.org/ (sort of ORM. NO QUERIES!)
 * Sass - http://sass-lang.com/ (Enhanced css, with things like nesting and
 mixins)
+* Backbone - http://backbonejs.org/ (Javascript framework)
 
 Installation
 ============
