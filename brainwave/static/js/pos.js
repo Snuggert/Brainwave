@@ -23,15 +23,29 @@ var TransactionModel = Backbone.Model.extend({
         var current = this.get('entries').where({product_id: data.product_id});
         if (current.length) {
             /* Update the model to the appropriate quantity */
-            current[0].set({'quantity': current[0].get('quantity') +
-                           data.quantity,
+            var quantity = current[0].get('quantity') + data.quantity;
+            if (quantity <= 0) {
+                this.delete_entry(data);
+                return;
+            }
+            current[0].set({'quantity': quantity,
                            'modified_time': data.modified_time});
             /* Force the collection to sort again, which normally only happens
              * on add() */
             this.get('entries').sort();
-        } else
+        } else {
+            if (data.quantity <= 0)
+                return;
             /* Create a new model in the entries collection */
             this.get('entries').add(new EntryModel(data));
+        }
+   },
+   delete_entry: function(data) {
+        var model = this.get('entries').where({product_id: data.product_id});
+        this.get('entries').remove(model);
+        /* Tell the ProductButtonView to clear the amount on the button */
+        var jsonData = {'product_id': data.product_id, 'quantity': 0};
+        Backbone.pubSub.trigger('entry_deleted', jsonData);
    }
 });
 
@@ -45,6 +59,10 @@ var EntryModel = Backbone.Model.extend({
     initialize: function() {
         this.bind("error", function(model, error) {
             console.log("Could not initialize an EntryModel.");
+        });
+        /* If the remove event on the entrycollection is triggered, destroy */
+        this.bind("remove", function() {
+            this.destroy();
         });
     }
 });
@@ -87,6 +105,8 @@ var ProductButtonView = Backbone.View.extend({
         Backbone.pubSub.on('pay_finish', this.clear_buttons, this);
         /* Listen to a custom event that is triggered by NumpadView */
         Backbone.pubSub.on('send_numpad_val', this.send_entry, this);
+        /* Listen to a custom event that is triggered by TransactionModel */
+        Backbone.pubSub.on('entry_deleted', this.set_btn_quantity, this);
         this.update();
     },
     update: function() {
@@ -184,9 +204,6 @@ var ReceiptView = Backbone.View.extend({
         this.transaction.new_entry(data);
         this.render();
     },
-    delete: function() {
-
-    },
     pay_init: function() {
         var me = this;
         this.transaction.save({}, {
@@ -211,18 +228,12 @@ var NumpadView = Backbone.View.extend({
         this.reset();
     },
     reset: function() {
-        this.numpad.set({'value': 1});
-        this.render(false);
+        this.numpad.set({'display': '', 'real': 1});
+        $('#numpad-invert-sign').text('Neg (-)');
+        this.render();
     },
-    render: function(manual) {
-        /* This render function isn't working with underscore yet. */
-        if (!manual)
-            /* This means the numpad was just reset, so whilst the value
-             * is 1. the numpad display should remain empty.
-             */
-            $('#numpad-display').html('');
-        else
-            $('#numpad-display').html(this.numpad.get('value'));
+    render: function() {
+        $('#numpad-display').html(this.numpad.get('display'));
     },
     events: {
         'click .numpad-btn': 'tapped'
@@ -239,27 +250,43 @@ var NumpadView = Backbone.View.extend({
         }, 500);
 
         /* Deal with the actual functionality */
-        var inner = $this.html();
+        var numpad_id = $this.attr('numpad-id');
 
-        if (inner == 'CL') {
-            this.numpad.set({'value': 1});
-            this.render(false);
+        /* If the invert sign button was tapped, call another function. */
+        if (numpad_id == 'neg') {
+            this.invert_sign();
+            return;
+        } else if (numpad_id == 'cl') {
+            this.reset();
         } else {
-            var val = parseInt($('#numpad-display').html() + inner);
+            var val = parseInt($('#numpad-display').html() + numpad_id);
                 val = (val > 999) ? 1000 : val;
 
-            this.numpad.set({'value': val});
-            this.render(true);
+            this.numpad.set({'display': val, 'real': val});
+            this.render();
         }
+    },
+    invert_sign: function() {
+        var current = this.numpad.get('display');
+
+        display = (current == '') ? '-' :
+                        ((current == '-') ? '' : -1 * current);
+        real    = (current == '') ? -1 :
+                        ((current == '-') ? 1 : -1 * current);
+               
+        this.numpad.set({'display': display, 'real': real});
+        this.render();
+
+        /* Toggle the value of the invert button */
+        $('#numpad-invert-sign').text((real < 0) ? 'Pos (+)' : 'Neg (-)');
     },
     push_value: function() {
         /* Get the numpad value and trigger an event for ProductButtonView */
-        var jsonData = {'value': this.numpad.get('value')};
+        var jsonData = {'value': this.numpad.get('real')};
         Backbone.pubSub.trigger('send_numpad_val', jsonData);
 
         /* Reset the numpad value to 1 and render again */
-        this.numpad.set({'value': 1});
-        this.render(false);
+        this.reset();
     }
 });
 
