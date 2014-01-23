@@ -32,7 +32,7 @@ transaction_api = Blueprint('transaction_api', __name__,
 def create():
     """Create a new transaction."""
     dict = request.json
-
+    print dict
     # Note that the TransactionController creates records for both the
     # Transaction table as the TransactionPiece table.
     transaction = TransactionController.create(dict)

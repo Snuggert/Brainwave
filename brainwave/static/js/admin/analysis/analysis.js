@@ -10,56 +10,50 @@ $(function(){
         });
     });
     var plot = $.plot(".chart_div", data,
-        {
-            series: {
-                points: {
-                    show: true,
-                    fill: true,
-                }
-            },
-            grid: {
-                hoverable: true,
-                clickable: true
-            },
-            xaxis: {
-                panRange: [brainwave.epoch_week_start, brainwave.epoch_week_end],
-                zoomRange: [10000, brainwave.epoch_week_end - brainwave.epoch_week_start],
-                min: brainwave.epoch_week_start,
-                max: brainwave.epoch_week_end,
-                mode: "time",
-                timeformat: "%d/%m/%Y %H:%M"
-            },
-            yaxis: {
-                min: 0.0,
-                zoomRange: [0.1, 100],
-                panRange: [0, 100],
-            },
-            zoom: {
-                interactive: true
-            },
-            pan: {
-                interactive: true
-            } 
-        }
-    );
-     $(".chart_div").bind("plotclick", function (event, pos, item) {
-        if(item) {
-            console.log(item)
-        }
+    {
+        series: {
+            points: {
+                show: true,
+                fill: true,
+            }
+        },
+        grid: {
+            hoverable: true,
+            clickable: true
+        },
+        xaxis: {
+            panRange: [brainwave.epoch_week_start, brainwave.epoch_week_end],
+            zoomRange: [60 * 60 * 1000, brainwave.epoch_week_end - brainwave.epoch_week_start],
+            min: brainwave.epoch_week_start,
+            max: brainwave.epoch_week_end,
+            mode: "time",
+            timeformat: "%d/%m/%Y %H:%M"
+        },
+        yaxis: {
+            min: 0.0,
+            zoomRange: [10, 20],
+            panRange: [0, 20],
+        },
+        zoom: {
+            interactive: true
+        },
+        pan: {
+            interactive: true
+        } 
     });
     $("<div id='tooltip'></div>").css({
+            border: "5px solid rgba(0, 0, 0, 0)",
             position: "absolute",
             display: "none",
-            border: "1px solid #fdd",
-            padding: "2px",
-            "background-color": "#fee",
-            opacity: 0.80
+            "background-color": "#19191A",
+            color: "#E8E8E8",
+            opacity: 0.8,
+            "-webkit-border-radius": "5px",
+            "-moz-border-radius": "5px",
+            "border-radius": "5px",
     }).appendTo("body");
 
     $(".chart_div").bind("plothover", function (event, pos, item) {
-        var str = "(" + pos.x.toFixed(2) + ", " + pos.y.toFixed(2) + ")";
-        $("#hoverdata").text(str);
-
         if (item) {
             var x = item.datapoint[0];
             var y = item.datapoint[1];
@@ -69,10 +63,16 @@ $(function(){
             var content = swatch + item.series.label + ": €" + y + '<br>' + date;
 
             $("#tooltip").html(content)
-                .css({top: item.pageY+20, left: item.pageX+5})
+                .css({top: item.pageY-10, left: item.pageX+15})
                 .fadeIn(200);
         } else {
             $("#tooltip").hide();
+        }
+    });
+    $(".chart_div").unbind("plotclick");
+    $(".chart_div").bind("plotclick", function (event, pos, item) {
+        if(item) {
+            console.log(item)
         }
     });
 })

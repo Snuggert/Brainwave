@@ -113,6 +113,7 @@ def view_analysis(user_id=None):
                                                         sale_price,
                                                         transaction.id])
 
+    print "Week Number", week_number
     return render_template('admin/analysis.htm',
                            data={'graphdata': graphdata,
                                  'week_number': week_number,
