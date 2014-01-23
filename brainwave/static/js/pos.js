@@ -240,13 +240,17 @@ var NumpadView = Backbone.View.extend({
 
         /* Deal with the actual functionality */
         var inner = $this.html();
-        var val = parseInt($('#numpad-display').html() + inner);
-            val = (val > 999 && inner != 'CL') ? 1000 :
-                                                 ((inner == 'CL') ? '' : val);
 
-        this.numpad.set({'value': val});
+        if (inner == 'CL') {
+            this.numpad.set({'value': 1});
+            this.render(false);
+        } else {
+            var val = parseInt($('#numpad-display').html() + inner);
+                val = (val > 999) ? 1000 : val;
 
-        this.render(true);
+            this.numpad.set({'value': val});
+            this.render(true);
+        }
     },
     push_value: function() {
         /* Get the numpad value and trigger an event for ProductButtonView */
