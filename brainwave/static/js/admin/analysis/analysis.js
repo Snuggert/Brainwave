@@ -32,7 +32,7 @@ $(function(){
         },
         yaxis: {
             min: 0.0,
-            zoomRange: [10, 20],
+            zoomRange: [15, 20],
             panRange: [0, 20],
         },
         zoom: {
@@ -98,7 +98,7 @@ $(function(){
                         innerRadius: 0.2,
                         label: {
                             show: true,
-                            radius: 1/4,
+                            radius: 1/2,
                             formatter: labelFormatter,
                             background: {
                                 opacity: 0.8
@@ -112,6 +112,6 @@ $(function(){
     });
     function labelFormatter(label, series) {
         console.log(series);
-        return "<div style='font-size:8pt; text-align:center; padding:2px; color:black;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
+        return "<div style='font-size:8pt; text-align:center; padding:2px; color:black;'>" + label + "<br/>€" + series.data[0][1] + "</div>";
     } 
 })
