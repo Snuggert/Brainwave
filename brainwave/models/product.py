@@ -23,6 +23,8 @@ class Product(db.Model, BaseEntity):
     stock_id = db.Column(db.Integer, db.ForeignKey('stock.id'))
     assoc_id = db.Column(db.Integer, db.ForeignKey('association.id'))
 
+    sold_pieces = db.relationship('TransactionPiece', backref='product')
+
     def __init__(self, name='', shortname='', price=None, volume=None,
                  product_category=None, stock=None, association=None):
         self.active = False

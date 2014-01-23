@@ -1,15 +1,16 @@
 'use strict';
 
 $(function(){
-    var data = new Array();
+    var graphdata = new Array();
+    var piedata = new Array();
     $.each(brainwave.graphdata, function( key, value ) {
-        data.push({
+        graphdata.push({
             label: key,
             color: '#'+Math.floor(Math.random()*16777215).toString(16),
             data: value
         });
     });
-    var plot = $.plot(".chart_div", data,
+    var plot = $.plot(".chart_div", graphdata,
     {
         series: {
             points: {
@@ -72,7 +73,32 @@ $(function(){
     $(".chart_div").unbind("plotclick");
     $(".chart_div").bind("plotclick", function (event, pos, item) {
         if(item) {
-            console.log(item)
+            var transaction;
+            $.ajax({
+                type: "GET",
+                url: "/api/transaction/" + item.series.data[item.dataIndex][2],
+                async: false,
+                success: function (data) {
+                    transaction=data.transaction;
+                }  
+            });
+            piedata = new Array();
+            $.each(transaction.pieces, function(key,value) {
+                piedata.push({
+                    label: value.product.name,
+                    color: '#'+Math.floor(Math.random()*16777215).toString(16),
+                    data: value.price
+                });
+            });
+            $.plot($('.modal-body'), piedata, {
+                series: {
+                    pie: {
+                        radius: 0.8,
+                        show: true,
+                    }
+                }
+            });
+            $('#point_modal').modal('show')
         }
     });
 })
