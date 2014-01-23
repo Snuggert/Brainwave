@@ -2,9 +2,9 @@
 
 $(function(){
     $('select').select2();
-    var stock = new models.Trans_in(brainwave.trans_in);
+    var stock = new models.Stock(brainwave.stock);
     $('#createhide').toggle();
-    $('form#new_trans_in').on('submit', function(e) {
+    $('form#new_stock').on('submit', function(e) {
         e.preventDefault();
 
 

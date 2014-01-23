@@ -20,18 +20,18 @@ def create():
     return jsonify(id=stock.id)
 
 
-@stock_api.route('/<int:stock_id>/<int:quantity>', methods=['PUT'])
+@stock_api.route('/<int:stock_id>/<string:unit>', methods=['PUT'])
 @Authentication(User.ROLE_ASSOCIATION)
-def add(stock_id, quantity):
+def add(stock_id, unit):
     """Add items to stock."""
     stock = StockController.get(stock_id)
 
     if not stock:
         return jsonify(error='Stock item not found'), 500
 
-    stock = StockController.add(stock, quantity)
+    stock = StockController.add(stock, unit)
 
-    return jsonify(quantity=stock.quantity)
+    return jsonify(unit=stock.unit)
 
 
 @stock_api.route('/<int:stock_id>', methods=['DELETE'])
