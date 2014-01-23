@@ -84,7 +84,7 @@ var ProductButtonView = Backbone.View.extend({
     initialize: function() {
         /* Listen to a custom events that are triggered by ReceiptView */
         Backbone.pubSub.on('add_entry_finish', this.set_btn_quantity, this);
-        Backbone.pubSub.on('clear_buttons', this.clear_buttons, this);
+        Backbone.pubSub.on('pay_finish', this.clear_buttons, this);
         /* Listen to a custom event that is triggered by NumpadView */
         Backbone.pubSub.on('send_numpad_val', this.send_entry, this);
         this.update();
@@ -146,15 +146,13 @@ var ReceiptView = Backbone.View.extend({
         /* Listen to a custom event from the ProductButtonView */
         Backbone.pubSub.on('add_entry_init', this.new_entry, this);
         /* Listen to a custom event from the PayButtonView */
-        Backbone.pubSub.on('pay', this.pay, this);
+        Backbone.pubSub.on('pay_init', this.pay_init, this);
         /* Start a new transaction and render an empty list */
         this.empty();
     },
     empty: function() {
         this.transaction = new TransactionModel();
         this.render();
-        /* Tell the ProductBUttonView to clear all button quantities  */
-        Backbone.pubSub.trigger('clear_buttons');
     },
     render: function() {
         var template = _.template($('#receipt-view-template').html(),
@@ -189,11 +187,13 @@ var ReceiptView = Backbone.View.extend({
     delete: function() {
 
     },
-    pay: function() {
+    pay_init: function() {
         var me = this;
         this.transaction.save({}, {
             success: function() {
                 me.empty();
+                /* Tell the ProductBUttonView to clear all button quantities */
+                Backbone.pubSub.trigger('pay_finish');
                 alert('Transaction completed.');
             }, error: function(model, response) {
                 alert('Transaction failed: ' + response.responseText);
@@ -267,7 +267,7 @@ var PayButtonView = Backbone.View.extend({
     },
     tapped: function(event) {
         /* Tell the ReceiptView to save the transaction to the server */
-        Backbone.pubSub.trigger('pay');
+        Backbone.pubSub.trigger('pay_init');
     }
 });
 
