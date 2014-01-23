@@ -3,7 +3,7 @@ html {
     padding: 0px;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
 }
 
 body {
@@ -128,10 +128,13 @@ body {
 }
 
 .numpad-btn-big {
-    width: 50%;
-    background-color: #E3E3E3;
+    width: 100%;
+    background-color: #B2B2B2;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 22px;
+    border-top: 1px #6B6B6B solid;
+    border-left: 1px #6B6B6B solid;
+    border-right: 1px #6B6B6B solid;
 }
 
 .receipt {
