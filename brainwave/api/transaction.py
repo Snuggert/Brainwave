@@ -13,7 +13,7 @@ transaction_api = Blueprint('transaction_api', __name__,
 # {
 #    "pay_type":"cash",
 #    "action":"sell",
-#    "items":[
+#    "entries":[
 #       {
 #          "product_id":"1",
 #          "quantity": "7"
@@ -38,7 +38,7 @@ def create():
     transaction = TransactionController.create(transaction_dict)
 
     if not transaction:
-        return jsonify(status='failed', error="Could not sell items."), 500
+        return jsonify(status='error', error="Could not sell items."), 500
 
     return jsonify(status='success')
 

@@ -21,7 +21,7 @@ class TransactionController:
         db.session.commit()
 
         # Create individual records for each individual "transaction_piece"
-        for piece in ta_dict['items']:
+        for piece in ta_dict['entries']:
             if piece['quantity'] < 0:
                 return False
             # Add transaction_id to the piece

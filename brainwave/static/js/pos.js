@@ -5,7 +5,8 @@ Backbone.pubSub = _.extend({}, Backbone.Events);
 var TransactionModel = Backbone.Model.extend({
     urlRoot: '/api/transaction',
     defaults: {
-        pay_type: 'cash'
+        pay_type: 'cash',
+        action: 'sell'
     },
     initialize: function() {
         /* Set this.entries to a new collection as a default value */
@@ -14,9 +15,6 @@ var TransactionModel = Backbone.Model.extend({
             /* Reverse sort the entries collection. Note the minus! */
             return -entries.get("modified_time");
         };
-        this.bind("error", function(model, error) {
-            console.log("Could not initialize a transaction.");
-        });
     },
     new_entry: function(data) {
         /* Set the modified_time, which is used for sorting the collection */
@@ -42,7 +40,6 @@ var EntryModel = Backbone.Model.extend({
         product_id: 0,
         quantity: 0,
         price: 0.0, /* price for a single item, not multiplied by quantity */
-        action: 'sell',
         modified_time: 0 /* Meta-data, to be used for sorting purposes */
     },
     initialize: function() {
@@ -85,8 +82,9 @@ var ProductButtonView = Backbone.View.extend({
     products: new Products(),
     receiptData: {},
     initialize: function() {
-        /* Listen to a custom event that is triggered by ReceiptView */
+        /* Listen to a custom events that are triggered by ReceiptView */
         Backbone.pubSub.on('add_entry_finish', this.set_btn_quantity, this);
+        Backbone.pubSub.on('clear_buttons', this.clear_buttons, this);
         /* Listen to a custom event that is triggered by NumpadView */
         Backbone.pubSub.on('send_numpad_val', this.send_entry, this);
         this.update();
@@ -136,6 +134,9 @@ var ProductButtonView = Backbone.View.extend({
 
         $("div[product-id='" + data.product_id + "'] .item-btn-amount-now")
             .html(quantity);
+    },
+    clear_buttons: function() {
+        $('.item-btn-amount-now').html('');
     }
 });
 
@@ -144,12 +145,16 @@ var ReceiptView = Backbone.View.extend({
     initialize: function() {
         /* Listen to a custom event from the ProductButtonView */
         Backbone.pubSub.on('add_entry_init', this.new_entry, this);
+        /* Listen to a custom event from the PayButtonView */
+        Backbone.pubSub.on('pay', this.pay, this);
         /* Start a new transaction and render an empty list */
         this.empty();
     },
     empty: function() {
         this.transaction = new TransactionModel();
         this.render();
+        /* Tell the ProductBUttonView to clear all button quantities  */
+        Backbone.pubSub.trigger('clear_buttons');
     },
     render: function() {
         var template = _.template($('#receipt-view-template').html(),
@@ -181,8 +186,19 @@ var ReceiptView = Backbone.View.extend({
         this.transaction.new_entry(data);
         this.render();
     },
-    delete: function(product_id) {
+    delete: function() {
 
+    },
+    pay: function() {
+        var me = this;
+        this.transaction.save({}, {
+            success: function() {
+                me.empty();
+                alert('Transaction completed.');
+            }, error: function(model, response) {
+                alert('Transaction failed: ' + response.responseText);
+            }
+        });
     }
 });
 
@@ -243,12 +259,25 @@ var NumpadView = Backbone.View.extend({
     }
 });
 
+var PayButtonView = Backbone.View.extend({
+    initialize: function() {
+    },
+    events: {
+        'click': 'tapped'
+    },
+    tapped: function(event) {
+        /* Tell the ReceiptView to save the transaction to the server */
+        Backbone.pubSub.trigger('pay');
+    }
+});
+
 
 $(document).ready(function() {
     /* Initialize the backbone views */
     var product_button_view = new ProductButtonView({ el: $("#pos-item-container") });
     var receipt_view        = new ReceiptView({ el: $("#receipt") });
     var numpad_view         = new NumpadView({ el: $("#numpad") });
+    var pay_button_view     = new PayButtonView({ el: $(".pay-btn") });
 
     /* Event handler for window resize, which resizes the item-btn overlays */
     $(document).on('resize', function(e) {
