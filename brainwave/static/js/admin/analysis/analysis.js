@@ -95,10 +95,23 @@ $(function(){
                     pie: {
                         radius: 0.8,
                         show: true,
+                        innerRadius: 0.2,
+                        label: {
+                            show: true,
+                            radius: 1/4,
+                            formatter: labelFormatter,
+                            background: {
+                                opacity: 0.8
+                            }
+                        }
                     }
-                }
+                },
             });
             $('#point_modal').modal('show')
         }
     });
+    function labelFormatter(label, series) {
+        console.log(series);
+        return "<div style='font-size:8pt; text-align:center; padding:2px; color:black;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
+    } 
 })

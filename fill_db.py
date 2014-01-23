@@ -57,14 +57,14 @@ product1 = Product('Hertog Jan 30cL', 'HJ 30cL', 0.70, 300, product_category1,
                    stock1, assoc1)
 product2 = Product('Hertog Jan 50cL', 'HJ 50cL', 1.00, 500, product_category1,
                    stock1, assoc1)
-product3 = Product('Chardonnay 25cL', 'Chard. 25cL', 2.00, 250, product_category2,
-                   stock1, assoc1)
+product3 = Product('Chardonnay 25cL', 'Chard. 25cL', 2.00, 250,
+                   product_category2, stock1, assoc1)
 product4 = Product('Zakje pinda\'s', 'Pinda\'s', 1.25, 100, product_category3,
                    stock1, assoc1)
 product5 = Product('Coca Cola 33cL', 'Cola', 0.50, 330, product_category4,
                    stock1, assoc1)
-product6 = Product('Coca Cola Light 33cL', 'Cola L.', 0.50, 330, product_category4,
-                   stock1, assoc1)
+product6 = Product('Coca Cola Light 33cL', 'Cola L.', 0.50, 330,
+                   product_category4, stock1, assoc1)
 product7 = Product('Twix', 'Twix', 0.75, 120, product_category5,
                    stock1, assoc1)
 product8 = Product('Mars', 'Mars', 0.75, 120, product_category5,
@@ -97,6 +97,6 @@ trans1 = Transaction('cash', 'paid', assoc1)
 db.session.add(trans1)
 db.session.commit()
 
-trans1_piece1 = TransactionPiece(trans1, product1, product1.price, 'sell')
+trans1_piece1 = TransactionPiece(trans1, product1, 1, product1.price)
 db.session.add(trans1_piece1)
 db.session.commit()
