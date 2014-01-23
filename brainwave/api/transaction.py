@@ -31,11 +31,11 @@ transaction_api = Blueprint('transaction_api', __name__,
 @Authentication(User.ROLE_ASSOCIATION)
 def create():
     """Create a new transaction."""
-    dict = request.json
-    print dict
+    transaction_dict = request.json
+
     # Note that the TransactionController creates records for both the
     # Transaction table as the TransactionPiece table.
-    transaction = TransactionController.create(dict)
+    transaction = TransactionController.create(transaction_dict)
 
     if not transaction:
         return jsonify(status='failed', error="Could not sell items."), 500
