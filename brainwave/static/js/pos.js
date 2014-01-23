@@ -86,9 +86,9 @@ var ProductButtonView = Backbone.View.extend({
     receiptData: {},
     initialize: function() {
         /* Listen to a custom event that is triggered by ReceiptView */
-        Backbone.pubSub.on('rcpt_done', this.btn_quantity, this);
+        Backbone.pubSub.on('add_entry_finish', this.set_btn_quantity, this);
         /* Listen to a custom event that is triggered by NumpadView */
-        Backbone.pubSub.on('send_numpad_val', this.send_to_receipt, this);
+        Backbone.pubSub.on('send_numpad_val', this.send_entry, this);
         this.update();
     },
     update: function() {
@@ -108,9 +108,9 @@ var ProductButtonView = Backbone.View.extend({
         $().shape_overlays();
     },
     events: {
-        'click .item-btn': 'prepare_to_receipt'
+        'click .item-btn': 'prepare_entry'
     },
-    prepare_to_receipt: function (event) {
+    prepare_entry: function (event) {
         var $this    = $(event.currentTarget)
         ,   id       = parseInt($this.attr("product-id"))
         ,   price    = parseFloat($this.attr("product-price"))
@@ -122,12 +122,12 @@ var ProductButtonView = Backbone.View.extend({
          */
         Backbone.pubSub.trigger('request_numpad_val');
     },
-    send_to_receipt: function(data) {
+    send_entry: function(data) {
         this.receiptData['quantity'] = data.value;
         /* Trigger a custom event that ReceiptView is listening to */
-        Backbone.pubSub.trigger('rcpt_new', this.receiptData);
+        Backbone.pubSub.trigger('add_entry_init', this.receiptData);
     },
-    btn_quantity: function(data) {
+    set_btn_quantity: function(data) {
         /* Display the quantity of a product on the relevant button.
          * This is not done in the render function, since that would require
          * all buttons to render again. Using jQuery instead.
@@ -143,7 +143,7 @@ var ReceiptView = Backbone.View.extend({
     transaction: new TransactionModel(),
     initialize: function() {
         /* Listen to a custom event from the ProductButtonView */
-        Backbone.pubSub.on('rcpt_new', this.new_entry, this);
+        Backbone.pubSub.on('add_entry_init', this.new_entry, this);
         /* Start a new transaction and render an empty list */
         this.empty();
     },
@@ -170,11 +170,10 @@ var ReceiptView = Backbone.View.extend({
              * amount displayed on the appropriate button. A custom event is
              * triggered to facilitate this.
              */
-
             var latest = this.transaction.get('entries').models[0].attributes;
             var jsonData = {'product_id': latest.product_id,
                             'quantity': latest.quantity};
-            Backbone.pubSub.trigger('rcpt_done', jsonData);
+            Backbone.pubSub.trigger('add_entry_finish', jsonData);
         }
     },
     new_entry: function(data) {

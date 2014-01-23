@@ -12,16 +12,15 @@ transaction_api = Blueprint('transaction_api', __name__,
 # Dictionary format example:
 # {
 #    "pay_type":"cash",
+#    "action":"sell",
 #    "items":[
 #       {
 #          "product_id":"1",
-#          "quantity": "7",
-#          "action":"sell"
+#          "quantity": "7"
 #       },
 #       {
 #          "product_id":"2",
-#          "quantity": "100",
-#          "action":"sell"
+#          "quantity": "100"
 #       }
 #    ]
 # }

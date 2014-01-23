@@ -7,11 +7,12 @@ from brainwave.controllers.product import ProductController
 
 class TransactionController:
     @staticmethod
-    def create(dict):
+    def create(ta_dict):
         # Temporarily set assoc_id to 1, should be changed later
         transaction = Transaction.new_dict({'assoc_id': '1',
-                                            'pay_type': dict['pay_type'],
-                                            'status': 'pending'})
+                                            'pay_type': ta_dict['pay_type'],
+                                            'status': 'pending',
+                                            'action': ta_dict['action']})
 
         if not transaction:
             return False
@@ -20,14 +21,16 @@ class TransactionController:
         db.session.commit()
 
         # Create individual records for each individual "transaction_piece"
-        for piece in dict['items']:
+        for piece in ta_dict['items']:
+            if piece['quantity'] < 0:
+                return False
             # Add transaction_id to the piece
             piece['transaction_id'] = transaction.id
             # Verify that the product exists (and use it to get the price)
             product = ProductController.get(piece['product_id'])
             if not product:
                 return False
-            piece['price'] = product.price
+            piece['price'] = product.price * piece['quantity']
 
             transaction_piece = TransactionPieceController.create(piece)
             if not transaction_piece:

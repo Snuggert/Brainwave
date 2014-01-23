@@ -11,13 +11,13 @@ class TransactionPiece(db.Model, BaseEntity):
 
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
 
+    quantity = db.Column(db.Integer)
+
     price = db.Column(db.Float)
 
-    action = db.Column(db.Enum('sell', 'refund', 'gift', name='action'))
-
-    def __init__(self, transaction=None, product=None, price=None,
-                 action='sell'):
+    def __init__(self, transaction=None, product=None, quantity=None,
+                 price=None):
         self.transaction = transaction
         self.product = product
+        self.quantity = quantity
         self.price = price
-        self.action = action

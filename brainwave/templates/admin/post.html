@@ -8,8 +8,8 @@ $(document).ready(function(){
     $.ajax({
       type: "POST",
       contentType: "application/json; charset=utf-8",
-      url: "http://localhost:5000/api/transaction/new",
-      data: '{"pay_type": "cash", "items": [{ "product_id": "1", "action": "sell"}, { "product_id": "2", "action": "sell"}, { "product_id": "2", "action": "sell"}, { "product_id": "2", "action": "refund"}]}',
+      url: "http://localhost:5000/api/transaction",
+      data: '{"pay_type": "cash", "action": "sell", "items": [{ "product_id": "1", "quantity": 5}, { "product_id": "2", "quantity": 16}, { "product_id": "3", "quantity": 2}]}',
       success: function (data) {
         console.log(data);
       },
