@@ -6,14 +6,19 @@ var TransactionModel = Backbone.Model.extend({
     urlRoot: '/api/transaction',
     defaults: {
         pay_type: 'cash',
-        action: 'sell'
+        action: 'sell',
+        customer_id: 0,
+        mutable: true /* This is meta-data, not important to the API */
     },
     initialize: function() {
         /* Set this.entries to a new collection as a default value */
         this.attributes.entries = new EntryCollection();
+        /* The comparator function defines the way in which a collection
+         * should be sorted. In this case, it's by 'last updated'
+         */
         this.attributes.entries.comparator = function(entries) {
             /* Reverse sort the entries collection. Note the minus! */
-            return -entries.get("modified_time");
+            return -entries.get('modified_time');
         };
     },
     new_entry: function(data) {
@@ -75,13 +80,50 @@ var ProductModel = Backbone.Model.extend({
     }
 });
 
+var PayModuleModel = Backbone.Model.extend({
+    defaults: {
+        receipt_price: 0.0
+    },
+    initialize: function() {
+        this.bind("error", function(model, error) {
+            console.log("Could not initialize a PayModuleModel.");
+        });
+    }
+});
+
+var OverlayModel = Backbone.Model.extend({
+    defaults: {
+        status: 'off', /* can also be 'on' */
+        message: '',
+        quiet: true /* When false, a prompt will show before disappearing */
+    },
+    initialize: function() {
+        this.bind("error", function(model, error) {
+            console.log("Could not initialize a OverlayModel.");
+        });
+    }
+});
+
 var NumpadModel = Backbone.Model.extend({
     defaults: {
-        value: 1
+        type: 'standard', /* Type of numpad. Can also be 't9' */
+        real: 1,
+        display: '1'
     },
     initialize: function() {
         this.bind("error", function(model, error) {
             console.log("Could not initialize a NumpadModel.");
+        });
+    }
+});
+
+TransactButtonModel = Backbone.Model.extend({
+    defaults: {
+        state: 'pay' /* State of the button, not the page as a whole */
+    },
+    initialize: function() {
+        this.bind("error", function(model, error) {
+            console.log("Could not initialize a TransactButtonModel.");
         });
     }
 });
@@ -100,14 +142,17 @@ var ProductButtonView = Backbone.View.extend({
     products: new Products(),
     receiptData: {},
     initialize: function() {
-        /* Listen to a custom events that are triggered by ReceiptView */
-        Backbone.pubSub.on('add_entry_finish', this.set_btn_quantity, this);
-        Backbone.pubSub.on('pay_finish', this.clear_buttons, this);
+        /* Listen to custom events that are triggered by TransactionView */
+        Backbone.pubSub.on('add_entry_finish', this.on_add_entry_finish, this);
+        Backbone.pubSub.on('receipt_emptied', this.on_receipt_emptied, this);
         /* Listen to a custom event that is triggered by NumpadView */
-        Backbone.pubSub.on('send_numpad_val', this.send_entry, this);
+        Backbone.pubSub.on('numpad_push', this.on_numpad_push, this);
         /* Listen to a custom event that is triggered by TransactionModel */
-        Backbone.pubSub.on('entry_deleted', this.set_btn_quantity, this);
+        Backbone.pubSub.on('entry_deleted', this.on_entry_deleted, this);
         this.update();
+    },
+    hammerEvents: {
+        'tap .item-btn': 'prepare_entry'
     },
     update: function() {
         var me = this;
@@ -125,24 +170,21 @@ var ProductButtonView = Backbone.View.extend({
         /* The button overlays have to be sized/shaped with jQuery. */
         $().shape_overlays();
     },
-    hammerEvents: {
-        'tap .item-btn': 'prepare_entry'
-    },
     prepare_entry: function (event) {
         var $this    = $(event.currentTarget)
         ,   id       = parseInt($this.attr("product-id"))
         ,   price    = parseFloat($this.attr("product-price"))
         ,   name     = $this.find('.item-btn-name').text();
-        /* Make a JSON object, which shall be passed to ReceiptView later. */
+        /* Make a JSON object, which shall be passed to TransactionView later. */
         this.receiptData = {'product_id': id, 'price': price, 'name': name};
         /* Trigger a custom event that NumpadView is listening to. This is so
          * the numpad value can be obtained.
          */
-        Backbone.pubSub.trigger('request_numpad_val');
+        Backbone.pubSub.trigger('numpad_pull');
     },
     send_entry: function(data) {
         this.receiptData['quantity'] = data.value;
-        /* Trigger a custom event that ReceiptView is listening to */
+        /* Trigger a custom event that TransactionView is listening to */
         Backbone.pubSub.trigger('add_entry_init', this.receiptData);
     },
     set_btn_quantity: function(data) {
@@ -157,37 +199,185 @@ var ProductButtonView = Backbone.View.extend({
     },
     clear_buttons: function() {
         $('.item-btn-amount-now').html('');
+    },
+    on_add_entry_finish: function(data) {
+        this.set_btn_quantity(data);
+    },
+    on_receipt_emptied: function() {
+        this.clear_buttons();
+    },
+    on_numpad_push: function(data) {
+        this.send_entry(data);
+    },
+    on_entry_deleted: function(data) {
+        this.set_btn_quantity(data);
     }
 });
 
-var ReceiptView = Backbone.View.extend({
+PayModuleView = Backbone.View.extend({
+    customers: new collections.Customers(),
+    paymodule: new PayModuleModel(),
+
+    initialize: function() {
+        this.update();
+        /* Listen to custom events from the TransactionView */
+        Backbone.pubSub.on('pay_init', this.on_pay_init, this);
+        Backbone.pubSub.on('pay_complete', this.on_pay_complete, this);
+    },
+    hammerEvents: {
+        'tap .confirm-btn': 'confirm',
+        'tap .list-group-item': 'select_customer'
+    },
+    update: function() {
+        var me = this;
+
+        $.get('/api/customer/all', {}, function(data) {
+            me.customers = new collections.Customers(data.customers);
+            me.render();
+        });
+    },
+    render: function() {
+        var template = _.template($('#customer-view-template').html(),
+            {customers: this.customers.models});
+        this.$el.html(template);
+    },
+    confirm: function(event) {
+        var $this  = $(event.currentTarget);
+
+        if ($this.hasClass('cash'))
+            var pay_type = 'cash'
+        else if ($this.hasClass('pin'))
+            var pay_type = 'pin'
+        else if ($this.hasClass('credit') && !$this.hasClass('grayed'))
+            var pay_type = 'credit'
+        else
+            return;
+
+        var customer_id = parseInt($('.customer-list').find('.selected').
+                                   attr('customer-id'));
+
+        var jsonData = {'pay_type': pay_type, 'customer_id': customer_id};
+        Backbone.pubSub.trigger('pay', jsonData);
+    },
+    select_customer: function(event) {
+        var $this  = $(event.currentTarget);
+
+        var current_id = $('.customer-list .selected').attr('customer-id');
+        this.unselect_customer();
+        /* Only add a new class if a different customer was tapped. Otherwise,
+         * it is supposed to work like a toggle.
+         */
+        if ($this.attr('customer-id') != current_id &&
+            $this.attr('customer-id') > 0 &&
+            $this.attr('customer-credit') >= this.paymodule.get('receipt_price')) {
+            this.$el.find('.credit').removeClass('grayed');
+            $this.addClass('selected');
+        }
+    },
+    unselect_customer: function() {
+        $('.customer-list .selected').removeClass('selected');
+        this.$el.find('.credit').addClass('grayed');
+    },
+    on_pay_init: function(data) {
+        this.paymodule.set({'receipt_price': data.receipt_price});
+        this.unselect_customer();
+    },
+    on_pay_complete: function(data) {
+        this.update();
+    }
+});
+
+OverlayView = Backbone.View.extend({
+    overlay: new OverlayModel(),
+    initialize: function() {
+        /* Listen to custom events from the TransactionView */
+        Backbone.pubSub.on('pay', this.on_pay_init, this);
+        Backbone.pubSub.on('pay_complete', this.on_pay_complete, this);
+        Backbone.pubSub.on('pay_cancel', this.on_pay_cancel, this);
+    },
+    hammerEvents: {
+        'tap .confirm-btn': 'confirm'
+    },
+    show: function(loading) {
+        if (loading) {
+            this.$el.find('.confirm-btn').hide();
+            this.$el.find('#loading-img').show();
+            this.overlay.set({'message': 'Processing..'});
+        } else {
+            this.$el.find('.confirm-btn').show();
+            this.$el.find('#loading-img').hide();
+        }
+
+        this.$el.find('#overlay-msg').html(this.overlay.get('message'));
+        this.$el.show();
+    },
+    hide: function() {
+        this.overlay.set({'message': ''});
+        this.$el.hide();
+    },
+    confirm: function() {
+        this.hide();
+    },
+    on_pay: function() {
+        this.show(true);
+    },
+    on_pay_complete: function() {
+        this.hide();
+    },
+    on_pay_cancel: function(data) {
+        if (data && data.reason == 'error') {
+            var obj = $.parseJSON(data.message);
+            this.overlay.set({'message': obj.error});
+            this.show(false);
+        } else
+            this.$el.hide();
+    }
+});
+
+var TransactionView = Backbone.View.extend({
     transaction: new TransactionModel(),
     initialize: function() {
         /* Listen to custom events from the ProductButtonView */
-        Backbone.pubSub.on('add_entry_init', this.new_entry, this);
-        Backbone.pubSub.on('entry_deleted', this.render, this);
-        /* Listen to a custom event from the PayButtonView */
-        Backbone.pubSub.on('pay_init', this.pay_init, this);
+        Backbone.pubSub.on('add_entry_init', this.on_add_entry_init, this);
+        Backbone.pubSub.on('entry_deleted', this.on_entry_deleted, this);
+        /* Listen to custom events from the PayButtonView */
+        Backbone.pubSub.on('pay_init_request', this.on_pay_init_request, this);
+        Backbone.pubSub.on('pay_init', this.on_pay_init, this);
+        Backbone.pubSub.on('pay', this.on_pay, this);
+        /* Listen to a custom event that can come from multiple places */
+        Backbone.pubSub.on('pay_cancel', this.on_pay_cancel, this);
         /* Start a new transaction and render an empty list */
         this.empty();
+    },
+    hammerEvents: {
+        'swipeleft .list-group-item': 'show_delete',
+        'tap .list-group-item': 'hide_delete',
+        'tap .list-delete': 'delete_entry'
     },
     empty: function() {
         this.transaction = new TransactionModel();
         this.render();
+
+        Backbone.pubSub.trigger('receipt_emptied', {});
+    },
+    lock: function() {
+        this.transaction.set({'mutable': false});
+    },
+    unlock: function() {
+        this.transaction.set({'mutable': true});
+    },
+    is_locked: function() {
+        return !this.transaction.get('mutable');
     },
     render: function() {
         var template = _.template($('#receipt-view-template').html(),
             {entries: this.transaction.get('entries').models});
         this.$el.html(template);
 
+        var total = this.get_total();
         /* Set the receipt total. For now, this is done using jQuery, since
          * the total price is not a part of any model.
          */
-        var total = 0.0;
-        _.each(this.transaction.get('entries').models, function(entry) {
-            total += (entry.get('price') * entry.get('quantity'));
-            /* Scale the delete button */
-        });
         $('#receipt-total').text(total.toFixed(2).replace('.', ','));
 
         if (total) {
@@ -201,69 +391,140 @@ var ReceiptView = Backbone.View.extend({
             Backbone.pubSub.trigger('add_entry_finish', jsonData);
         }
     },
-    hammerEvents: {
-        'swipeleft .list-entry': 'show_delete',
-        'tap .list-entry': 'hide_delete',
-        'tap .list-delete': 'delete_entry'
+    get_total: function() {
+        var total = 0.0;
+        _.each(this.transaction.get('entries').models, function(entry) {
+            total += (entry.get('price') * entry.get('quantity'));
+        });
+        return total;
     },
     new_entry: function(data) {
+        if (this.is_locked())
+            return;
+
         /* Add a new entryModel to the collection in the transaction model */
         this.transaction.new_entry(data);
         this.render();
-    },
-    hide_delete: function(event) {
-        var $this = $(event.currentTarget);
-        /* Hide all delete buttons */
-        $this.parent().find('.list-delete').hide();
-    },
-    show_delete: function(event) {
-        var $this = $(event.currentTarget);
-        /* Hide all delete buttons */
-        this.hide_delete(event);
-        /* Scale the button and show it with a slide */
-        $this.find('.list-delete').css('line-height', $this.find('.list-delete').height() + 'px');
-        $this.find('.list-delete').show('slide', {direction: 'right'}, 250);
+
+        /* Scroll to top of the receipt */
+        this.$el.scrollTop(0);
     },
     delete_entry: function(event) {
+        if (this.is_locked())
+            return;
+
         var $this  = $(event.currentTarget)
         ,   id     = $this.parent().find('.item-count').attr('product-id');
 
-        this.transaction.delete_entry({'product_id': parseInt(id)});
+        if ($this.hasClass('list-delete-all'))
+            this.empty();
+        else
+            this.transaction.delete_entry({'product_id': parseInt(id)});
     },
-    pay_init: function() {
+    pay: function(data) {
         var me = this;
+
+        if(!this.transaction.get('entries').length)
+            return;
+
+        this.transaction.set({'pay_type': data.pay_type,
+                              'customer_id': data.customer_id})
+
         this.transaction.save({}, {
             success: function() {
                 me.empty();
-                /* Tell the ProductBUttonView to clear all button quantities */
-                Backbone.pubSub.trigger('pay_finish');
-                alert('Transaction completed.');
+                Backbone.pubSub.trigger('pay_complete', {});
             }, error: function(model, response) {
-                alert('Transaction failed: ' + response.responseText);
+                Backbone.pubSub.trigger('pay_cancel',
+                                        {'reason': 'error',
+                                         'message': response.responseText});
             }
         });
+    },
+    hide_delete: function() {
+        /* Hide all delete buttons */
+        $('.list-delete').hide();
+    },
+    show_delete: function(event) {
+        if (this.is_locked())
+            return;
+
+        var $this = $(event.currentTarget);
+        /* Hide all delete buttons */
+        this.hide_delete();
+        /* Scale the button and show it with a slide */
+        $this.find('.list-delete').css('line-height',
+                $this.find('.list-delete').height() + 'px');
+        $this.find('.list-delete').show('slide', {direction: 'right'}, 250);
+    },
+    on_add_entry_init: function(data) {
+        this.new_entry(data);
+    },
+    on_entry_deleted: function(data) {
+        this.render(data);
+    },
+    on_pay_init_request: function(data) {
+        /* Verify that the receipt isn't empty */
+        if (this.get_total() > 0.0)
+            Backbone.pubSub.trigger('pay_init_allowed',
+                                    {'receipt_price': this.get_total()});
+    },
+    on_pay_init: function(data) {
+        /* Lock the receipt, so it can no longer be modified */
+        this.lock();
+
+        /* Hide all delete buttons */
+        this.hide_delete();
+    },
+    on_pay: function(data) {
+        this.pay(data);
+    },
+    on_pay_cancel: function(data) {
+        this.unlock();
     }
 });
 
 var NumpadView = Backbone.View.extend({
     numpad: new NumpadModel(),
     initialize: function() {
-        /* Listen to a custom event from the ProductButtonView */
-        Backbone.pubSub.on('request_numpad_val', this.push_value, this);
-        /* Listen to a custom event from the ReceiptView */
-        Backbone.pubSub.on('pay_finish', this.reset, this);
+        /* Listen to custom events from the ProductButtonView */
+        Backbone.pubSub.on('numpad_pull', this.on_numpad_pull, this);
+        Backbone.pubSub.on('pay_init', this.on_pay_init, this);
+        /* Listen to a custom event from the PayModuleView */
+        Backbone.pubSub.on('pay', this.on_pay, this);
+        /* Listen to a custom event that can come from multiple places */
+        Backbone.pubSub.on('pay_cancel', this.on_pay_cancel, this);
+        /* Listen to a custom event from the TransactionView */
+        Backbone.pubSub.on('receipt_emptied', this.on_receipt_emptied, this);
         /* Set the numpad to a default value */
-        this.reset();
+        this.hard_reset();
     },
     hammerEvents: {
         'tap .numpad-btn': 'tapped'
     },
+    hard_reset: function() {
+        /* This function does the same as reset, only also forces the numpad
+         * back to the standard type.
+         */
+        this.numpad.set({'type': 'standard'});
+        this.reset();
+    },
     reset: function() {
-        this.numpad.set({'display': '', 'real': 1});
-        $('#numpad-invert-sign').text('Neg (-)');
-        this.render();
+        if (this.numpad.get('type') == 'standard') {
+            this.numpad.set({'display': '', 'real': 1});
+            $('#numpad-ctrl-sign').text('Neg (-)');
+        }
+        else if (this.numpad.get('type') == 't9') {
+            this.numpad.set({'display': '', 'real': ''});
+            $('#numpad-ctrl-sign').text('<=');
+        }
+        this.display();
     },
     render: function() {
+        /* This is temporary, the numpad should be rendered via lodash.js */
+        this.display();
+    },
+    display: function() {
         $('#numpad-display').html(this.numpad.get('display'));
     },
     tapped: function(event) {
@@ -280,68 +541,133 @@ var NumpadView = Backbone.View.extend({
         /* Deal with the actual functionality */
         var numpad_id = $this.attr('numpad-id');
 
-        /* If the invert sign button was tapped, call another function. */
-        if (numpad_id == 'neg')
+        /* If the ctrl button was tapped, call another function. */
+        if (numpad_id == 'ctrl' && this.numpad.get('type') == 'standard')
             this.invert_sign();
+        else if (numpad_id == 'ctrl' && this.numpad.get('type') == 't9')
+            this.backspace();
         else if (numpad_id == 'cl')
             this.reset();
         else {
-            var val = parseInt($('#numpad-display').html() + numpad_id);
-                val =  (val > 999)  ? 1000 :
-                      ((val < -999) ? -1000 : val);
-
-            this.numpad.set({'display': val, 'real': val});
-            this.render();
+            var val = $('#numpad-display').html() + numpad_id;
+            if (this.numpad.get('type') == 'standard') {
+                val = parseInt(val);
+                val = (val > 999)  ? 1000 :
+                      (val < -999) ? -1000 : val;
+            } else if (this.numpad.get('type') == 't9') {
+                val = val.replace('0', ' ').replace('1', ' ').replace(/\s+/g, ' ');
+            }
+            
+            this.numpad.set({'display': val.toString(), 'real': val});
+            this.display();
         }
+
+        /* At this point, if the numpad is t9, an event should be triggered */
     },
     invert_sign: function() {
         var current = this.numpad.get('display');
 
         display = (current == '') ? '-' :
-                        ((current == '-') ? '' : -1 * current);
+                  (current == '-') ? '' : -1 * current;
         real    = (current == '') ? -1 :
-                        ((current == '-') ? 1 : -1 * current);
+                  (current == '-') ? 1 : -1 * current;
                
-        this.numpad.set({'display': display, 'real': real});
+        this.numpad.set({'display': display.toString(), 'real': real});
         this.render();
 
         /* Toggle the value of the invert button */
-        $('#numpad-invert-sign').text((real < 0) ? 'Pos (+)' : 'Neg (-)');
+        $('#numpad-ctrl-sign').text((real < 0) ? 'Pos (+)' : 'Neg (-)');
     },
-    push_value: function() {
+    backspace: function() {
+        var str = this.numpad.get('display').slice(0, -1);
+        this.numpad.set({'display': str, real: str});
+        /* Now display the new value */
+        this.display();
+    },
+    on_pay_init: function() {
+        this.numpad.set({'type': 't9'});
+        $('#numpad-ctrl-sign').text('<=');
+        this.reset();
+    },
+    on_pay_cancel: function() {
+        this.hard_reset();
+    },
+    on_pay: function() {
+        this.hard_reset();
+    },
+    on_receipt_emptied: function() {
+        /* This is indirectly called by pay_complete event, via TransactionView */
+        this.hard_reset();
+    },
+    on_numpad_pull: function() {
         /* Get the numpad value and trigger an event for ProductButtonView */
         var jsonData = {'value': this.numpad.get('real')};
-        Backbone.pubSub.trigger('send_numpad_val', jsonData);
+        Backbone.pubSub.trigger('numpad_push', jsonData);
 
         /* Reset the numpad value to 1 and render again */
         this.reset();
     }
 });
 
-var PayButtonView = Backbone.View.extend({
+var TransactButtonView = Backbone.View.extend({
+    button: new TransactButtonModel(),
     initialize: function() {
+        this.button.set({'status': 'pay'});
+        /* Listen to custom events that can come from different views */
+        Backbone.pubSub.on('pay_init_allowed', this.on_pay_init_allowed, this);
+        Backbone.pubSub.on('pay_init', this.on_pay_init, this);
+        Backbone.pubSub.on('pay_cancel', this.on_pay_cancel, this);
+        Backbone.pubSub.on('pay_complete', this.on_pay_complete, this);
     },
     hammerEvents: {
         'tap': 'tapped'
     },
     tapped: function(event) {
-        /* Tell the ReceiptView to save the transaction to the server */
-        Backbone.pubSub.trigger('pay_init');
+        if (this.button.get('status') == 'pay')
+            /* Ask the TransactionView if there are any products to be sold */
+            Backbone.pubSub.trigger('pay_init_request');
+        else if (this.button.get('status') == 'cancel')
+            Backbone.pubSub.trigger('pay_cancel');
+    },
+    toggle: function() {
+        this.$el.toggleClass("pay-btn cancel-btn");
+        $('.transact-btn-text').text((this.button.get('status') == 'pay') ? 'Cancel' : 'Pay');
+        this.button.set({'status':   (this.button.get('status') == 'pay') ? 'cancel' : 'pay'});
+        /* Toggle the views */
+        $().toggle_views();
+    },
+    on_pay_init_allowed: function(data) {
+        /* Show the pay module */
+        Backbone.pubSub.trigger('pay_init', data);
+    },
+    on_pay_init: function() {
+        this.toggle();
+    },
+    on_pay_cancel: function() {
+        this.toggle();
+    },
+    on_pay_complete: function() {
+        this.toggle();
     }
 });
 
 
 $(document).ready(function() {
     /* Initialize the backbone views */
-    var product_button_view = new ProductButtonView({ el: $("#pos-item-container") });
-    var receipt_view        = new ReceiptView({ el: $("#receipt") });
-    var numpad_view         = new NumpadView({ el: $("#numpad") });
-    var pay_button_view     = new PayButtonView({ el: $(".pay-btn") });
+    var product_button_view  = new ProductButtonView({ el: $("#pos-item-container") });
+    var pay_module_view      = new PayModuleView({ el: $("#pos-pay-container") });
+    var overlay_view         = new OverlayView({ el: $(".overlay") });
+    var receipt_view         = new TransactionView({ el: $("#receipt") });
+    var numpad_view          = new NumpadView({ el: $("#numpad") });
+    var transact_button_view = new TransactButtonView({ el: $(".transact-btn") });
 
     /* Event handler for window resize, which resizes the item-btn overlays */
-    $(document).on('resize', function(e) {
+    $(window).on('resize', function(e) {
         $().shape_overlays();
     });
+
+    $('.navbar').hide();
+    $('body').css('padding-top', '10px');
 });
 
 /* Here's a custom function that sizes the product overlays (which hold the
@@ -355,4 +681,9 @@ $.fn.shape_overlays = function () {
         var offset = ($(this).outerHeight() - 75) / 2;
         $(this).css('padding-top', offset + 'px');
     });
+}
+
+$.fn.toggle_views = function () {
+    $('#pos-item-container').toggle();
+    $('#pos-pay-container').toggle();
 }

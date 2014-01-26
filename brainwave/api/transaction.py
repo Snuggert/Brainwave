@@ -35,10 +35,16 @@ def create():
 
     # Note that the TransactionController creates records for both the
     # Transaction table as the TransactionPiece table.
-    transaction = TransactionController.create(transaction_dict)
-
-    if not transaction:
-        return jsonify(status='error', error="Could not sell items."), 500
+    try:
+        TransactionController.create(transaction_dict)
+    except TransactionController.MissingCredit as e:
+        return jsonify(status='error', error=e.error), 500
+    except TransactionController.BadQuantity as e:
+        return jsonify(status='error', error=e.error), 500
+    except TransactionController.BadProduct as e:
+        return jsonify(status='error', error=e.error), 500
+    except TransactionController.UnknownError as e:
+        return jsonify(status='error', error=e.error), 500
 
     return jsonify(status='success')
 

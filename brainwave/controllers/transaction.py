@@ -6,16 +6,34 @@ from brainwave.controllers.product import ProductController
 
 
 class TransactionController:
+    class UnknownError(Exception):
+        def __init__(self):
+            self.error = 'An unexpected error occurred.'
+
+    class MissingCredit(Exception):
+        def __init__(self):
+            self.error = 'The customer does not have enough credit!' + \
+                         ' Transaction cancelled.'
+
+    class BadQuantity(Exception):
+        def __init__(self):
+            self.error = 'The provided quantity is not valid.'
+
+    class BadProduct(Exception):
+        def __init__(self):
+            self.error = 'One of the selected products does not exist.'
+
     @staticmethod
     def create(ta_dict):
         # Temporarily set assoc_id to 1, should be changed later
         transaction = Transaction.new_dict({'assoc_id': '1',
+                                            'cust_id': ta_dict['customer_id'],
                                             'pay_type': ta_dict['pay_type'],
                                             'status': 'pending',
                                             'action': ta_dict['action']})
 
         if not transaction:
-            return False
+            raise TransactionController.UnknownError()
 
         db.session.add(transaction)
         db.session.commit()
@@ -23,18 +41,21 @@ class TransactionController:
         # Create individual records for each individual "transaction_piece"
         for piece in ta_dict['entries']:
             if piece['quantity'] < 0:
-                return False
+                raise TransactionController.BadQuantity()
             # Add transaction_id to the piece
             piece['transaction_id'] = transaction.id
+
             # Verify that the product exists (and use it to get the price)
             product = ProductController.get(piece['product_id'])
             if not product:
-                return False
+                raise TransactionController.BadProduct()
+
             piece['price'] = product.price * piece['quantity']
 
+            # Create a new transaction piece
             transaction_piece = TransactionPieceController.create(piece)
             if not transaction_piece:
-                return False
+                raise TransactionController.UnknownError()
 
         # Finally, update the status of the transaction to "paid"
         TransactionController.set_status(transaction.id, 'paid')

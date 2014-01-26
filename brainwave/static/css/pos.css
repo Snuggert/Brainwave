@@ -1,15 +1,13 @@
 html {
     margin: 0px;
     padding: 0px;
-    width: 100%;
-    height: 100%;
 }
 
 body {
     width: 100%;
     height: 100%;
     padding-top: 70px;
-    background-color: #D9D9D9;
+    background-color: #DEDEDE;
     font-size: 16px;
     cursor: default;
     -webkit-touch-callout: none;
@@ -21,6 +19,31 @@ body {
     overflow: auto;
 }
 
+/* Smartphones should be able to scroll down. 768px is 'xs' in Bootstrap */
+@media all and (max-width: 768px) {
+    body {
+        overflow: auto !important;
+   }
+}
+
+.overlay {
+    display: none;
+    z-index: 999;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    padding-top: 50px;
+    text-align: center;
+    background-color: #444444;
+    opacity: 0.95;
+    font-size: 40px;
+    color: #ffffff;
+}
+
 .item-row > div {
     padding: 8px !important;
 }
@@ -29,12 +52,13 @@ body {
     /* This width/height/padding construction keeps the elements squared */
     width: 100%;
     height: 0;
-    padding-bottom: 80%;
+    padding-bottom: 90%;
     text-align: center;
     overflow: hidden;
-    background-color: #D8E8E6;
+    background-color: #E6E6E6;
+    border: 2px #ffffff solid !important;
     font-weight: bold;
-    border: 5px #868F8E solid;
+    color: #333333;
 }
 
 .item-btn .item-btn-name {
@@ -47,8 +71,8 @@ body {
     left: 12px;
     line-height: 75px;
     font-size: 75px;
-    color: #A3A3A3;
-    opacity: 0.25;
+    color: #8A8A8A;
+    opacity: 0.5;
 }
 
 .item-btn .item-btn-price {
@@ -60,32 +84,58 @@ body {
     font-weight: normal;
 }
 
+/*
 .category-1 {
     background-color: #FFF9D4 !important;
-    border: 5px #F7FF99 solid !important;
+    border: 2px #F7FF99 solid !important;
 }
 .category-2 {
     background-color: #FFE6E6 !important;
-    border: 5px #FF6666 solid !important;
+    border: 2px #FF6666 solid !important;
 }
 .category-3 {
     background-color: #D6FFDD !important;
-    border: 5px #7AFF8E solid !important;
+    border: 2px #7AFF8E solid !important;
 }
 .category-4 {
     background-color: #DBDCFF !important;
-    border: 5px #5D5FF5 solid !important;
+    border: 2px #5D5FF5 solid !important;
 }
 .category-5 {
     background-color: #FFE9CC !important;
-    border: 5px #A67433 solid !important;
+    border: 2px #A67433 solid !important;
 }
 .category-6 {
     background-color: #D8E8E6 !important;
-    border: 5px #868F8E solid !important;
+    border: 2px #868F8E solid !important;
+}
+*/
+.category-1 {
+    background-color: #F8FAD2 !important;
+    border: 4px #F7FF99 solid !important;
+}
+.category-2 {
+    background-color: #FFE6E6 !important;
+    border: 4px #F5A4A4 solid !important;
+}
+.category-3 {
+    background-color: #D6FFDC !important;
+    border: 4px #84E392 solid !important;
+}
+.category-4 {
+    background-color: #D9EDFA !important;
+    border: 4px #A4D1ED solid !important;
+}
+.category-5 {
+    background-color: #FCF8DE !important;
+    border: 4px #F5D8B3 solid !important;
+}
+.category-6 {
+    background-color: #EDEDED !important;
+    border: 4px #BCC4C4 solid !important;
 }
 
-.pay-btn {
+.transact-btn {
     width: 100%;
     height: 0;
     line-height: 100%;
@@ -93,17 +143,30 @@ body {
     padding-top: 6%;
     padding-bottom: 12%;
     text-align: center;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.pay-btn {
     background: -webkit-linear-gradient(#4EF551, #19E60E); /* For Safari */
     background: -o-linear-gradient(#4EF551, #19E60E); /* For Opera 11.1 to 12.0 */
     background: -moz-linear-gradient(#4EF551, #19E60E); /* For Firefox 3.6 to 15 */
     background: linear-gradient(#4EF551, #19E60E); /* Standard syntax */
-    color: white;
-    font-weight: bold;
-    font-size: 20px;
+    border: 1px #ffffff solid;
+}
+
+.cancel-btn {
+    background: -webkit-linear-gradient(#DB2E2E, #E60E0E); /* For Safari */
+    background: -o-linear-gradient(#DB2E2E, #E60E0E); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#DB2E2E, #E60E0E); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#DB2E2E, #E60E0E); /* Standard syntax */
     border: 1px #ffffff solid;
 }
 
 .numpad {
+    z-index: 99;
+    position: relative;
     margin-top: 8px !important;
 }
 
@@ -128,8 +191,11 @@ body {
 }
 
 .numpad-btn-big {
+    padding-top: 3%;
+    padding-bottom: 9%;
     width: 100%;
-    background-color: #C2C2C2;
+    background-color: #616161;
+    color: white;
     font-weight: bold;
     font-size: 22px;
     border-top: 1px #8A8A8A solid;
@@ -145,8 +211,11 @@ body {
 
 .receipt {
     margin-top: 15px !important;
-    margin-bottom: 70px !important;
+    margin-bottom: 15px !important;
     background-color: white;
+    height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .receipt .active-item {
@@ -163,12 +232,12 @@ body {
     font-weight: bold;
 }
 
-.list-group-item:first-child > span {
+.item-list .list-group-item:first-child > span {
     float: right;
     clear: both;
 }
 
-.list-group-item .list-delete {
+.item-list .list-group-item .list-delete {
     display: none;
     position: absolute;
     top: 0px;
@@ -183,4 +252,78 @@ body {
     background: linear-gradient(#DB2E2E, #E60E0E); /* Standard syntax */
     color: white;
     font-size: 14px;
+}
+
+.pay-confirm-options .col-xs-4 {
+    padding: 0;
+    padding-right: 10px;
+}
+
+.pay-confirm-options .col-xs-4:last-child {
+    padding: 0 !important;
+}
+
+.confirm-btn {
+    /* This width/height/padding construction keeps the elements squared */
+    width: 100%;
+    height: 65px;
+    line-height: 65px;
+    text-align: center;
+    overflow: hidden;
+    border: 1px #ffffff solid;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.overlay .confirm-btn {
+    display: inline-block;
+    width: 300px !important;
+    margin-top: 25px;
+    background: -webkit-linear-gradient(#4EF551, #19E60E); /* For Safari */
+    background: -o-linear-gradient(#4EF551, #19E60E); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#4EF551, #19E60E); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#4EF551, #19E60E); /* Standard syntax */
+    border: 1px #ffffff solid;
+}
+
+.cash {
+    background: -webkit-linear-gradient(#4EF551, #19E60E); /* For Safari */
+    background: -o-linear-gradient(#4EF551, #19E60E); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#4EF551, #19E60E); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#4EF551, #19E60E); /* Standard syntax */
+}
+
+.pin {
+    background: -webkit-linear-gradient(#E7F54E, #DFE60E); /* For Safari */
+    background: -o-linear-gradient(#E7F54E, #DFE60E); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#E7F54E, #DFE60E); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#4EF575, #0EE636); /* Standard syntax */
+}
+
+.credit {
+    background: -webkit-linear-gradient(#4EF588, #0EE661); /* For Safari */
+    background: -o-linear-gradient(#4EF588, #0EE661); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#4EF588, #0EE661); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#4EF588, #0EE661); /* Standard syntax */
+}
+
+.grayed {
+    background: -webkit-linear-gradient(#4EF588, #0EE661) !important; /* For Safari */
+    background: -o-linear-gradient(#4EF588, #0EE661) !important; /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#4EF588, #0EE661) !important; /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#B4BFB8, #97ADA0) !important; /* Standard syntax */
+}
+
+.customer-list-wrapper {
+    height: 450px;
+    overflow: auto;
+}
+
+.customer-list-wrapper .selected {
+    background-color: #C4F5D5;
+}
+
+#pos-pay-container {
+    display: none; /* Should disappear on pay */
 }

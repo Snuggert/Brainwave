@@ -17,6 +17,22 @@ assoc1 = AssociationController.create({'name': 'via', 'login_name': 'via',
 # Dummy customer
 custo1 = Customer('Bas van den Heuvel')
 db.session.add(custo1)
+custo2 = Customer('Jon Snow')
+db.session.add(custo2)
+custo3 = Customer('Joffrey Baratheon')
+db.session.add(custo3)
+custo4 = Customer('Sansa Stark')
+db.session.add(custo4)
+custo5 = Customer('Maester Luwin')
+db.session.add(custo5)
+custo6 = Customer('Barristan Selmy')
+db.session.add(custo6)
+custo7 = Customer('Grey Worm')
+db.session.add(custo7)
+custo8 = Customer('Mace Tyrell')
+db.session.add(custo8)
+custo9 = Customer('Measter Aemon')
+db.session.add(custo9)
 
 # Dummy product categories
 product_category1 = ProductCategory('Bier')
@@ -93,7 +109,7 @@ db.session.add(product12)
 db.session.commit()
 
 # Dummy transactions
-trans1 = Transaction('cash', 'paid', assoc1)
+trans1 = Transaction('cash', 'paid', assoc1, custo1)
 db.session.add(trans1)
 db.session.commit()
 
