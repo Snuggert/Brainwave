@@ -11,10 +11,9 @@ product_category_api = Blueprint('product_category_api', __name__,
 
 @product_category_api.route('/<int:product_category_id>', methods=['PUT'])
 @Authentication(User.ROLE_ASSOCIATION)
-def update(association_id):
-    """Update an association."""
+def update(product_category_id):
+    """Update a product_category."""
     product_category_dict = request.json
-
     try:
         ProductCategoryController.update(product_category_dict)
     except ProductCategoryController.NoNameGiven as e:

@@ -82,6 +82,7 @@ ProductCategoryEditView = Backbone.View.extend({
         var template = _.template($('#product_category-edit-template').html(),
             {product_category: this.model});
         this.$el.html(template);
+        $('input.color').colorpicker();
     },
     events: {
         'click button.cancel': 'cancel',
