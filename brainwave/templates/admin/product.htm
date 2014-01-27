@@ -74,22 +74,22 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
-<script type="text/template" id="product-template">
-    <tr>
-        <td><%= product_category_id %></td>
-        <td><%= name %></td>
-        <td>€<%= price %></td>
-        <td><%= volume %></td>
-        <td><%= stock_id %></td>
-        <td><%= assoc_id %></td>
-        <td class="text-center">
-            <button class="btn btn-info btn-xs edit" data-id=<%= id %>>
-                <span class="glyphicon glyphicon-edit"></span> 
-            </button>
-            <button class="btn btn-danger btn-xs remove" data-id=<%= id %>>
-                <span class="glyphicon glyphicon-remove"></span>
-            </button>
-        </td>
-    </tr>
-</script>​
+    <script type="text/template" id="product-template">
+        <tr>
+            <td><%= product_category_id %></td>
+            <td><%= name %></td>
+            <td>€<%= price %></td>
+            <td><%= volume %></td>
+            <td><%= stock_id %></td>
+            <td><%= assoc_id %></td>
+            <td class="text-center">
+                <button class="btn btn-info btn-xs edit" data-id=<%= id %>>
+                    <span class="glyphicon glyphicon-edit"></span> 
+                </button>
+                <button class="btn btn-danger btn-xs remove" data-id=<%= id %>>
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+            </td>
+        </tr>
+    </script>​
 {% endblock %}

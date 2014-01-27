@@ -10,8 +10,10 @@ class ProductCategory(db.Model, BaseEntity):
     prints = ['id', 'name']
 
     name = db.Column(db.String(256))
+    color = db.Column(db.String(6))
 
     products = db.relationship('Product', backref='product_category')
 
-    def __init__(self, name=''):
+    def __init__(self, name='', color='FFFFFF'):
         self.name = name
+        self.color = color

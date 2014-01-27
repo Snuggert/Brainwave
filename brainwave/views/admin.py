@@ -24,6 +24,12 @@ def view_associations():
     return render_template('admin/association.htm')
 
 
+@admin_blueprint.route('/product_category', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
+def view_product_category():
+    return render_template('admin/product_category.htm')
+
+
 @admin_blueprint.route('/stock', methods=['GET'])
 @admin_blueprint.route('/stock/<string:query>', methods=['GET'])
 @Authentication(User.ROLE_ASSOCIATION)

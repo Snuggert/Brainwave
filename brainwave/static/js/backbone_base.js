@@ -14,6 +14,7 @@ models.ProductCategory = Backbone.Model.extend({
     defaults: function(){
         return{
             name: '',
+            color: '',
         };
     }
 });
@@ -88,6 +89,14 @@ collections.Associations = Backbone.Collection.extend({
         return response.associations;
     }
 });
+
+collections.ProductCategories = Backbone.Collection.extend({
+    model: models.ProductCategory,
+    url: 'api/product_category/all',
+    parse: function(response){
+        return response.product_categories
+    }
+})
 
 collections.Trans_in_list = Backbone.Collection.extend({
     model: models.Trans_in

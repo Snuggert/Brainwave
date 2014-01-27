@@ -9,6 +9,20 @@ product_category_api = Blueprint('product_category_api', __name__,
                                  url_prefix='/api/product_category')
 
 
+@product_category_api.route('/<int:product_category_id>', methods=['PUT'])
+@Authentication(User.ROLE_ASSOCIATION)
+def update(association_id):
+    """Update an association."""
+    product_category_dict = request.json
+
+    try:
+        ProductCategoryController.update(product_category_dict)
+    except ProductCategoryController.NoNameGiven as e:
+        return jsonify(error=e.error), 500
+
+    return jsonify()
+
+
 @product_category_api.route('', methods=['POST'])
 @Authentication(User.ROLE_ASSOCIATION)
 def create():
@@ -44,3 +58,12 @@ def get(product_category_id):
         return jsonify(error='Product category not found'), 500
 
     return jsonify(product_category=serialize_sqla(product_category))
+
+
+@product_category_api.route('/all', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
+def get_all():
+    """Get all associations."""
+    product_categories = ProductCategoryController.get_all()
+
+    return jsonify(product_categories=serialize_sqla(product_categories))

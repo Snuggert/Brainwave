@@ -1,0 +1,94 @@
+{% extends 'content.htm' %}
+
+{% block includes %}
+    <link href="/static/css/jquery.colorpicker.css" rel="stylesheet">
+    <link href="/static/css/jquery-ui.min.css" rel="stylesheet">
+    <script src='/static/js/jquery-ui.min.js'></script>
+    <script src='/static/js/jquery.colorpicker.js'></script>
+    <script src='/static/js/admin/product_category.js'></script>
+{% endblock %}
+
+{% block content %}
+    <div id='new-product_category'></div>
+
+    <div class='panel panel-default'>
+        <div class='panel-heading'>
+            <div class='panel-title'>Product categories</div>
+        </div>
+
+        <div class='panel-body'>
+            <button id='new-btn' class='btn btn-primary'>
+                <strong>+</strong> Add new product category
+            </button>
+        </div>
+
+        <table id='product_categories' class='table table-striped'>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Color</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <script type='text/template' id='product_category-view-template'>
+        <% _.each(product_categories, function(product_category) { %>
+            <tr data-id='<%= product_category.get('id') %>'>
+                <td><%= product_category.get('id') %></td>
+                <td><%= product_category.get('name') %></td>
+                <td><%= product_category.get('color') %></td>
+                <td class='text-right'>
+                    <button class='edit btn btn-info btn-xs'>
+                        <span class='glyphicon glyphicon-edit'></span>
+                    </button>
+                    <button class='remove btn btn-danger btn-xs'>
+                        <span class='glyphicon glyphicon-remove'></span>
+                    </button>
+                </td>
+            </tr>
+        <% }); %>
+    </script>
+
+    <script type='text/template' id='product_category-edit-template'>
+        <td><%= product_category.get('id') %></td>
+        <td><input type='text' class='form-control' data-property='name' value='<%= product_category.get('name') %>' /></td>
+        <td><input type='text' class='form-control' data-property='color' value='<%= product_category.get('color') %>' /></td>
+        <td class='text-right'>
+            <button class='save btn btn-primary btn-xs'>
+                <span class='glyphicon glyphicon-ok'></span>
+            </button>
+            <button class='cancel btn btn-danger btn-xs'>
+                <span class='glyphicon glyphicon-ban-circle'></span>
+            </button>
+        </td>
+    </script>
+
+    <script type='text/template' id='product_category-new-template'>
+        <div class='panel panel-default'>
+            <div class='panel-heading'>
+                <div class='panel-title pull-left'>New product category</div>
+                <button id='cancel-new' class='btn btn-danger pull-right'>
+                    <span class='glyphicon glyphicon-remove'></span> Close
+                </button>
+                <div class='clearfix'></div>
+            </div>
+
+            <div class='panel-body'>
+                <div class='form-group' id='new-product_category-form'>
+                    <label for='new-product_category-name'>Name</label>
+                    <input type='text' class='form-control' id='new-product_category-name' data-property='name' placeholder='Name' />
+
+                    <label for='new-product_category-color'>Email</label>
+                    <input type='text' class='form-control' id='new-product_category-color' data-property='color' placeholder='FFFFFF' />
+                </div>
+
+                <button id='save-new' class='btn btn-primary'>Save</button>
+            </div>
+        </div>
+    </script>
+{% endblock %}
