@@ -80,6 +80,14 @@ var ProductModel = Backbone.Model.extend({
     }
 });
 
+var CustomerModel = Backbone.Model.extend({
+    initialize: function() {
+        this.bind("error", function(model, error) {
+            console.log("Could not initialize a CustomerModel.");
+        });
+    }
+});
+
 var PayModuleModel = Backbone.Model.extend({
     defaults: {
         receipt_price: 0.0
@@ -135,6 +143,42 @@ var EntryCollection = Backbone.Collection.extend({
 
 var Products = Backbone.Collection.extend({
     model: ProductModel
+});
+
+var Customers = Backbone.Collection.extend({
+    model: CustomerModel,
+
+    /* The search function will take a string of digits and return a new
+     * collection, which contains all the models that have names that have t9
+     * matches.
+     */
+    search: function(str) {
+        str = str.replace(' ', '');
+        if(str == '') return this;
+
+        var pattern = this.mk_pattern(str);
+        /* Make a new collection that holds the filtered results. This is
+         * required, lest the list slims down with each iteration and lost
+         * elements become unretrievable.
+         */
+        var filtered = new Customers();
+        this.each(function(model) {
+            if (pattern.test(model.get("name").replace(' ', '')))
+                filtered.add(model);
+        });
+        return filtered;
+    },
+
+    mk_pattern: function(str) {
+        var pattern = '';
+        var chars = [" ", " ", "ABCÀÁÅÃÆÇàáâãäåæç", "DEFÈÉÊËèéêë",
+                     "GHIÌÍÎÏìíîï", "JKL", "MNOÑñÒÓÔÕÖØòóôõöøð", "PQRSß",
+                     "TUVÙÚÛÜùúûü", "WXYZýþÿÝÞ"];
+
+        for (var i = 0; i < str.length; i++)
+            pattern += '[' + chars[str[i]] + ']';
+        return new RegExp(pattern, "i");
+    }
 });
 
 /*Backbone Views */
@@ -215,7 +259,7 @@ var ProductButtonView = Backbone.View.extend({
 });
 
 PayModuleView = Backbone.View.extend({
-    customers: new collections.Customers(),
+    customers_all: new Customers(),
     paymodule: new PayModuleModel(),
 
     initialize: function() {
@@ -223,6 +267,7 @@ PayModuleView = Backbone.View.extend({
         /* Listen to custom events from the TransactionView */
         Backbone.pubSub.on('pay_init', this.on_pay_init, this);
         Backbone.pubSub.on('pay_complete', this.on_pay_complete, this);
+        Backbone.pubSub.on('t9_change', this.on_t9_change, this);
     },
     hammerEvents: {
         'tap .confirm-btn': 'confirm',
@@ -232,13 +277,17 @@ PayModuleView = Backbone.View.extend({
         var me = this;
 
         $.get('/api/customer/all', {}, function(data) {
-            me.customers = new collections.Customers(data.customers);
+            me.customers_all = new Customers(data.customers);
+            me.filter('');
             me.render();
         });
     },
+    filter: function(str) {
+        this.customers_few = this.customers_all.search(str);
+    },
     render: function() {
         var template = _.template($('#customer-view-template').html(),
-            {customers: this.customers.models});
+            {customers: this.customers_few.models});
         this.$el.html(template);
     },
     confirm: function(event) {
@@ -284,6 +333,10 @@ PayModuleView = Backbone.View.extend({
     },
     on_pay_complete: function(data) {
         this.update();
+    },
+    on_t9_change: function(data) {
+        this.filter(data.value);
+        this.render();
     }
 });
 
@@ -562,7 +615,13 @@ var NumpadView = Backbone.View.extend({
             this.display();
         }
 
-        /* At this point, if the numpad is t9, an event should be triggered */
+        /* If the numpad is set to t9, trigger an event so the customer list
+         * can be re-rendered
+         */
+        if (this.numpad.get('type') == 't9') {
+            var jsonData = {'value': this.numpad.get('display')};
+            Backbone.pubSub.trigger('t9_change', jsonData);
+        }
     },
     invert_sign: function() {
         var current = this.numpad.get('display');
