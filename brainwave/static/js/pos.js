@@ -203,7 +203,17 @@ var ProductButtonView = Backbone.View.extend({
 
         $.get('/api/product/all', {}, function(data) {
             me.products = new Products(data.products);
-            me.render();
+            $.get('/api/product_category/all', {}, function(data) {
+                var product_categories = new collections.ProductCategories(
+                        data.product_categories);
+
+                _.each(me.products.models, function(product) {
+                    product.product_category = product_categories.get(
+                            product.get('product_category_id'));
+                });
+
+                me.render();
+            });
         });
     },
     render: function() {
