@@ -153,30 +153,30 @@ var Customers = Backbone.Collection.extend({
      * matches.
      */
     search: function(str) {
-        str = str.replace(' ', '');
+        str = str.split(' ').join('');
         if(str == '') return this;
 
-        var pattern = this.mk_pattern(str);
+        var regex = this.regex_make(str);
         /* Make a new collection that holds the filtered results. This is
          * required, lest the list slims down with each iteration and lost
          * elements become unretrievable.
          */
         var filtered = new Customers();
         this.each(function(model) {
-            if (pattern.test(model.get("name").replace(' ', '')))
+            if (regex.test(model.get("name").split(' ').join('')))
                 filtered.add(model);
         });
         return filtered;
     },
 
-    mk_pattern: function(str) {
+    regex_make: function(str) {
         var pattern = '';
         var chars = [" ", " ", "ABCÀÁÅÃÆÇàáâãäåæç", "DEFÈÉÊËèéêë",
                      "GHIÌÍÎÏìíîï", "JKL", "MNOÑñÒÓÔÕÖØòóôõöøð", "PQRSß",
                      "TUVÙÚÛÜùúûü", "WXYZýþÿÝÞ"];
 
         for (var i = 0; i < str.length; i++)
-            pattern += '[' + chars[str[i]] + ']';
+            pattern += '[' + chars[parseInt(str[i])] + ']';
         return new RegExp(pattern, "i");
     }
 });
@@ -330,6 +330,8 @@ PayModuleView = Backbone.View.extend({
     on_pay_init: function(data) {
         this.paymodule.set({'receipt_price': data.receipt_price});
         this.unselect_customer();
+        this.filter('');
+        this.render();
     },
     on_pay_complete: function(data) {
         this.update();
