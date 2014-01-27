@@ -291,7 +291,7 @@ OverlayView = Backbone.View.extend({
     overlay: new OverlayModel(),
     initialize: function() {
         /* Listen to custom events from the TransactionView */
-        Backbone.pubSub.on('pay', this.on_pay_init, this);
+        Backbone.pubSub.on('pay', this.on_pay, this);
         Backbone.pubSub.on('pay_complete', this.on_pay_complete, this);
         Backbone.pubSub.on('pay_cancel', this.on_pay_cancel, this);
     },
