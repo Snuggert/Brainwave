@@ -76,7 +76,7 @@ def get_all():
     if not user.association:
         return jsonify(customers=serialize_sqla(customers))
 
-    association = user.association
+    association = user.association[0]
 
     customer_dicts = []
     for customer in customers:
