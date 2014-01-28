@@ -70,9 +70,13 @@ def get_all():
     """Get all customers."""
     customers = CustomerController.get_all()
 
-    ses_user = session['user']
-    user = UserController.get(ses_user['id'])
-    association = user.association[0]
+    user_id = session['user_id']
+    user = UserController.get(user_id)
+
+    if not user.association:
+        return jsonify(customers=serialize_sqla(customers))
+
+    association = user.association
 
     customer_dicts = []
     for customer in customers:
@@ -87,9 +91,7 @@ def get_all():
 
         customer_dicts.append(customer_dict)
 
-    print(customer_dicts)
-
-    return jsonify(customers=serialize_sqla(customers))
+    return jsonify(customers=customer_dicts)
 
 
 @customer_api.route('/association/<int:customer_id>', methods=['GET'])
