@@ -1,9 +1,10 @@
 """customer.py - API for customer."""
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from brainwave.controllers import CustomerController, AssociationController
 from brainwave.utils import serialize_sqla
-from brainwave.models import User
+from brainwave.models import User, Association
 from brainwave.controllers.authentication import Authentication
+from brainwave.controllers.user import UserController
 
 customer_api = Blueprint('customer_api', __name__,
                          url_prefix='/api/customer')
@@ -68,6 +69,25 @@ def get(customer_id):
 def get_all():
     """Get all customers."""
     customers = CustomerController.get_all()
+
+    ses_user = session['user']
+    user = UserController.get(ses_user['id'])
+    association = user.association[0]
+
+    customer_dicts = []
+    for customer in customers:
+        customer_dict = serialize_sqla(customer)
+
+        credit = customer.credits.filter(Association.id == association.id)\
+            .first()
+        if credit:
+            customer_dict['credit'] = serialize_sqla(credit)
+        else:
+            customer_dict['credit'] = None
+
+        customer_dicts.append(customer_dict)
+
+    print(customer_dicts)
 
     return jsonify(customers=serialize_sqla(customers))
 

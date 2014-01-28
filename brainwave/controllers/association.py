@@ -1,6 +1,7 @@
 """association.py - Controller calls for association."""
 from brainwave.models.association import Association
 from brainwave.models.user import User
+from brainwave.models.credit import Credit
 from brainwave.controllers.user import UserController
 from brainwave import db
 
@@ -105,9 +106,24 @@ class AssociationController:
         db.session.add(association)
         db.session.commit()
 
+        # Give the customer credit.
+        credit = Credit(0.0, customer, association)
+        db.session.add(credit)
+        db.session.commit()
+
+        customer.credits.append(credit)
+        db.session.add(customer)
+        db.session.commit()
+
     @staticmethod
     def remove_customer(association, customer):
         """Remove a customer the association is coupled to."""
+        # Remove credit.
+        credit = customer.credits.filter(Association.id == association.id)\
+            .first()
+        db.session.delete(credit)
+        db.session.commit()
+
         try:
             association.customers.remove(customer)
         except ValueError:

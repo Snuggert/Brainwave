@@ -18,8 +18,6 @@ class User(db.Model, BaseEntity):
     email = db.Column(db.String(120))
     role = db.Column(db.Integer())
 
-    # Association is when user is association
-    association = db.relationship('Association', backref='user')
     # Customer is when user is customer
     customer = db.relationship('Customer', backref='user')
 

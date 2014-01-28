@@ -14,6 +14,7 @@ class Association(db.Model, BaseEntity):
     products = db.relationship('Product', backref='association')
     stocks = db.relationship('Stock', backref='association')
     transactions = db.relationship('Transaction', backref='association')
+    user = db.relationship('User', backref='association')
 
     def __init__(self, name='', user_id=''):
         """Initialize the association."""
