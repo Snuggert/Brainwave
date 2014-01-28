@@ -60,7 +60,27 @@ db.session.commit()
 
 # Dummy stock
 stock1 = Stock('Hertog Jan', 10000, assoc1)
+stock2 = Stock('Pinda zakjes', 100, assoc1)
+stock3 = Stock('Blikjes cola', 100, assoc1)
+stock4 = Stock('Blikjes cola light', 100, assoc1)
+stock5 = Stock('Twix', 100, assoc1)
+stock6 = Stock('Mars', 50, assoc1)
+stock7 = Stock('Blikjes fanta', 90, assoc1)
+stock8 = Stock('Blikjes Nestea', 100, assoc1)
+stock9 = Stock('Velletjes toiletpapier', 1000, assoc1)
+stock10 = Stock('Telefoonkaarten', 100, assoc1)
+stock11 = Stock('Chardonnay', 10, assoc1)
+
 db.session.add(stock1)
+db.session.add(stock2)
+db.session.add(stock3)
+db.session.add(stock4)
+db.session.add(stock5)
+db.session.add(stock6)
+db.session.add(stock7)
+db.session.add(stock8)
+db.session.add(stock9)
+db.session.add(stock10)
 db.session.commit()
 
 # Dummy trans_in
@@ -69,30 +89,30 @@ db.session.add(trans_in1)
 db.session.commit()
 
 # Dummy products
-product1 = Product('Hertog Jan 30cL', 'HJ 30cL', 0.70, 300, product_category1,
-                   stock1, assoc1)
-product2 = Product('Hertog Jan 50cL', 'HJ 50cL', 1.00, 500, product_category1,
-                   stock1, assoc1)
-product3 = Product('Chardonnay 25cL', 'Chard. 25cL', 2.00, 250,
-                   product_category2, stock1, assoc1)
-product4 = Product('Zakje pinda\'s', 'Pinda\'s', 1.25, 100, product_category3,
-                   stock1, assoc1)
-product5 = Product('Coca Cola 33cL', 'Cola', 0.50, 330, product_category4,
-                   stock1, assoc1)
-product6 = Product('Coca Cola Light 33cL', 'Cola L.', 0.50, 330,
-                   product_category4, stock1, assoc1)
-product7 = Product('Twix', 'Twix', 0.75, 120, product_category5,
-                   stock1, assoc1)
-product8 = Product('Mars', 'Mars', 0.75, 120, product_category5,
-                   stock1, assoc1)
-product9 = Product('Fanta 33cL', 'Fanta', 0.50, 330, product_category4,
-                   stock1, assoc1)
-product10 = Product('Nestea 33cL', 'Nestea', 0.50, 330, product_category4,
-                    stock1, assoc1)
-product11 = Product('Toiletpapier (8 velletjes)', 'WC papier', 1.00, 16,
-                    product_category6, stock1, assoc1)
-product12 = Product('Telefoonkaart', 'Phonecard', 1.00, 500, product_category6,
-                    stock1, assoc1)
+product1 = Product('Hertog Jan 30cL', 'HJ 30cL', 0.70, 30, 'cL',
+                   product_category1, stock1, assoc1)
+product2 = Product('Hertog Jan 50cL', 'HJ 50cL', 1.00, 50, 'cL',
+                   product_category1, stock1, assoc1)
+product3 = Product('Chardonnay 25cL', 'Chard. 25cL', 2.00, 25, 'cL',
+                   product_category2, stock11, assoc1)
+product4 = Product('Zakje pinda\'s', 'Pinda\'s', 1.25, 1, 'amount',
+                   product_category3, stock2, assoc1)
+product5 = Product('Coca Cola 33cL', 'Cola', 0.50, 1, 'amount',
+                   product_category4, stock3, assoc1)
+product6 = Product('Coca Cola Light 33cL', 'Cola L.', 0.50, 1, 'amount',
+                   product_category4, stock4, assoc1)
+product7 = Product('Twix', 'Twix', 0.75, 1, 'amount', product_category5,
+                   stock5, assoc1)
+product8 = Product('Mars', 'Mars', 0.75, 1, 'amount', product_category5,
+                   stock6, assoc1)
+product9 = Product('Fanta 33cL', 'Fanta', 0.50, 1, 'amount', product_category4,
+                   stock7, assoc1)
+product10 = Product('Nestea 33cL', 'Nestea', 0.50, 1, 'amount',
+                    product_category4, stock8, assoc1)
+product11 = Product('Toiletpapier (8 velletjes)', 'WC papier', 1.00, 8,
+                    'amount', product_category6, stock9, assoc1)
+product12 = Product('Telefoonkaart', 'Phonecard', 1.00, 1, 'amount',
+                    product_category6, stock10, assoc1)
 
 db.session.add(product1)
 db.session.add(product2)

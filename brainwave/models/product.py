@@ -13,10 +13,8 @@ class Product(db.Model, BaseEntity):
     name = db.Column(db.String(256))
     shortname = db.Column(db.String(32))
     price = db.Column(db.Float)
-    # Probably in milliliters?
-    volume = db.Column(db.Integer)
-    # Percentage in Floats???
-    loss = db.Column(db.Float)
+    quantity = db.Column(db.Integer)
+    unit = db.Column(db.Enum('cL', 'amount', name='unit'))
 
     product_category_id = db.Column(db.Integer,
                                     db.ForeignKey('product_category.id'))
@@ -25,13 +23,15 @@ class Product(db.Model, BaseEntity):
 
     sold_pieces = db.relationship('TransactionPiece', backref='product')
 
-    def __init__(self, name='', shortname='', price=None, volume=None,
-                 product_category=None, stock=None, association=None):
+    def __init__(self, name='', shortname='', price=None, quantity=None,
+                 unit='cL', product_category=None, stock=None,
+                 association=None):
         self.active = False
         self.name = name
         self.shortname = shortname
         self.price = price
-        self.volume = volume
+        self.quantity = quantity
+        self.unit = unit
         self.product_category = product_category
         self.stock = stock
         self.association = association
