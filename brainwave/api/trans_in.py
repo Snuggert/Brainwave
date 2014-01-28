@@ -1,6 +1,6 @@
 """trans_in.py - Controller for transaction-in."""
 from flask import Blueprint, jsonify, request
-from brainwave.controllers import TransInController
+from brainwave.controllers import TransInController, StockController
 from brainwave.utils import serialize_sqla
 from brainwave.controllers.authentication import Authentication
 from brainwave.models import User
@@ -16,18 +16,29 @@ def create():
     trans_in_dict = request.json
 
     trans_in = TransInController.create(trans_in_dict)
+    if not trans_in:
+        return jsonify(error='Stock transaction creation was unsuccesful'), 500
+
+    stock = StockController.get(trans_in.stock_id)
+    if not stock:
+        return jsonify(error='Stock has been improperly linked'), 500
+    StockController.add(stock, trans_in.quantity)
 
     return jsonify(id=trans_in.id), 200
 
 
-@trans_in_api.route('/delete/<int:trans_in_id>', methods=['DELETE'])
+@trans_in_api.route('/<int:trans_in_id>', methods=['DELETE'])
 @Authentication(User.ROLE_ASSOCIATION)
 def delete(trans_in_id):
     """Delete trans_in item."""
     trans_in = TransInController.get(trans_in_id)
-
     if not trans_in:
         return jsonify(error='Transaction-in item not found'), 500
+
+    stock = StockController.get(trans_in.stock_id)
+    if not stock:
+        return jsonify(error='Stock has been improperly linked'), 500
+    StockController.add(stock, trans_in.quantity * -1)
 
     TransInController.delete(trans_in)
 
@@ -44,29 +55,6 @@ def get(trans_in_id):
         return jsonify(error='Transaction-in item not found'), 500
 
     return jsonify(trans_in=serialize_sqla(trans_in))
-
-
-@trans_in_api.route('/remove/<int:glob_product_id>',
-                    methods=['GET'])
-@trans_in_api.route('/remove/<int:glob_product_id>/amount/<int:amount>',
-                    methods=['GET'])
-def remove_from_stock(glob_product_id, amount=1):
-    """Get trans_in item."""
-    i = 0
-
-    for x in xrange(0, amount):
-        trans_in_succes = TransInController.remove_from_stock(glob_product_id)
-
-        print "test1"
-
-        if not trans_in_succes:
-            print "neuuu"
-            i += 1
-
-    return jsonify(error=str(amount - i) + ' item(s) removed, empty stock',
-                   amount=amount - i), 500
-
-    return jsonify(succes='Item removed from stock'), 200
 
 
 @trans_in_api.route('/all', methods=['GET'])

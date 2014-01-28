@@ -9,26 +9,9 @@ class TransInController:
     """The Controller for transaction-in manipulation."""
     @staticmethod
     def create(trans_in_dict):
-
-        units = trans_in_dict.pop("units", 1)
-        print units
-
-
-        for x in range(int(units)):
-            trans_in = TransIn.new_dict(trans_in_dict)
-            #Get the first positive transaction.
-            negative_trans_in = TransIn.query.filter_by(stock_id=trans_in.
-                                                        stock_id,
-                                                        in_stock=True).\
-                filter(TransIn.volume < 0).first()
-            if negative_trans_in is not None:
-                trans_in.volume = negative_trans_in.volume
-                trans_in.price = negative_trans_in.price
-                trans_in.in_stock = False
-                negative_trans_in.in_stock = False
-
-            db.session.add(trans_in)
-            db.session.commit()
+        trans_in = TransIn.new_dict(trans_in_dict)
+        db.session.add(trans_in)
+        db.session.commit()
 
         return trans_in
 
@@ -44,16 +27,16 @@ class TransInController:
         #Get the first positive transaction.
         trans_in = TransIn.query.filter_by(stock_id=global_product_id,
                                            in_stock=True).\
-            filter(TransIn.volume > 0).first()
+            filter(TransIn.quantity > 0).first()
 
         #Create a new transaction when no transaction is found.
         if not trans_in:
             trans_in = TransIn.query.filter_by(stock_id=global_product_id,
                                                ).order_by(TransIn.id.desc()).\
-                filter(TransIn.volume > 0).first()
+                filter(TransIn.quantity > 0).first()
 
             stock = Stock.query.filter_by(id=trans_in.stock_id).first()
-            negative_transaction = TransIn(-trans_in.price, -trans_in.volume,
+            negative_transaction = TransIn(-trans_in.price, -trans_in.quantity,
                                            stock=stock)
             negative_transaction.in_stock = True
             db.session.add(negative_transaction)
@@ -98,9 +81,9 @@ class TransInController:
 
         for stock in all_stock:
             # Get the sum of all the transactions
-            stock.volumesum = TransIn.query.with_entities(func.sum
-                                                          (TransIn.volume).
-                                                          label('volumesum')).\
+            stock.quantitysum = \
+                    TransIn.query.with_entities(func.sum(TransIn.quantity).
+                                                label('quantitysum')).\
                 filter(TransIn.stock_id == stock.id,
                        TransIn.in_stock).all()
 

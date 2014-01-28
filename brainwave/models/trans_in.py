@@ -8,13 +8,13 @@ class TransIn(db.Model, BaseEntity):
     __tablename__ = 'trans_in'
 
     price = db.Column(db.Float)
-    volume = db.Column(db.Integer)
+    quantity = db.Column(db.Integer)
     in_stock = db.Column(db.Boolean)
 
     stock_id = db.Column(db.Integer, db.ForeignKey('stock.id'))
 
-    def __init__(self, price=None, volume=None, stock=None):
+    def __init__(self, price=None, quantity=None, stock=None):
         self.price = price
-        self.volume = volume
+        self.quantity = quantity
         self.stock = stock
         self.in_stock = True

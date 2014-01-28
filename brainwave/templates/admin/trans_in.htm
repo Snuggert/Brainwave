@@ -1,13 +1,13 @@
-
-
 {% extends "content.htm" %}
 
 {% block includes %}
-    <script src="/static/js/admin/trans_in/new_trans_in.js"></script>
-    <script src="/static/js/admin/trans_in/trans_in.js"></script>
+    <script src="/static/js/admin/trans_in.js"></script>
 {% endblock %}
 
 {% block content %}
+    <script type="text/javascript">
+        $('#collapseOne').collapse('show')
+    </script>
     <div class="row">
         <div class="col-lg-11  ">
             <div class="input-group">
@@ -27,7 +27,7 @@
             <a href="#" class="btn btn-primary btn-xs pull-right" data-toggle="modal" data-target="#trans_in"><b>+</b> Add new transaction</a>
                 <tr>
                     <th>ID</th>
-                    <th>Volume</th>
+                    <th>Quantity</th>
                     <th>Price</th>
                     <th>Stock</th>
                     <th class="text-center">Action</th>
@@ -39,77 +39,61 @@
         </table>
     </div>
 
-<!-- Modal -->
-<div class="modal fade" id="trans_in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">Add new transaction</h4>
-      </div>
-      <div class="modal-body">
+    <!-- Modal -->
+    <div class="modal fade" id="trans_in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Add new transaction</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal col-md-12" id="new_trans_in">
+                        <div class="form-group">
+                            <label for="price">Purchase price</label>
+                            <input class="form_field form-control" type='text' id="price", placeholder="1.23", data-property="price"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">Quantity</label>
+                            <input class="form_field form-control" type='text' id="quantity", placeholder="1.23", data-property="quantity"/>
+                        </div> 
+                        <div class="form-group">
+                            <label for="stock_id">Stock</label><br/>
+                            <select id="stock_id" class="form_select select2-offscreen" data-property="stock_id" tabindex="-1">
+                                {% for item in data.stocks %}
+                                    <option value="{{item.id}}">{{item.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary save" data-loading-text="Bezig...">Verzenden</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
-        <form class="form-horizontal col-md-12" id="new_trans_in" action="#">
-            <div class="form-group">
-                <label for="units">Units</label>
-                <input class="form_field form-control" type='text' id="units", placeholder="units", data-property="units"/>
-            </div>
-            <div class="form-group">
-                <label for="stock_id">Stock</label><br/>
-                <select id="stock_id" class="form_select select2-offscreen" data-property="stock_id" tabindex="-1">
-                    {% for item in data.stock %}
-                        <option value="{{item.id}}" brainwave-unit="{{item.unit}}">{{item.name}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="price">Price per unit</label>
-                <input class="form_field form-control" type='text' id="price", placeholder="1.23", data-property="price"/>
-            </div>
-            <div class="form-group">
-                <label for="volume">Volume per unit</label>
-                <input class="form_field form-control" type='text' id="volume", placeholder="volume in mL per unit", data-property="volume"/>
-            </div>        
-            <div class="form-group">
-                <label for="assoc_id">Association</label><br/>
-                <select id="assoc_id" class="form_select select2-offscreen" data-property="assoc_id" tabindex="-1">
-                    {% for item in data.associations %}
-                        <option value="{{item.id}}">{{item.name}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <button class="btn btn-primary save" data-loading-text="Bezig...">Verzenden</button>
-            </div>
-        </form>
-    </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<script type='text/template' id='trans-in-view-template'>
-<% _.each(trans_in_list, function(trans_in) { %>
-    <tr data-id='<%= trans_in.get('id') %>'>
-        <td><%= trans_in.get('id') %></td>
-        <td><%= trans_in.get('volume') %> <%= global_stock.get( trans_in.get('stock_id') ).get("unit") %></td>
-        <td>€<%= trans_in.get('price') %></td>        
-        <td><%= global_stock.get( trans_in.get('stock_id') ).get("name") %></td>
-        <td class='text-right'>
-            <% if (trans_in.get('volume') > 0) { %>
-            <button class='remove btn btn-danger btn-xs'>
-                <span class='glyphicon glyphicon-remove'></span>
-            </button>
-            <% } %>
-            <button class='edit btn btn-info btn-xs'>
-                <span class='glyphicon glyphicon-edit'></span>
-            </button>
-        </td>
-    </tr>
-<% }); %>
-</script>
+    <script type='text/template' id='trans-in-view-template'>
+    <% _.each(trans_in_list, function(trans_in) { %>
+        <tr data-id='<%= trans_in.get('id') %>'>
+            <td><%= trans_in.get('id') %></td>
+            <td><%= trans_in.get('quantity') %></td>
+            <td><%= trans_in.get('price') %></td>
+            <td><%= trans_in.stock.get('name') %></td>
+            <td class='text-right'>
+                <button class='remove btn btn-danger btn-xs'>
+                    <span class='glyphicon glyphicon-remove'></span>
+                </button>
+                <button class='edit btn btn-info btn-xs'>
+                    <span class='glyphicon glyphicon-edit'></span>
+                </button>
+            </td>
+        </tr>
+    <% }); %>
+    </script>
 
 {% endblock %}

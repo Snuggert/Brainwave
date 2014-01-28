@@ -77,12 +77,12 @@ def get(stock_id):
 @Authentication(User.ROLE_ASSOCIATION)
 def get_all():
     """ Get all stock items unfiltered """
-    stock = StockController.get_all()
+    stocks = StockController.get_all()
 
-    if not stock:
-        return jsonify(error='Stock item not found'), 500
+    if not stocks:
+        return jsonify(stocks=[])
 
-    return jsonify(stock=serialize_sqla(stock))
+    return jsonify(stocks=serialize_sqla(stocks))
 
 
 @stock_api.route('/search/', methods=['GET'])  # temp

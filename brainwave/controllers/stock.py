@@ -9,6 +9,12 @@ class StockController:
     """The Controller for stock manipulation."""
 
     @staticmethod
+    def add(stock, quantity):
+        stock.quantity = stock.quantity + quantity
+        db.session.add(stock)
+        db.session.commit()
+
+    @staticmethod
     def create(stock_dict):
         stock = Stock.new_dict(stock_dict)
 

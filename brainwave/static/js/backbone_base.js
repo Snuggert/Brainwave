@@ -26,7 +26,8 @@ models.Product = Backbone.Model.extend({
             name: '',
             shortname: '',
             price: null,
-            volume: null,
+            quantity: null,
+            unit: 'amount',
             product_category_id: null,
             stock_id: null,
             assoc_id: null,
@@ -69,13 +70,12 @@ models.Customer = Backbone.Model.extend({
 
 models.Trans_in = Backbone.Model.extend({
     urlRoot: '/api/trans_in',
-    defauts: function() {
+    defaults: function() {
         return {
             price: null,
-            volume: null,
-            in_stock: null,
-            units: 1,
+            quantity: null,
             stock_id: null,
+            in_stock: true,
         };
     }
 });

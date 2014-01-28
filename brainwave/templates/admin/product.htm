@@ -4,10 +4,12 @@
     <script src="/static/js/admin/stock/new_stock.js"></script>
     <script src="/static/js/admin/product/product.js"></script>
     <script src="/static/js/admin/product/search_product.js"></script>
-    <script src="/static/js/ajax_search.js"></script>
 {% endblock %}
 
 {% block content %}
+    <script type="text/javascript">
+        $('#collapseOne').collapse('show')
+    </script>
     <div class="row">
         <div class="col-lg-11  ">
             <div class="input-group">
@@ -29,7 +31,7 @@
                     <th>Product category</th>
                     <th>Name</th>
                     <th>Price</th>
-                    <th>Volume</th>
+                    <th>Quantity</th>
                     <th>Stock</th>
                     <th>Association</th>
                     <th class="text-center">Action</th>
@@ -41,7 +43,7 @@
                         <td>{{item.product_category.name}}</td>
                         <td>{{item.name}}</td>
                         <td>€{{item.price}}</td>
-                        <td>{{item.volume}}</td>
+                        <td>{{item.quantity}}</td>
                         <td>{{item.stock.name}}</td>
                         <td>{{item.association.name}}</td>
                         <td class="text-center">

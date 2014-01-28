@@ -4,7 +4,7 @@ from flask import render_template
 from flask import Blueprint
 from brainwave.controllers import AssociationController, \
     TransInController, ProductController, ProductCategoryController, \
-    TransactionController
+    TransactionController, StockController
 from brainwave.models import Stock, User
 from brainwave.controllers.authentication import Authentication
 
@@ -56,15 +56,11 @@ def new_stock(user_id=None):
 @admin_blueprint.route('/trans_in', methods=['GET'])
 @Authentication(User.ROLE_ASSOCIATION)
 def view_trans_in(user_id=None):
-    stock = TransInController.get_all_merged()
-    product_categories = ProductCategoryController.get_all()
+    stocks = StockController.get_all()
     associations = AssociationController.get_all()
-
-    trans_in = TransInController.get_all()
     return render_template('admin/trans_in.htm',
-                           data={'trans_in': trans_in, 'stock': stock,
-                                 'product_categories': product_categories,
-                                 'product': {}, 'associations': associations})
+                           data={'stocks': stocks,
+                                 'associations': associations})
 
 
 @admin_blueprint.route('/product', methods=['GET'])
