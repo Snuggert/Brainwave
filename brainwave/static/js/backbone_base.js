@@ -74,6 +74,7 @@ models.Trans_in = Backbone.Model.extend({
             price: null,
             volume: null,
             in_stock: null,
+            units: 1,
             stock_id: null,
         };
     }

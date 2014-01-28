@@ -181,27 +181,27 @@ class brainwaveTestCase(unittest.TestCase):
     #         data = json.loads(resp.data)
     #         assert not 'stock' in data
 
-    # def test_trans_in_api(self):
-    #     stock_dict = {'name': 'Hertog Jan', 'quantity': 30}
-    #     stock = StockAPI.create(stock_dict)
+    def test_trans_in_api(self):
+        stock_dict = {'name': 'Hertog Jan', 'quantity': 30}
+        stock = StockAPI.create(stock_dict)
 
-    #     trans_in_dict = {'price': 100.0, 'volume': 30, 'stock_id': stock.id}
-    #     trans_in = TransInAPI.create(trans_in_dict)
-    #     assert trans_in.id
+        trans_in_dict = {'price': 100.0, 'volume': 30, 'stock_id': stock.id}
+        trans_in = TransInAPI.create(trans_in_dict)
+        assert trans_in.id
 
-    #     stock = StockAPI.get(stock.id)
-    #     assert stock.quantity == 60
+        stock = StockAPI.get(stock.id)
+        assert stock.quantity == 60
 
-    #     trans_in_id = trans_in.id
+        trans_in_id = trans_in.id
 
-    #     trans_in = TransInAPI.get(trans_in_id)
-    #     assert trans_in.volume == 30
+        trans_in = TransInAPI.get(trans_in_id)
+        assert trans_in.volume == 30
 
-    #     trans_all = TransInAPI.get_all()
-    #     assert trans_all
+        trans_all = TransInAPI.get_all()
+        assert trans_all
 
-    #     TransInAPI.delete(trans_in)
-    #     assert not TransInAPI.get(trans_in_id)
+        TransInAPI.delete(trans_in)
+        assert not TransInAPI.get(trans_in_id)
 
     # def test_trans_in_controller(self):
     #     with app.test_client() as c, app.app_context():

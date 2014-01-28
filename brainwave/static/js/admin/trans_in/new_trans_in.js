@@ -8,17 +8,14 @@ $(document).ready(function () {
         var button = $(this).find('button.save');
         button.button('loading');
         button.button('reset');
-        console.log($(this)[0][1]);
-        for(i = 0; i < $("#units").val(); i++){
-            var trans_in = new models.Trans_in(brainwave.trans_in);
-            set_form_values(trans_in, $(this));
+        var trans_in = new models.Trans_in(brainwave.trans_in);
+        set_form_values(trans_in, $(this));
 
-            save_werr(trans_in, {}, function(model, response, options) {
-                clearflash();
-                button.button('reset');
-                flash('De trans_in is aangemaakt', 'success');
-                redirect('/admin/trans_in');
-            }, button);
-        }
+        save_werr(trans_in, {}, function(model, response, options) {
+            clearflash();
+            button.button('reset');
+            flash('De trans_in is aangemaakt', 'success');
+            redirect('/admin/trans_in');
+        }, button);
     });
 });

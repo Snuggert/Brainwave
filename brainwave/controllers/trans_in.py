@@ -10,23 +10,25 @@ class TransInController:
     @staticmethod
     def create(trans_in_dict):
 
-        trans_in = TransIn.new_dict(trans_in_dict)
+        units = trans_in_dict.pop("units", 1)
+        print units
 
-        print trans_in.stock_id
 
-        #Get the first positive transaction.
-        negative_trans_in = TransIn.query.filter_by(stock_id=trans_in.stock_id,
-                                                    in_stock=True).\
-            filter(TransIn.volume < 0).first()
+        for x in range(int(units)):
+            trans_in = TransIn.new_dict(trans_in_dict)
+            #Get the first positive transaction.
+            negative_trans_in = TransIn.query.filter_by(stock_id=trans_in.
+                                                        stock_id,
+                                                        in_stock=True).\
+                filter(TransIn.volume < 0).first()
+            if negative_trans_in is not None:
+                trans_in.volume = negative_trans_in.volume
+                trans_in.price = negative_trans_in.price
+                trans_in.in_stock = False
+                negative_trans_in.in_stock = False
 
-        if negative_trans_in is not None:
-            trans_in.volume = negative_trans_in.volume
-            trans_in.price = negative_trans_in.price
-            trans_in.in_stock = False
-            negative_trans_in.in_stock = False
-
-        db.session.add(trans_in)
-        db.session.commit()
+            db.session.add(trans_in)
+            db.session.commit()
 
         return trans_in
 

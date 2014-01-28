@@ -48,10 +48,12 @@
         <h4 class="modal-title" id="myModalLabel">Add new transaction</h4>
       </div>
       <div class="modal-body">
-        <div class="form-group">
-            <label for="volume">Units</label>
-            <input class="form_field form-control" type='text' id="units", placeholder="units", data-property="volume"/>
+
         <form class="form-horizontal col-md-12" id="new_trans_in" action="#">
+            <div class="form-group">
+                <label for="units">Units</label>
+                <input class="form_field form-control" type='text' id="units", placeholder="units", data-property="units"/>
+            </div>
             <div class="form-group">
                 <label for="stock_id">Stock</label><br/>
                 <select id="stock_id" class="form_select select2-offscreen" data-property="stock_id" tabindex="-1">
@@ -80,7 +82,6 @@
                 <button class="btn btn-primary save" data-loading-text="Bezig...">Verzenden</button>
             </div>
         </form>
-      </div>
     </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
