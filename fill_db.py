@@ -67,8 +67,7 @@ stock5 = Stock('Twix', assoc1)
 stock6 = Stock('Mars', assoc1)
 stock7 = Stock('Blikjes fanta', assoc1)
 stock8 = Stock('Blikjes Nestea', assoc1)
-stock9 = Stock('Velletjes toiletpapier', assoc1)
-stock10 = Stock('Telefoonkaarten', assoc1)
+stock9 = Stock('Intangibles', assoc1)
 stock11 = Stock('Chardonnay', assoc1)
 
 db.session.add(stock1)
@@ -80,7 +79,6 @@ db.session.add(stock6)
 db.session.add(stock7)
 db.session.add(stock8)
 db.session.add(stock9)
-db.session.add(stock10)
 db.session.add(stock11)
 db.session.commit()
 
@@ -105,10 +103,11 @@ product9 = Product('Fanta 33cL', 'Fanta', 0.50, 1, 'amount', product_category4,
                    stock7, assoc1)
 product10 = Product('Nestea 33cL', 'Nestea', 0.50, 1, 'amount',
                     product_category4, stock8, assoc1)
-product11 = Product('Toiletpapier (8 velletjes)', 'WC papier', 1.00, 8,
+product11 = Product('Add Credit', 'Credit', 1.00, 0, 'amount',
+                    product_category6, stock9, assoc1)
+product12 = Product('Cash Back', 'Cash', 1.00, 0,
                     'amount', product_category6, stock9, assoc1)
-product12 = Product('Telefoonkaart', 'Phonecard', 1.00, 1, 'amount',
-                    product_category6, stock10, assoc1)
+
 
 db.session.add(product1)
 db.session.add(product2)

@@ -33,9 +33,14 @@
         <ul class="list-group customer-list">
             <li class="list-group-item" customer-id="0">Select customer</li>
             <% _.each(customers, function(customer) { %>
-                <li class="list-group-item" customer-id="<%= customer.get('id') %>" customer-credit="10000.0">
+                <li class="list-group-item" customer-id="<%= customer.get('id') %>"
+                    customer-credit="<%= (customer.get('credit') == null) ?
+                                         '0.0' : parseFloat(customer.get('credit').credit) %>">
                     <%= customer.get('name') %>
-                    <span class="badge">0,00</span>
+                    <span class="badge">
+                        <%= (customer.get('credit') == null) ?
+                            '0,00' : customer.get('credit').credit.toFixed(2).replace('.', ',') %>
+                    </span>
                 </li>
             <% }); %>
         </ul>

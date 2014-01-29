@@ -45,6 +45,10 @@ def create():
         return jsonify(status='error', error=e.error), 500
     except TransactionController.UnknownError as e:
         return jsonify(status='error', error=e.error), 500
+    except TransactionController.NotCoupled as e:
+        return jsonify(status='error', error=e.error), 500
+    except TransactionController.NoCustomerSelected as e:
+        return jsonify(status='error', error=e.error), 500
 
     return jsonify(status='success')
 

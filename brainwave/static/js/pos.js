@@ -327,10 +327,12 @@ PayModuleView = Backbone.View.extend({
          * it is supposed to work like a toggle.
          */
         if ($this.attr('customer-id') != current_id &&
-            $this.attr('customer-id') > 0 &&
-            $this.attr('customer-credit') >= this.paymodule.get('receipt_price')) {
-            this.$el.find('.credit').removeClass('grayed');
+            $this.attr('customer-id') > 0) {
             $this.addClass('selected');
+
+            /* If there is sufficient credit, enable the "Credit" button */
+            if ($this.attr('customer-credit') >= this.paymodule.get('receipt_price'))
+                this.$el.find('.credit').removeClass('grayed');
         }
     },
     unselect_customer: function() {
