@@ -1,11 +1,11 @@
-"""trans_in.py - TransIn model."""
+"""trans_out.py - TransOut model."""
 from brainwave import db
 from brainwave.utils.base_model import BaseEntity
 
 
-class TransIn(db.Model, BaseEntity):
-    """"The transaction in Model"""
-    __tablename__ = 'trans_in'
+class TransOut(db.Model, BaseEntity):
+    """"The transaction out Model"""
+    __tablename__ = 'trans_out'
 
     price = db.Column(db.Float)
     quantity = db.Column(db.Integer)

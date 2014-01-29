@@ -13,7 +13,8 @@ class Stock(db.Model, BaseEntity):
     assoc_id = db.Column(db.Integer, db.ForeignKey('association.id'))
 
     products = db.relationship('Product', backref='stock')
-    transactions = db.relationship('TransIn', backref='stock')
+    transactions_in = db.relationship('TransIn', backref='stock')
+    transactions_out = db.relationship('TransOut', backref='stock')
 
     def __init__(self, name=None, association=None):
         self.name = name

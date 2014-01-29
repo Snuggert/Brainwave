@@ -1,9 +1,9 @@
 """transaction.py - Transaction for user."""
 from flask import Blueprint, jsonify, request
-from brainwave.utils import serialize_sqla, row2dict
+from brainwave.utils import row2dict
 from brainwave.controllers.transaction import TransactionController
 from brainwave.controllers.authentication import Authentication
-from brainwave.models import User
+from brainwave.models import User, Transaction
 
 transaction_api = Blueprint('transaction_api', __name__,
                             url_prefix='/api/transaction')
@@ -35,8 +35,9 @@ def create():
 
     # Note that the TransactionController creates records for both the
     # Transaction table as the TransactionPiece table.
+    transaction = Transaction()
     try:
-        TransactionController.create(transaction_dict)
+        transaction = TransactionController.create(transaction_dict)
     except TransactionController.MissingCredit as e:
         return jsonify(status='error', error=e.error), 500
     except TransactionController.BadQuantity as e:
@@ -50,6 +51,9 @@ def create():
     except TransactionController.NoCustomerSelected as e:
         return jsonify(status='error', error=e.error), 500
 
+    for piece in transaction.pieces:
+        if piece.product.unit == 'amount':
+            print piece.quantity
     return jsonify(status='success')
 
 

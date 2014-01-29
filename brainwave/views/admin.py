@@ -31,15 +31,9 @@ def view_product_category():
 
 
 @admin_blueprint.route('/stock', methods=['GET'])
-@admin_blueprint.route('/stock/<string:query>', methods=['GET'])
 @Authentication(User.ROLE_ASSOCIATION)
-def view_stock(user_id=None, query=""):
-    # if query != "":
-    #     stock = StockController.get_all_from(query)
-    # else:
-    #     stock = StockController.get_all()
-
-    stock = TransInController.get_all_merged(query)
+def view_stock(user_id=None):
+    stock = StockController.get_all()
 
     return render_template('admin/stock.htm', data={'stock': stock})
 
