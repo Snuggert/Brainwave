@@ -1,19 +1,12 @@
 <link href="/static/libraries/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="/static/libraries/jquery-ui/css/jquery-ui-1.10.4.custom.min.css" rel="stylesheet">
-<link href="/static/css/select2.css" rel="stylesheet">
-<link href="/static/css/style.css" rel="stylesheet">
-<link href="/static/css/select2-bootstrap.css" rel="stylesheet">
+<link href="/static/css/pos.css" rel="stylesheet">
 <script src="/static/libraries/jquery/jquery.min.js"></script>
 <script src="/static/libraries/jquery-ui/js/jquery-ui-1.10.4.custom.min.js"></script>
 <script src="/static/js/lodash.min.js"></script>
-<script src="/static/js/select2.min.js"></script>
 <script src="/static/js/backbone-min.js"></script>
 <script src="/static/js/backbone_base.js"></script>
 <script src="/static/libraries/bootstrap/js/bootstrap.min.js"></script>
-<script src="/static/js/utils.js"></script>
-
-{% if data %}
-	<script>
-		brainwave = {{json.dumps(serialize_sqla(data)) | safe}};
-	</script>
-{% endif %}
+<script src="/static/libraries/hammer/jquery.hammer.min.js"></script>
+<script src="/static/libraries/hammer/backbone.hammer.js"></script>
+<script src="/static/js/pos.js"></script>

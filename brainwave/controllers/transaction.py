@@ -89,7 +89,7 @@ class TransactionController:
         if transaction.pay_type == 'credit' or sell_credit is True:
             if not transaction.cust_id:
                 raise TransactionController.NoCustomerSelected()
-                
+
             # Get the association that the barteam is a part of
             user_id = session['user_id']
             user = UserController.get(user_id)
@@ -121,8 +121,7 @@ class TransactionController:
         # Note: p[0] is a transaction_piece, p[1] is a product
         for p in purchase:
             if p[1].shortname == "Cash":
-                # When implemented, update the cash counter.
-                pass
+                pass  # When implemented, update the cash counter.
             elif p[1].shortname == "Credit":
                 # Customer wants to buy credit, so add it to his balance.
                 CreditController.add(credit, p[0].price)
