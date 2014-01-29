@@ -18,10 +18,6 @@ class TransInController:
         """Get a transaction-in object by its id."""
         return TransIn.query.get(trans_in_id)
 
-    # @staticmethod
-    # def remove_from_stock(global_product_id):
-    #     """ Remove an item from the stock """
-
     #     #Get the first positive transaction.
     #     trans_in = TransIn.query.filter_by(stock_id=global_product_id,
     #                                        in_stock=True).\
@@ -29,23 +25,19 @@ class TransInController:
 
     #     #Create a new transaction when no transaction is found.
     #     if not trans_in:
-    #         trans_in = TransIn.query.filter_by(stock_id=global_product_id,
-    #                                            ).order_by(TransIn.id.desc()).\
+    #     trans_in = TransIn.query.filter_by(stock_id=global_product_id,
+    #                                          ).order_by(TransIn.id.desc()).\
     #             filter(TransIn.quantity > 0).first()
 
     #         stock = Stock.query.filter_by(id=trans_in.stock_id).first()
-    #         negative_transaction = TransIn(-trans_in.price, -trans_in.quantity,
+    #    negative_transaction = TransIn(-trans_in.price, -trans_in.quantity,
     #                                        stock=stock)
     #         negative_transaction.in_stock = True
     #         db.session.add(negative_transaction)
-    #         db.session.commit()
-
+    #        db.session.commit()
     #         return None
-
-    #     trans_in.in_stock = False
-
+    #    trans_in.in_stock = False
     #     db.session.commit()
-
     #     return True
 
     @staticmethod

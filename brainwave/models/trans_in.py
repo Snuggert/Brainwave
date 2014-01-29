@@ -9,7 +9,7 @@ class TransIn(db.Model, BaseEntity):
 
     price = db.Column(db.Float)
     quantity = db.Column(db.Integer)
-
+    
     stock_id = db.Column(db.Integer, db.ForeignKey('stock.id'))
 
     def __init__(self, price=None, quantity=None, stock=None):
