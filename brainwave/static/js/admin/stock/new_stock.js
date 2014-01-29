@@ -7,7 +7,6 @@ $(function(){
     $('form#new_stock').on('submit', function(e) {
         e.preventDefault();
 
-
         var button = $(this).find('button.save');
         button.button('loading');
         button.button('reset');

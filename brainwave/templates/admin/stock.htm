@@ -2,6 +2,7 @@
 
 {% block includes %}
     <script src="/static/js/admin/stock/search_stock.js"></script>
+    <script src="/static/js/admin/stock/new_stock.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -24,7 +25,7 @@
     <div class="row col-md-12 custyle">
         <table class="table table-striped custab">
             <thead>
-            <a href="{{url_for('admin.new_stock')}}" class="btn btn-primary btn-xs pull-right btn-primary" data-toggle="modal" data-target="#myModal"><b>+</b> Add new stock</a>
+            <a class="btn btn-primary btn-xs pull-right btn-primary" data-toggle="modal" data-target="#stockmodal"><b>+</b> Add new stock</a>
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
@@ -68,7 +69,7 @@
 </script>​
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="stockmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -76,7 +77,15 @@
         <h4 class="modal-title" id="myModalLabel">Modal title</h4>
       </div>
       <div class="modal-body">
-        ...
+    <form class="form-horizontal col-md-12" id="new_stock">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input class="form_field form-control" type='text' id="name", placeholder="Stock name", data-property="name"/>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary save" data-loading-text="Bezig...">Verzenden</button>
+        </div>
+    </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

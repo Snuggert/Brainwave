@@ -15,6 +15,8 @@ def create():
     """Create new stock item."""
     stock_dict = request.json
 
+    print stock_dict
+
     stock = StockController.create(stock_dict)
 
     return jsonify(id=stock.id)

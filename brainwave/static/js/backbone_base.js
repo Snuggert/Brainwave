@@ -40,8 +40,7 @@ models.Stock = Backbone.Model.extend({
     defaults: function(){
         return{
             id: null,
-            stock: null,
-            stock_type: null,
+            name: null,
         };
     }
 });
