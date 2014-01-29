@@ -4,15 +4,17 @@
 <!-- What fallows is some backbone.js (with lodash.js) functinality --> 
     <script type='text/template' id='productbutton-view-template'>
     <% _.each(products, function(product) { %>
-        <div class="col-xs-6 col-sm-3">
-            <div class="item-btn item-btn-active" 
-                style='background-color:#<%= product.product_category.get('color')%>'
-                product-id="<%= product.get('id') %>" product-price="<%= product.get('price') %>">
-                <div class="item-btn-name"><%= product.get('name') %></div>
-                <div class="item-btn-amount-now"></div>
-                <div class="item-btn-price">&euro; <%= product.get('price').toFixed(2).replace('.', ',') %></div>
+        <% if (category_id == 0 || category_id == product.get('product_category_id')) { %>
+            <div class="col-xs-6 col-sm-3">
+                <div class="item-btn item-btn-active" 
+                    style='background-color:#<%= product.product_category.get('color')%>'
+                    product-id="<%= product.get('id') %>" product-price="<%= product.get('price') %>">
+                    <div class="item-btn-name"><%= product.get('name') %></div>
+                    <div class="item-btn-amount-now"></div>
+                    <div class="item-btn-price">&euro; <%= product.get('price').toFixed(2).replace('.', ',') %></div>
+                </div>
             </div>
-        </div>
+        <% } %>
     <% }); %>
     </script>
 
@@ -66,19 +68,22 @@
         <% } %>
     </ul>
     </script>
+
+    <script type='text/template' id='product-cat-view-template'>
+    <ul class="nav nav-tabs nav-justified">
+        <li cat-id="0" class="focus" style="border-top: 5px white solid;">All</li>
+        <% _.each(categories, function(category) { %>
+            <li cat-id="<%= category.get('id') %>" style="border-top: 5px #<%= category.get('color') %> solid;"><%= category.get('name') %></li>
+        <% }); %>
+    </ul>
+    </script>
+
+
     <div class="overlay">
         <img id="loading-img" src="/static/img/loader.gif" />
         <div id="overlay-msg"></div>
         <div class="confirm-btn">Okay</div>
 
-    </div>
-
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">Brainwave</a>
-            </div>
-        </div>
     </div>
 
     <div class="container">
@@ -124,4 +129,6 @@
             </div>
         </div>
     </div>
+
+    <div class="nav-categories"></div>
 {% endblock %}

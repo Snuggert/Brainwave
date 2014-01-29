@@ -80,6 +80,19 @@ var ProductModel = Backbone.Model.extend({
     }
 });
 
+var ProductCategory = Backbone.Model.extend({
+    defaults: {
+        id: 0,
+        name: '',
+        color: ''
+    },
+    initialize: function() {
+        this.bind("error", function(model, error) {
+            console.log("Could not initialize a ProductCategoryModel.");
+        });
+    }
+});
+
 var CustomerModel = Backbone.Model.extend({
     initialize: function() {
         this.bind("error", function(model, error) {
@@ -145,6 +158,10 @@ var Products = Backbone.Collection.extend({
     model: ProductModel
 });
 
+var ProductCategories = Backbone.Collection.extend({
+    model: ProductCategory
+});
+
 var Customers = Backbone.Collection.extend({
     model: CustomerModel,
 
@@ -184,6 +201,8 @@ var Customers = Backbone.Collection.extend({
 /*Backbone Views */
 var ProductButtonView = Backbone.View.extend({
     products: new Products(),
+    product_categories: new ProductCategories(),
+    category_id: 0,
     receiptData: {},
     initialize: function() {
         /* Listen to custom events that are triggered by TransactionView */
@@ -193,6 +212,8 @@ var ProductButtonView = Backbone.View.extend({
         Backbone.pubSub.on('numpad_push', this.on_numpad_push, this);
         /* Listen to a custom event that is triggered by TransactionModel */
         Backbone.pubSub.on('entry_deleted', this.on_entry_deleted, this);
+        /* Listen to a custom event that is triggered by CategoryNavbarView */
+        Backbone.pubSub.on('category_switch', this.on_category_switch, this);
         this.update();
     },
     hammerEvents: {
@@ -204,21 +225,27 @@ var ProductButtonView = Backbone.View.extend({
         $.get('/api/product/all', {}, function(data) {
             me.products = new Products(data.products);
             $.get('/api/product_category/all', {}, function(data) {
-                var product_categories = new collections.ProductCategories(
+                me.product_categories = new ProductCategories(
                         data.product_categories);
 
                 _.each(me.products.models, function(product) {
-                    product.product_category = product_categories.get(
+                    product.product_category = me.product_categories.get(
                             product.get('product_category_id'));
                 });
 
                 me.render();
+
+                /* The product categories navbar wishes access to the
+                 * cateogires. Send them back via a pubSub event.
+                 */
+                Backbone.pubSub.trigger('categories_push',
+                                        me.product_categories);
             });
         });
     },
     render: function() {
         var template = _.template($('#productbutton-view-template').html(),
-            {products: this.products.models});
+            {products: this.products.models, category_id: this.category_id});
         this.$el.html(template);
 
         /* The button overlays have to be sized/shaped with jQuery. */
@@ -265,6 +292,10 @@ var ProductButtonView = Backbone.View.extend({
     },
     on_entry_deleted: function(data) {
         this.set_btn_quantity(data);
+    },
+    on_category_switch: function(data) {
+        this.category_id = data.category_id;
+        this.render();
     }
 });
 
@@ -725,6 +756,37 @@ var TransactButtonView = Backbone.View.extend({
 });
 
 
+var CategoryNavbarView = Backbone.View.extend({
+    initialize: function() {
+        Backbone.pubSub.on('categories_push', this.on_categories_push, this);
+    },
+    hammerEvents: {
+        'tap li': 'tapped'
+    },
+    render: function() {
+        var template = _.template($('#product-cat-view-template').html(),
+            {categories: this.product_categories.models});
+        this.$el.html(template);
+    },
+    tapped: function(event) {
+        var $this = $(event.currentTarget)
+        ,   id    = $this.attr('cat-id');
+
+        /* Remove current focus class at the relevant list element */
+        $this.parent().find('.focus').removeClass('focus');
+        /* Add focus to this element */
+        $this.addClass('focus');
+
+        /* Tell the ProductButtonView to render the appropriate buttons */
+        Backbone.pubSub.trigger('category_switch', {category_id: id});
+    },
+    on_categories_push: function(data) {
+        this.product_categories = data;
+        this.render();
+    }
+});
+
+
 $(document).ready(function() {
     /* Initialize the backbone views */
     var product_button_view  = new ProductButtonView({ el: $("#pos-item-container") });
@@ -733,14 +795,12 @@ $(document).ready(function() {
     var receipt_view         = new TransactionView({ el: $("#receipt") });
     var numpad_view          = new NumpadView({ el: $("#numpad") });
     var transact_button_view = new TransactButtonView({ el: $(".transact-btn") });
+    var cat_navbar_view      = new CategoryNavbarView({ el: $(".nav-categories") });
 
     /* Event handler for window resize, which resizes the item-btn overlays */
     $(window).on('resize', function(e) {
         $().shape_overlays();
     });
-
-    $('.navbar').hide();
-    $('body').css('padding-top', '10px');
 });
 
 /* Here's a custom function that sizes the product overlays (which hold the
