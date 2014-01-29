@@ -119,6 +119,9 @@ var StockNewView = Backbone.View.extend({
     render: function() {
         var template = _.template($('#stock-new-template').html());
         this.$el.html(template);
+        $('[data-toggle="tooltip"]').tooltip({
+            'placement': 'top'
+        });
     },
     events: {
         'click button#cancel-new': 'cancel',
