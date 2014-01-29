@@ -55,6 +55,16 @@ function add_number_keys () {
     } while (i != 0);
 }
 
+function load_stock () {
+    var result = $.ajax({
+        type: "GET",
+        url: "../api/stock/all",
+        async: false,
+        success: function (data) {
+            console.log(data);
+        } 
+    });
+}
 
 function add_product (id) {
     if (!number) {
@@ -106,7 +116,7 @@ function complete_transaction (pay_type) {
             }
         }
     }
-    // remove the last ,.
+    // remove the last , .
     items = items.substr(0, items.length-1);
     items = items.concat("]");
     

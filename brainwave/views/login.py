@@ -3,6 +3,7 @@ from flask import render_template, url_for, redirect, session
 from brainwave import app
 from brainwave.forms.login import LoginForm
 from brainwave.controllers import UserController
+from brainwave.models.user import User
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -15,8 +16,11 @@ def login():
     if form.validate_on_submit():
         session['user_id'] = form.user.id
         session['user_role'] = form.user.role
-
-        return redirect(url_for('admin.view_customers'))
+        
+        if (form.user.role == User.ROLE_ADMIN):
+            return redirect(url_for('admin.view_customers'))
+        if (form.user.role == User.ROLE_CUSTOMER):
+            return redirect(url_for('customer.credit'))
 
     return render_template('login.htm', form=form)
 

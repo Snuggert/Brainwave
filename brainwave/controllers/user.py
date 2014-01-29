@@ -55,7 +55,9 @@ class UserController:
             raise UserController.EmailInUse()
 
         user = User.new_dict(user_dict)
-
+        
+        app.logger.info("test" + password)
+        
         pw_hash = generate_password_hash(password)
         user.pw_hash = pw_hash
 
