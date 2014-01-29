@@ -295,7 +295,10 @@ var ProductButtonView = Backbone.View.extend({
     },
     on_category_switch: function(data) {
         this.category_id = data.category_id;
-        this.render();
+        
+        this.$el.find('.col-sm-3').show();
+        if (this.category_id > 0)
+            this.$el.find('.col-sm-3').not('.product-cat-' + this.category_id).hide();
     }
 });
 

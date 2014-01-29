@@ -4,17 +4,15 @@
 <!-- What fallows is some backbone.js (with lodash.js) functinality --> 
     <script type='text/template' id='productbutton-view-template'>
     <% _.each(products, function(product) { %>
-        <% if (category_id == 0 || category_id == product.get('product_category_id')) { %>
-            <div class="col-xs-6 col-sm-3">
-                <div class="item-btn item-btn-active" 
-                    style='background-color:#<%= product.product_category.get('color')%>'
-                    product-id="<%= product.get('id') %>" product-price="<%= product.get('price') %>">
-                    <div class="item-btn-name"><%= product.get('name') %></div>
-                    <div class="item-btn-amount-now"></div>
-                    <div class="item-btn-price">&euro; <%= product.get('price').toFixed(2).replace('.', ',') %></div>
-                </div>
+        <div class="col-xs-6 col-sm-3 product-cat-<%= product.get('product_category_id') %>">
+            <div class="item-btn item-btn-active" 
+                style='background-color:#<%= product.product_category.get('color')%>'
+                product-id="<%= product.get('id') %>" product-price="<%= product.get('price') %>">
+                <div class="item-btn-name"><%= product.get('name') %></div>
+                <div class="item-btn-amount-now"></div>
+                <div class="item-btn-price">&euro; <%= product.get('price').toFixed(2).replace('.', ',') %></div>
             </div>
-        <% } %>
+        </div>
     <% }); %>
     </script>
 
