@@ -14,44 +14,28 @@ stock_api = Blueprint('stock_api', __name__,
 def create():
     """Create new stock item."""
     stock_dict = request.json
-
     print stock_dict
-
     stock = StockController.create(stock_dict)
 
     return jsonify(id=stock.id)
 
 
-@stock_api.route('/<int:stock_id>/<string:unit>', methods=['PUT'])
+@stock_api.route('/<int:stock_id>', methods=['PUT'])
 @Authentication(User.ROLE_ASSOCIATION)
-def add(stock_id, unit):
+def update(stock_id):
     """Add items to stock."""
-    stock = StockController.get(stock_id)
+    stock_dict = request.json
+    try:
+        StockController.update(stock_dict)
+    except StockController.NoNameGiven as e:
+        return jsonify(error=e.error), 500
 
-    if not stock:
-        return jsonify(error='Stock item not found'), 500
-
-    stock = StockController.add(stock, unit)
-
-    return jsonify(unit=stock.unit)
+    return jsonify()
 
 
 @stock_api.route('/<int:stock_id>', methods=['DELETE'])
 @Authentication(User.ROLE_ASSOCIATION)
 def delete(stock_id):
-    """Delete stock item."""
-    stock = StockController.get(stock_id)
-
-    if not stock:
-        return jsonify(error='Stock item not found'), 500
-
-    StockController.delete(stock)
-
-    return jsonify()
-
-
-@stock_api.route('/consume/<int:stock_id>', methods=['DELETE'])
-def consume(stock_id):
     """Delete stock item."""
     stock = StockController.get(stock_id)
 

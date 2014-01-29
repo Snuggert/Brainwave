@@ -7,6 +7,7 @@ from brainwave.controllers.user import UserController
 from brainwave.controllers.product import ProductController
 from brainwave.controllers.customer import CustomerController
 from brainwave.controllers.credit import CreditController
+from brainwave.controllers.stock import StockController
 
 
 class TransactionController:
@@ -125,8 +126,11 @@ class TransactionController:
             elif p[1].shortname == "Credit":
                 # Customer wants to buy credit, so add it to his balance.
                 CreditController.add(credit, p[0].price)
+            elif p[1].stock.direct:
+                # Manipulate the stock for this particular product here
+                StockController.remove(p[1].stock, p[0].quantity)
             else:
-                pass  # Manipulate the stock for this particular product here
+                pass
 
         # Finally, update the status of the transaction to "paid"
         TransactionController.set_status(transaction.id, 'paid')

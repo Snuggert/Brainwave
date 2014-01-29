@@ -2,13 +2,14 @@
 
 {% block includes %}
     <script src="/static/js/admin/stock/search_stock.js"></script>
-    <script src="/static/js/admin/stock/new_stock.js"></script>
+    <script src="/static/js/admin/stock.js"></script>
 {% endblock %}
 
 {% block content %}
     <script type="text/javascript">
         $('#collapseOne').collapse('show')
     </script>
+    <div id='new-stock'></div>
     <div class="row">
         <div class="col-lg-11  ">
             <div class="input-group">
@@ -18,14 +19,22 @@
                         <span style="margin: 3px;" class="glyphicon glyphicon-search"></span>
                     </button>
                 </span>
-            </div><!-- /input-group -->
+            </div>
         </div>
     </div>
     <br />
-    <div class="row col-md-12 custyle">
-        <table class="table table-striped custab">
+    <div class='panel panel-default'>
+        <div class='panel-heading'>
+            <div class='panel-title'>Stocks</div>
+        </div>
+
+        <div class='panel-body'>
+            <button id='new-btn' class='btn btn-primary'>
+                <strong>+</strong> Add new stock
+            </button>
+        </div>
+        <table class="table table-striped custab" id="all_stocks">
             <thead>
-            <a class="btn btn-primary btn-xs pull-right btn-primary" data-toggle="modal" data-target="#stockmodal"><b>+</b> Add new stock</a>
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
@@ -33,66 +42,64 @@
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
-            <tbody id="stock_results">
-            	{% for item in data.stock %}
-                    <tr>
-                        <td>{{item.id}}</td>
-                        <td>{{item.name}}</td>
-                        <td>{{item.quantity}}</td>
-                        <td class="text-center">
-                            <a class='btn btn-info btn-xs' href="#">
-                                <span class="glyphicon glyphicon-edit"></span> 
-                            </a>
-                            <a href="#" class="btn btn-danger btn-xs">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </a>
-                        </td>
-                    </tr>
-            	{% endfor %}
+            <tbody>
             </tbody>
         </table>
     </div>
 
-<script type="text/template" id="stock-template">
-<tr>
-    <td><%= id %></td>
-    <td><%= name %></td>
-    <td class="text-center">
-        <a class='btn btn-info btn-xs' href="#">
-            <span class="glyphicon glyphicon-edit"></span> 
-        </a>
-        <a href="#" class="btn btn-danger btn-xs">
-            <span class="glyphicon glyphicon-remove"></span>
-        </a>
-    </td>
-</tr>
-</script>​
+    <script type="text/template" id="stock-view-template">
+        <% _.each(stocks, function(stock) { %>
+            <tr data-id='<%= stock.get('id') %>'>
+                <td><%= stock.get('id') %></td>
+                <td><%= stock.get('name') %></td>
+                <td><%= stock.get('quantity') %></td>
+                <td class='text-right'>
+                    <button class='edit btn btn-info btn-xs'>
+                        <span class='glyphicon glyphicon-edit'></span>
+                    </button>
+                    <button class='remove btn btn-danger btn-xs'>
+                        <span class='glyphicon glyphicon-remove'></span>
+                    </button>
+                </td>
+            </tr>
+        <% }); %>
+    </script>​
 
-<!-- Modal -->
-<div class="modal fade" id="stockmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-    <form class="form-horizontal col-md-12" id="new_stock">
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input class="form_field form-control" type='text' id="name", placeholder="Stock name", data-property="name"/>
+    <script type='text/template' id='stock-edit-template'>
+        <td><%= stock.get('id') %></td>
+        <td><input type='text' class='form-control' data-property='name' value='<%= stock.get('name') %>' /></td>
+        <td><input type='text' class='form-control' data-property='quantity' value='<%= stock.get('quantity') %>' /></td>
+        <td class='text-right'>
+            <button class='save btn btn-primary btn-xs'>
+                <span class='glyphicon glyphicon-ok'></span>
+            </button>
+            <button class='cancel btn btn-danger btn-xs'>
+                <span class='glyphicon glyphicon-ban-circle'></span>
+            </button>
+        </td>
+    </script>
+
+    <script type="text/template" id="stock-new-template">
+        <div class='panel panel-default'>
+            <div class='panel-heading'>
+                <div class='panel-title pull-left'>New stock</div>
+                <button id='cancel-new' class='btn btn-danger pull-right'>
+                    <span class='glyphicon glyphicon-remove'></span> Close
+                </button>
+                <div class='clearfix'></div>
+            </div>
+
+            <div class='panel-body'>
+                <div class='form-group' id='new-stock-form'>
+                    <label for='new-stock-name'>Name</label>
+                    <input type='text' class='form-control' id='new-stock-name' data-property='name' placeholder='Name' />
+
+                    <label for='new-stock-direct'>Direct</label>
+                    <input type='checkbox' id='new-stock-direct'/>
+                </div>
+
+                <button id='save-new' class='btn btn-primary'>Save</button>
+            </div>
         </div>
-        <div class="form-group">
-            <button class="btn btn-primary save" data-loading-text="Bezig...">Verzenden</button>
-        </div>
-    </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+    </script>
 {% endblock %}
-

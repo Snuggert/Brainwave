@@ -7,10 +7,31 @@ from brainwave.models import Stock
 
 class StockController:
     """The Controller for stock manipulation."""
+    class NoNameGiven(Exception):
+        """Exception for when no name is given for a stock."""
+        def __init__(self):
+            self.error = 'No name was given for the stock'
 
     @staticmethod
     def add(stock, quantity):
         stock.quantity = stock.quantity + quantity
+        db.session.add(stock)
+        db.session.commit()
+
+    @staticmethod
+    def update(stock_dict):
+        print stock_dict
+        stock = Stock.merge_dict(stock_dict)
+        if not stock.name:
+            raise StockController.NoNameGiven()
+        db.session.add(stock)
+        db.session.commit()
+
+        return stock
+
+    @staticmethod
+    def remove(stock, quantity):
+        stock.quantity = stock.quantity - quantity
         db.session.add(stock)
         db.session.commit()
 

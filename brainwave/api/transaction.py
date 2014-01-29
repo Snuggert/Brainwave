@@ -51,9 +51,6 @@ def create():
     except TransactionController.NoCustomerSelected as e:
         return jsonify(status='error', error=e.error), 500
 
-    for piece in transaction.pieces:
-        if piece.product.unit == 'amount':
-            print piece.quantity
     return jsonify(status='success')
 
 

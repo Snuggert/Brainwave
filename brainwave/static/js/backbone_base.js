@@ -41,6 +41,7 @@ models.Stock = Backbone.Model.extend({
         return{
             id: null,
             name: null,
+            direct: null,
         };
     }
 });
@@ -107,7 +108,11 @@ collections.Customers = Backbone.Collection.extend({
 });
 
 collections.Stocks = Backbone.Collection.extend({
-    model: models.Stock
+    model: models.Stock,
+    url: 'api/stock/all',
+    parse: function(response){
+        return response.stocks
+    }
 });
 
 collections.Users = Backbone.Collection.extend({
