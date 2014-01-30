@@ -13,28 +13,44 @@ from brainwave.controllers import CustomerController
 assoc1 = AssociationController.create({'name': 'via', 'login_name': 'via',
                                        'password': 'via',
                                        'email': 'bestuur@svia.nl'})
-assoc2 = AssociationController.create({'name': 'nsa', 'login_name': 'nsa',
+assoc2 = AssociationController.create({'name': 'House Stark', 'login_name': 'Stark',
+                                       'password': 'Winter is Coming',
+                                       'email': 'info@stark.sk'})
+assoc3 = AssociationController.create({'name': 'House Baratheon', 'login_name': 'Baratheon',
+                                       'password': 'Ours is the Fury',
+                                       'email': 'info@baratheon.sk'})
+assoc4 = AssociationController.create({'name': 'House Lannister', 'login_name': 'Lannister',
+                                       'password': 'Hear Me Roar!',
+                                       'email': 'info@lannister.sk'})
+assoc5 = AssociationController.create({'name': 'nsa', 'login_name': 'nsa',
                                        'password': 'nsa',
                                        'email': 'bla@nsa.nl'})
+
+
 db.session.add(assoc1)
 db.session.add(assoc2)
+db.session.add(assoc3)
+db.session.add(assoc4)
+db.session.add(assoc5)
 db.session.commit()
 
 # Dummy customer
 custo1 = Customer('Bas van den Heuvel', "Klaplong", "bas@bas.nl",
                   "basklaplong")
-custo2 = Customer('Jon Snow')
-custo3 = Customer('Joffrey Baratheon')
-custo4 = Customer('Sansa Stark')
+custo1 = Customer('Bas van den Heuvel', "klaplong", "bas@bas.nl", "basklaplong")
+db.session.add(custo1)
+custo2 = Customer('Jon Snow', 'ghost', "jon@snow.sk", "jonsnow")
+db.session.add(custo2)
+custo3 = Customer('Joffrey Baratheon', "joffrey", "joffrey@baratheon.sk", "king")
+db.session.add(custo3)
+custo4 = Customer('Sansa Stark', "sansa", "sansa@stark.sk", "sansa")
+db.session.add(custo4)
 custo5 = Customer('Maester Luwin')
 custo6 = Customer('Barristan Selmy')
 custo7 = Customer('Grey Worm')
 custo8 = Customer('Mace Tyrell')
 custo9 = Customer('Measter Aemon')
-custo10 = Customer('Jaap Koetsier', 'jaap', 'mail@jkoetsier.nl', 'jaap')
-db.session.add(custo1)
-db.session.add(custo2)
-db.session.add(custo3)
+custo10 = Customer('Ned Stark')
 db.session.add(custo4)
 db.session.add(custo5)
 db.session.add(custo6)
@@ -42,10 +58,31 @@ db.session.add(custo7)
 db.session.add(custo8)
 db.session.add(custo9)
 db.session.add(custo10)
+custo11 = Customer('Rob Stark')
+db.session.add(custo11)
+custo12 = Customer('Jamie Lannister')
+db.session.add(custo12)
+custo13 = Customer('Jaap Koetsier', 'jaap', 'mail@jkoetsier.nl', 'jaap')
+db.session.add(custo13)
+custo14 = Customer('Bram van den Akker')
+db.session.add(custo14)
+custo15 = Customer('Mats ten Bohme')
+db.session.add(custo15)
+custo16 = Customer('Stein van Zwoll')
+db.session.add(custo16)
 db.session.commit()
 
 CustomerController.add_association(custo1, assoc1)
 CustomerController.add_association(custo1, assoc2)
+CustomerController.add_association(custo3, assoc3)
+CustomerController.add_association(custo4, assoc2)
+CustomerController.add_association(custo10, assoc2)
+CustomerController.add_association(custo11, assoc2)
+CustomerController.add_association(custo12, assoc4)
+CustomerController.add_association(custo13, assoc1)
+CustomerController.add_association(custo14, assoc1)
+CustomerController.add_association(custo15, assoc1)
+CustomerController.add_association(custo16, assoc1)
 
 # Dummy product categories
 product_category1 = ProductCategory('Bier', 'FFFFFF', 1)
