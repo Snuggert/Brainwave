@@ -108,6 +108,14 @@ collections.Customers = Backbone.Collection.extend({
     model: models.Customer
 });
 
+collections.Products = Backbone.Collection.extend({
+    model: models.Product,
+    url: 'api/product/all',
+    parse: function(response){
+        return response.products
+    }
+});
+
 collections.Stocks = Backbone.Collection.extend({
     model: models.Stock,
     url: 'api/stock/all',
