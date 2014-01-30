@@ -125,10 +125,10 @@ product11 = Product('Add Credit', 'Credit', 1.00, 0, 'amount', False,
                     product_category6, stock9, assoc1)
 product12 = Product('Cash Back', 'Cash', 1.00, 0, 'amount', False,
                     product_category6, stock9, assoc1)
-product13 = Product('Add Credit', 'Credit', 1.00, 0, 'amount',
-                    product_category6, stock9, assoc2)
-product14 = Product('Cash Back', 'Cash', 1.00, 0,
-                    'amount', product_category6, stock9, assoc2)
+# product13 = Product('Add Credit', 'Credit', 1.00, 0, 'amount',
+#                     product_category6, stock9, assoc2)
+# product14 = Product('Cash Back', 'Cash', 1.00, 0,
+#                     'amount', product_category6, stock9, assoc2)
 
 
 db.session.add(product1)
@@ -143,8 +143,8 @@ db.session.add(product9)
 db.session.add(product10)
 db.session.add(product11)
 db.session.add(product12)
-db.session.add(product13)
-db.session.add(product14)
+# db.session.add(product13)
+# db.session.add(product14)
 db.session.commit()
 
 # Dummy transactions

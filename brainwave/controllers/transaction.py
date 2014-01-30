@@ -1,5 +1,6 @@
 """transaction.py - Controller calls for transaction."""
 from flask import session
+from sqlalchemy import and_
 from brainwave import db
 from brainwave.models import Transaction, Association, User, Credit
 from brainwave.controllers.transaction_piece import TransactionPieceController

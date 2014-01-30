@@ -382,6 +382,7 @@ PayModuleView = Backbone.View.extend({
         $('.customer-list .list-group-item:nth-child(2)').slideDown();
         $('.customer-list .list-group-item:first-child > span').hide();
         /* Now put the selected class on the li element */
+        this.unselect_customer();
         $('.customer-list .list-group-item:nth-child(2)').addClass('selected');
         event.stopPropagation();
         /* Add focus to input field */
