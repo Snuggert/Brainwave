@@ -1,0 +1,30 @@
+{% extends 'content.htm' %}
+
+{% block includes %}
+<script src='/static/js/admin/cashier.js'></script>
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+    $('#collapseTwo').collapse('show')
+</script>
+
+<div class='panel panel-default'>
+    <div class='panel-heading'>
+        <div class='panel-title' id="cash_amount">Cash: €{{data.cash_amount}}</div>
+    </div>
+
+    <form class="form-horizontal col-md-12" id="new_stock" onsubmit="return false;">
+        <div class="form-group">
+            <label for="cash">cash</label>
+            <input class="form_field form-control" type='text' id="cash", placeholder="Stock cash", data-property="cash"/>
+        </div>
+        <div class="form-group">
+            <button id="send_cash" class="btn btn-primary" data-loading-text="Bezig...">Verzenden</button>
+        </div>
+    </form>
+</div>
+
+
+
+{% endblock %}

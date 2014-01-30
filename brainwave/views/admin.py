@@ -4,7 +4,7 @@ from flask import render_template, session, Blueprint
 from brainwave.controllers import AssociationController, \
     ProductController, ProductCategoryController, \
     TransactionController, TransactionPieceController, StockController
-from brainwave.models import Stock, User
+from brainwave.models import Stock, User, Association
 from brainwave.controllers.authentication import Authentication
 
 admin_blueprint = Blueprint('admin', __name__, url_prefix='/admin')
@@ -61,6 +61,16 @@ def view_trans_in(user_id=None):
 def view_product(user_id=None):
     products = ProductController.get_all()
     return render_template('admin/product.htm', data={'products': products})
+
+
+@admin_blueprint.route('/cashier', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
+def view_cashier():
+    assoc = Association.query.filter_by(id=session['association_id']).first()
+    cash_amount = AssociationController.get_cash_counter(assoc)
+
+    return render_template('admin/cashier.htm',
+                           data={'cash_amount': cash_amount})
 
 
 @admin_blueprint.route('/product/new', methods=['GET'])
