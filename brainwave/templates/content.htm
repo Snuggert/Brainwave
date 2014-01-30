@@ -15,7 +15,7 @@
                         </h4>
                     </div>
                     <div id="collapseOne" class="panel-collapse collapse">
-                        <div class="panel-body">
+                        <div class="panel menu-body">
                             <table class="table">
                                 
                                 <tr>
@@ -23,6 +23,11 @@
                                         <span class="glyphicon glyphicon glyphicon-shopping-cart"></span>
 
                                         <a href="{{url_for('admin.view_product')}}">Products</a>
+                                    </td>
+                                </tr>                                
+                                <tr>
+                                    <td>
+                                        <span class="glyphicon glyphicon glyphicon-cloud-download"></span><a href="{{url_for('admin.sales')}}">Product sales</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -55,7 +60,7 @@
                         </h4>
                     </div>
                     <div id="collapseTwo" class="panel-collapse collapse">
-                        <div class="panel-body">
+                        <div class="panel-body menu">
                             <table class="table">
 
                                 {% if session['user_role'] >= 8 %}

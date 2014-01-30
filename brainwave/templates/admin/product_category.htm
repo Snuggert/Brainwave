@@ -41,7 +41,7 @@
             <tr data-id='<%= product_category.get('id') %>'>
                 <td><%= product_category.get('id') %></td>
                 <td><%= product_category.get('name') %></td>
-                <td><%= product_category.get('color') %></td>
+                <td style="color:#<%= product_category.get('color') %>;"><%= product_category.get('color') %></td>
                 <td class='text-right'>
                     <button class='edit btn btn-info btn-xs'>
                         <span class='glyphicon glyphicon-edit'></span>

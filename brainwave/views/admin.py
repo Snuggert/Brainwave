@@ -3,7 +3,7 @@ from datetime import date, timedelta, datetime
 from flask import render_template, session, Blueprint
 from brainwave.controllers import AssociationController, \
     ProductController, ProductCategoryController, \
-    TransactionController, StockController
+    TransactionController, TransactionPieceController, StockController
 from brainwave.models import Stock, User
 from brainwave.controllers.authentication import Authentication
 
@@ -114,6 +114,16 @@ def view_analysis(user_id=None):
                                  'week_number': week_number,
                                  'epoch_week_start': epoch_week_start,
                                  'epoch_week_end': epoch_week_end})
+
+
+@admin_blueprint.route('/sales', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
+def sales(user_id=None):
+
+    transactions = TransactionPieceController.get_all_merged()
+
+    return render_template('admin/sales.htm',
+                           data={'transactions': transactions})
 
 
 def first_monday(year, week):

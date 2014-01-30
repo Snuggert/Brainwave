@@ -2,8 +2,10 @@
 from flask import Blueprint, jsonify, request
 from brainwave.utils import row2dict
 from brainwave.controllers.transaction import TransactionController
+from brainwave.controllers.transaction_piece import TransactionPieceController
 from brainwave.controllers.authentication import Authentication
 from brainwave.models import User, Transaction
+import time
 
 transaction_api = Blueprint('transaction_api', __name__,
                             url_prefix='/api/transaction')
@@ -51,7 +53,7 @@ def create():
     except TransactionController.NoCustomerSelected as e:
         return jsonify(status='error', error=e.error), 500
 
-    return jsonify(status='success')
+    return jsonify(status='success', transaction=transaction)
 
 
 @transaction_api.route('/<int:transaction_id>', methods=['GET'])
@@ -68,5 +70,29 @@ def get(transaction_id):
         piece_dict = row2dict(piece)
         piece_dict['product'] = row2dict(piece.product)
         transaction_dict['pieces'].append(piece_dict)
+
+    return jsonify(transaction=transaction_dict)
+
+
+@transaction_api.route('/sales', methods=['GET'])
+@transaction_api.route('/sales/<string:from_date>/<string:to_date>',
+                       methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
+def get_all_merged(from_date='1-1-2013 00:00',
+                   to_date=time.strftime("%d-%m-%Y %H:%M")):
+    """Get all sales transaction pieces merged."""
+    transactions = TransactionPieceController.get_all_merged(from_date,
+                                                             to_date)
+
+    transaction_dict = dict()
+    for transaction in transactions:
+        product_sales = dict()
+        product_sales['price'] = transaction.price
+        product_sales['amount'] = transaction.amount[0][0]
+        product_sales['amount'] = transaction.amount[0][0]
+        product_sales['pricesum'] = transaction.pricesum[0][0]
+        product_sales['quantitysum'] = transaction.quantitysum[0][0]
+        product_sales['name'] = transaction.name
+        transaction_dict[transaction.name] = product_sales
 
     return jsonify(transaction=transaction_dict)

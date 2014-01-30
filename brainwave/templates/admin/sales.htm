@@ -1,0 +1,76 @@
+{% extends "content.htm" %}
+
+{% block includes %}
+    <link href="/static/css/datepicker3.css" rel="stylesheet">
+    <script src="/static/js/admin/sales.js"></script>
+    <script src="/static/js/bootstrap-datepicker.js"></script>
+{% endblock %}
+
+{% block content %}
+    <script type="text/javascript">
+        $('#collapseOne').collapse('show')
+    </script>
+    <div class="row col-md-12 custyle">
+        <div class="six columns bookForm">
+            <form id="reserveNow" action="#">
+                <label>From</label>
+                <input type="text" value="02/24/2013" class="from_date round form-control" />
+                <label>To</label>
+                <input type="text" value="02/27/2013" class="round to_date form-control" />
+            </form>
+        </div>
+        <table class="table table-striped custab" id="products_filtered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody id="products_filtered_results">
+                {% for item in data.transactions %}
+                    <tr>
+                        <td>{{item.name}}</td>
+                        <td>€{% if item.pricesum[0][0] != None %}{{item.pricesum[0][0]}}{% else %}0{% endif %}</td>
+                        <!-- <td>{{item.quantity}}</td> -->
+                        <td>{% if item.quantitysum[0][0] != None %}{{item.quantitysum[0][0]}}{% else %}0{% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row col-md-12 custyle">
+        <h3>Total</h3>
+        <table class="table table-striped custab" id="products_all">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody id="product_results">
+                {% for item in data.transactions %}
+                    <tr>
+                        <td>{{item.name}}</td>
+                        <td>€{% if item.pricesum[0][0] != None %}{{item.pricesum[0][0]}}{% else %}0{% endif %}</td>
+                        <!-- <td>{{item.quantity}}</td> -->
+                        <td>{% if item.quantitysum[0][0] != None %}{{item.quantitysum[0][0]}}{% else %}0{% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <script type="text/template" id="sales-template">
+        <tr>
+            <td><%= name %></td>
+            <td>€<%= (pricesum != null) ?
+                                         pricesum : 0 %></td>
+            <td><%= (quantitysum != null) ?
+                                         quantitysum : 0 %></td>
+        </tr>
+    </script>​
+{% endblock %}
