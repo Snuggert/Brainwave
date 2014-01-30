@@ -16,10 +16,13 @@ def login():
     if form.validate_on_submit():
         session['user_id'] = form.user.id
         session['user_role'] = form.user.role
-        
+
         if (form.user.role == User.ROLE_ADMIN):
             return redirect(url_for('admin.view_customers'))
         if (form.user.role == User.ROLE_ASSOCIATION):
+            user = UserController.get(session['user_id'])
+            session['association_id'] = user.association[0].id
+
             return redirect(url_for('admin.view_customers'))
         if (form.user.role == User.ROLE_CUSTOMER):
             return redirect(url_for('customer.credit'))

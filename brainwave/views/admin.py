@@ -19,7 +19,7 @@ def view_customers():
 
 @admin_blueprint.route('/', methods=['GET'])
 @admin_blueprint.route('/association', methods=['GET'])
-@Authentication(User.ROLE_ASSOCIATION)
+@Authentication(User.ROLE_ADMIN)
 def view_associations():
     return render_template('admin/association.htm')
 
@@ -33,7 +33,6 @@ def view_product_category():
 @admin_blueprint.route('/stock', methods=['GET'])
 @Authentication(User.ROLE_ASSOCIATION)
 def view_stock(user_id=None, query=""):
-# def view_stock(user_id=None):
     stock = StockController.get_all()
 
     return render_template('admin/stock.htm', data={'stock': stock})
@@ -63,11 +62,6 @@ def view_trans_in(user_id=None):
 def view_product(user_id=None):
     products = ProductController.get_all()
     return render_template('admin/product.htm', data={'products': products})
-
-
-@admin_blueprint.route('/post', methods=['GET'])
-def view_post_tmp(user_id=None):
-    return render_template('admin/post.html', data={'bla': 'bla2'})
 
 
 @admin_blueprint.route('/product/new', methods=['GET'])

@@ -1,7 +1,8 @@
 """stock.py - Controller calls for stock."""
 from brainwave import db
 import difflib
-from brainwave.models import Stock
+from brainwave.models import Stock, User
+from flask import session
 # from brainwave.controllers import TransInController
 
 
@@ -53,8 +54,11 @@ class StockController:
     @staticmethod
     def get_all():
         """ Get all stock objects """
-
-        return Stock.query.all()
+        if session['user_role'] >= User.ROLE_ADMIN:
+            return Stock.query.all()
+        if session['user_role'] >= User.ROLE_ASSOCIATION:
+            assoc_id = session['association_id']
+            return Stock.query.filter_by(assoc_id=assoc_id).all()
 
     @staticmethod
     def get_all_from(query):

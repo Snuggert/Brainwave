@@ -90,6 +90,7 @@
                 </div>
                 {% endif %}
 
+                {% if session['user_role'] == 1 %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -97,7 +98,8 @@
                             </span>Credit</a>
                         </h4>
                     </div>
-                </div>                
+                </div>
+                {% endif %}              
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">

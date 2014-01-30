@@ -1,6 +1,7 @@
 """trans_in.py - Controller calls for transaction-in."""
 from brainwave import db
-from brainwave.models import TransIn
+from brainwave.models import TransIn, User
+from flask import session
 
 
 class TransInController:
@@ -57,9 +58,14 @@ class TransInController:
 
     @staticmethod
     def get_all():
-        """Get all trans_in items."""
-        all_trans_in = TransIn.query.all()
-        return all_trans_in
+        # """Get all trans_in items."""
+        # if session['user_role'] >= User.ROLE_ADMIN:
+        #     return TransIn.query.all()
+        # else:
+        #     return TransIn.query.all()
+
+        # TransIn.query.filter(TransIn.stock_id.assoc_id == assoc_id).all()
+        return TransIn.query.all()
 
     # @staticmethod
     # def get_all_merged(query=None):

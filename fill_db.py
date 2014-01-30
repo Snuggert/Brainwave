@@ -77,6 +77,10 @@ stock7 = Stock('Blikjes fanta', True, assoc1)
 stock8 = Stock('Blikjes Nestea', True, assoc1)
 stock9 = Stock('Intangibles', True, assoc1)
 stock11 = Stock('Chardonnay', False, assoc1)
+stock12 = Stock('Blikjes fanta', True, assoc2)
+stock13 = Stock('Blikjes Nestea', True, assoc2)
+stock14 = Stock('Intangibles', True, assoc2)
+
 
 db.session.add(stock1)
 db.session.add(stock2)

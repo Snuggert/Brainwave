@@ -1,8 +1,8 @@
 """customer.py - Controller calls for customer."""
-from brainwave.models.customer import Customer
-from brainwave.models.credit import Credit
-from brainwave.models.association import Association
+from brainwave.models import Customer, Credit, User, Association
 from brainwave import db
+from brainwave.controllers import AssociationController
+from flask import session
 
 
 class CustomerController:
@@ -66,7 +66,11 @@ class CustomerController:
     @staticmethod
     def get_all():
         """Get all customers."""
-        return Customer.query.all()
+        if session['user_role'] >= User.ROLE_ADMIN:
+            return Customer.query.all()
+        if session['user_role'] >= User.ROLE_ASSOCIATION:
+            ass = AssociationController.get(session['association_id'])
+            return Customer.query.filter(Customer.associations.contains(ass)).all()
 
     @staticmethod
     def get_associations(customer):
