@@ -9,6 +9,7 @@ from brainwave.controllers.product import ProductController
 from brainwave.controllers.customer import CustomerController
 from brainwave.controllers.credit import CreditController
 from brainwave.controllers.stock import StockController
+from brainwave.controllers.association import AssociationController
 
 from brainwave import app
 import logging
@@ -144,7 +145,7 @@ class TransactionController:
         # Note: p[0] is a transaction_piece, p[1] is a product
         for p in purchase:
             if p[1].shortname == "Cash":
-                pass  # When implemented, update the cash counter.
+                AssociationController.change_cash_counter(association, -p[0].price)
             elif p[1].shortname == "Credit":
                 # Customer wants to buy credit, so add it to his balance.
                 CreditController.add(credit, p[0].price)
@@ -155,7 +156,12 @@ class TransactionController:
                 pass
 
         # Finally, update the status of the transaction to "paid"
+        if transaction.pay_type == 'cash':
+            AssociationController.change_cash_counter(association, price_total)
+
+
         TransactionController.set_status(transaction.id, 'paid')
+
 
         return transaction
 
