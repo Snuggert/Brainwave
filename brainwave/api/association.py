@@ -135,6 +135,7 @@ def remove_customer(association_id):
 
     return jsonify()
 
+
 @association_api.route('/cash_counter/set/<int:amount>', methods=['POST'])
 @Authentication(User.ROLE_ASSOCIATION)
 def set_cash_counter(amount):
@@ -142,6 +143,7 @@ def set_cash_counter(amount):
                                               .first()
     AssociationController.set_cash_counter(association, amount)
     return jsonify()
+
 
 @association_api.route('/cash_counter/change/<int:amount>', methods=['POST'])
 @Authentication(User.ROLE_ASSOCIATION)
@@ -151,6 +153,7 @@ def change_cash_counter(amount):
     AssociationController.change_cash_counter(association, amount)
     return jsonify()
 
+
 @association_api.route('/cash_counter/get', methods=['GET'])
 @Authentication(User.ROLE_ASSOCIATION)
 def get_cash_counter():
@@ -158,3 +161,17 @@ def get_cash_counter():
                                               .first()
     cash_counted = AssociationController.get_cash_counter(association)
     return jsonify(cash_counter=cash_counted)
+
+
+@association_api.route('/me', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
+def get_me():
+    user_id = session['user_id']
+    user = UserController.get(user_id)
+
+    if not user.association:
+        return jsonify()
+
+    association = user.association[0]
+
+    return jsonify(association=serialize_sqla(association))

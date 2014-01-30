@@ -565,6 +565,7 @@ var TransactionView = Backbone.View.extend({
             success: function() {
                 me.empty();
                 Backbone.pubSub.trigger('pay_complete', {});
+                $().update_navbar();
             }, error: function(model, response) {
                 Backbone.pubSub.trigger('pay_cancel',
                                         {'reason': 'error',
@@ -832,6 +833,8 @@ $(document).ready(function() {
     $(window).on('resize', function(e) {
         $().shape_overlays();
     });
+    
+    $().update_navbar();
 });
 
 /* Here's a custom function that sizes the product overlays (which hold the
@@ -844,6 +847,13 @@ $.fn.shape_overlays = function () {
         $(this).outerHeight($(this).parent().outerHeight() + 'px');
         var offset = ($(this).outerHeight() - 75) / 2;
         $(this).css('padding-top', offset + 'px');
+    });
+}
+
+$.fn.update_navbar = function () {
+    $.get('../api/association/me', {}, function(data) {
+        $('#association-name').text(data.association.name);
+        $('#cash-counter > span').html(data.association.cash_counter.toFixed(2).replace('.', ','));
     });
 }
 

@@ -44,6 +44,12 @@ body {
     color: #ffffff;
 }
 
+.navbar-header {
+  width: 100%;
+  line-height: 50px;
+  color: #cccccc;
+}
+
 .item-row > div {
     padding: 8px !important;
 }
