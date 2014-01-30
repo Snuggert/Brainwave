@@ -43,12 +43,12 @@ db.session.commit()
 CustomerController.add_association(custo1, assoc1)
 
 # Dummy product categories
-product_category1 = ProductCategory('Bier')
-product_category2 = ProductCategory('Wijn')
-product_category3 = ProductCategory('Hartig')
-product_category4 = ProductCategory('Frisdrank')
-product_category5 = ProductCategory('Snoep')
-product_category6 = ProductCategory('Overig')
+product_category1 = ProductCategory('Bier', 'FFFFFF', 1)
+product_category2 = ProductCategory('Wijn', 'FFFFFF', 1)
+product_category3 = ProductCategory('Hartig', 'FFFFFF', 1)
+product_category4 = ProductCategory('Frisdrank', 'FFFFFF', 1)
+product_category5 = ProductCategory('Snoep', 'FFFFFF', 1)
+product_category6 = ProductCategory('Overig', 'FFFFFF', 1)
 db.session.add(product_category1)
 db.session.add(product_category2)
 db.session.add(product_category3)
@@ -119,7 +119,10 @@ product11 = Product('Add Credit', 'Credit', 1.00, 0, 'amount',
                     product_category6, stock9, assoc1)
 product12 = Product('Cash Back', 'Cash', 1.00, 0,
                     'amount', product_category6, stock9, assoc1)
-
+product13 = Product('Add Credit', 'Credit', 1.00, 0, 'amount',
+                    product_category6, stock9, assoc2)
+product14 = Product('Cash Back', 'Cash', 1.00, 0,
+                    'amount', product_category6, stock9, assoc2)
 
 db.session.add(product1)
 db.session.add(product2)

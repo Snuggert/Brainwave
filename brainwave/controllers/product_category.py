@@ -1,6 +1,7 @@
 """product_category.py - Controller calls for product categories."""
 from brainwave import db
-from brainwave.models import ProductCategory
+from brainwave.models import ProductCategory, User
+from flask import session
 
 
 class ProductCategoryController:
@@ -15,6 +16,7 @@ class ProductCategoryController:
     def create(product_category_dict):
         """Create product category."""
         product_category = ProductCategory.new_dict(product_category_dict)
+        product_category.assoc_id = session['association_id']
 
         db.session.add(product_category)
         db.session.commit()
@@ -43,7 +45,11 @@ class ProductCategoryController:
     @staticmethod
     def get_all():
         """ Get all product items """
-        return ProductCategory.query.all()
+        if session['user_role'] >= User.ROLE_ADMIN:
+            return ProductCategory.query.all()
+        if session['user_role'] >= User.ROLE_ASSOCIATION:
+            assoc_id = session['association_id']
+            return ProductCategory.query.filter_by(assoc_id=assoc_id).all()
 
     @staticmethod
     def delete(item):

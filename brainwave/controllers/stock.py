@@ -39,6 +39,7 @@ class StockController:
     @staticmethod
     def create(stock_dict):
         stock = Stock.new_dict(stock_dict)
+        stock.assoc_id = session['association_id']
 
         db.session.add(stock)
         db.session.commit()
