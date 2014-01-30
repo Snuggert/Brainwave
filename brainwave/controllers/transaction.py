@@ -1,7 +1,7 @@
 """transaction.py - Controller calls for transaction."""
 from flask import session
 from brainwave import db
-from brainwave.models import Transaction, Association
+from brainwave.models import Transaction, Association, User
 from brainwave.controllers.transaction_piece import TransactionPieceController
 from brainwave.controllers.user import UserController
 from brainwave.controllers.product import ProductController
@@ -164,8 +164,14 @@ class TransactionController:
     @staticmethod
     def get_between(date_1, date_2):
         """ Get a Transaction objects between date_1 and date_2 """
-        return Transaction.query.filter(Transaction.created >= date_1).\
-            filter(Transaction.created <= date_2).all()
+        if session['user_role'] >= User.ROLE_ADMIN:
+            return Transaction.query.filter(Transaction.created >= date_1).\
+                filter(Transaction.created <= date_2).all()
+        if session['user_role'] >= User.ROLE_ASSOCIATION:
+            assoc_id = session['association_id']
+            return Transaction.query.filter_by(assoc_id=assoc_id). \
+                filter(Transaction.created >= date_1).\
+                filter(Transaction.created <= date_2).all()
 
     @staticmethod
     def set_status(transaction_id, status):

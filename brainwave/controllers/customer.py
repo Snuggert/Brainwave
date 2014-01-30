@@ -70,7 +70,12 @@ class CustomerController:
             return Customer.query.all()
         if session['user_role'] >= User.ROLE_ASSOCIATION:
             ass = AssociationController.get(session['association_id'])
-            return Customer.query.filter(Customer.associations.contains(ass)).all()
+            return Customer.query. \
+                filter(Customer.associations.contains(ass)).all()
+
+    @staticmethod
+    def get_all_all():
+        return Customer.query.all()
 
     @staticmethod
     def get_associations(customer):

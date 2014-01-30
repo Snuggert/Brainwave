@@ -1,7 +1,6 @@
 """admin.py - View for administration."""
 from datetime import date, timedelta, datetime
-from flask import render_template
-from flask import Blueprint
+from flask import render_template, session, Blueprint
 from brainwave.controllers import AssociationController, \
     TransInController, ProductController, ProductCategoryController, \
     TransactionController, StockController
@@ -91,8 +90,13 @@ def view_analysis(user_id=None):
     epoch_week_end = ((datetime_monday + timedelta(7)) -
                       datetime(1970, 1, 1)).total_seconds() * 1000
     graphdata = {}
-    for association in AssociationController.get_all():
-        graphdata[association.name] = []
+
+    if session['user_role'] >= 8:
+        for association in AssociationController.get_all():
+            graphdata[association.name] = []
+    elif session['user_role'] >= 4:
+        assocation = AssociationController.get(session['association_id'])
+        graphdata[assocation.name] = []
 
     for transaction in week_transactions:
         epoch_seconds = (transaction.created -
