@@ -2,7 +2,7 @@
 from flask import Blueprint, jsonify, request, session
 from brainwave.controllers import CustomerController, AssociationController
 from brainwave.utils import serialize_sqla
-from brainwave.models import User, Association
+from brainwave.models import User, Association, Credit
 from brainwave.controllers.authentication import Authentication
 from brainwave.controllers.user import UserController
 
@@ -88,8 +88,8 @@ def get_all(scope):
     for customer in customers:
         customer_dict = serialize_sqla(customer)
 
-        credit = customer.credits.filter(Association.id == association.id)\
-            .first()
+        credit = customer.credits\
+            .filter(Credit.association_id == association.id).first()
         if credit:
             customer_dict['credit'] = serialize_sqla(credit)
         else:

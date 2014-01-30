@@ -117,8 +117,8 @@ class CustomerController:
     def remove_association(customer, association):
         """Remove an association the customer is coupled to."""
         # Remove credit.
-        credit = customer.credits.filter(Association.id == association.id)\
-            .first()
+        credit = customer.credits\
+            .filter(Credit.association_id == association.id).first()
         db.session.delete(credit)
         db.session.commit()
 

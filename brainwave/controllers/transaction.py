@@ -1,7 +1,7 @@
 """transaction.py - Controller calls for transaction."""
 from flask import session
 from brainwave import db
-from brainwave.models import Transaction, Association, User
+from brainwave.models import Transaction, Association, User, Credit
 from brainwave.controllers.transaction_piece import TransactionPieceController
 from brainwave.controllers.user import UserController
 from brainwave.controllers.product import ProductController
@@ -126,8 +126,8 @@ class TransactionController:
                 raise TransactionController.NotCoupled()
 
             # Get the credit object matched to this customer
-            credit = customer.credits.filter(Association.id == association.id)\
-                .first()
+            credit = customer.credits\
+                .filter(Credit.association_id == association.id).first()
             print "Association charged: " + str(credit.association.id)
 
         if transaction.pay_type == 'credit':
