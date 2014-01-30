@@ -21,7 +21,8 @@ db.session.add(assoc2)
 db.session.commit()
 
 # Dummy customer
-custo1 = Customer('Bas van den Heuvel', "Klaplong", "bas@bas.nl", "basklaplong")
+custo1 = Customer('Bas van den Heuvel', "Klaplong", "bas@bas.nl",
+                  "basklaplong")
 custo2 = Customer('Jon Snow')
 custo3 = Customer('Joffrey Baratheon')
 custo4 = Customer('Sansa Stark')
@@ -130,6 +131,10 @@ product12 = Product('Cash Back', 'Cash', 1.00, 0, 'amount', False,
 # product14 = Product('Cash Back', 'Cash', 1.00, 0,
 #                     'amount', product_category6, stock9, assoc2)
 
+product15 = Product('Hertog Jan fust leeg', 'HJ -1', 0.0, 1, 'amount', True,
+                    product_category6, stock1, assoc1)
+product16 = Product('Fles Chardonnay leeg', 'Chard -1', 0.0, 1, 'amount', True,
+                    product_category6, stock11, assoc1)
 
 db.session.add(product1)
 db.session.add(product2)
@@ -145,6 +150,8 @@ db.session.add(product11)
 db.session.add(product12)
 # db.session.add(product13)
 # db.session.add(product14)
+db.session.add(product15)
+db.session.add(product16)
 db.session.commit()
 
 # Dummy transactions
