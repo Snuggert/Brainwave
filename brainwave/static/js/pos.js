@@ -322,7 +322,7 @@ PayModuleView = Backbone.View.extend({
     update: function() {
         var me = this;
 
-        $.get('/api/customer/all/all', {}, function(data) {
+        $.get('/api/customer/all', {}, function(data) {
             me.customers_all = new Customers(data.customers);
             me.filter('');
             me.render();
@@ -378,6 +378,8 @@ PayModuleView = Backbone.View.extend({
         this.$el.find('.credit').addClass('grayed');
     },
     show_new_customer: function(event) {
+        me = this;
+        
         /* Show the input bar and hide the add button */
         $('.customer-list .list-group-item:nth-child(2)').slideDown();
         $('.customer-list .list-group-item:first-child > span').hide();
@@ -387,6 +389,13 @@ PayModuleView = Backbone.View.extend({
         event.stopPropagation();
         /* Add focus to input field */
         $('.customer-list .list-group-item:nth-child(2) > input').focus();
+
+        /* Show all customers from all associations */
+        $.get('/api/customer/all/all', {}, function(data) {
+            me.customers_all = new Customers(data.customers);
+            me.filter('');
+            me.render();
+        });
     },
     on_pay_init: function(data) {
         this.paymodule.set({'receipt_price': data.receipt_price});

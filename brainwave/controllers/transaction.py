@@ -1,8 +1,7 @@
 """transaction.py - Controller calls for transaction."""
 from flask import session
-from sqlalchemy import and_
 from brainwave import db
-from brainwave.models import Transaction, Association, User, Credit
+from brainwave.models import Transaction, User, Credit
 from brainwave.controllers.transaction_piece import TransactionPieceController
 from brainwave.controllers.user import UserController
 from brainwave.controllers.product import ProductController
@@ -10,9 +9,6 @@ from brainwave.controllers.customer import CustomerController
 from brainwave.controllers.credit import CreditController
 from brainwave.controllers.stock import StockController
 from brainwave.controllers.association import AssociationController
-
-from brainwave import app
-import logging
 
 
 class TransactionController:
@@ -33,10 +29,6 @@ class TransactionController:
         def __init__(self):
             self.error = 'You must select a customer for this transaction.'
 
-    class NotCoupled(Exception):
-        def __init__(self):
-            self.error = 'The customer is not a part of this assocation.'
-
     class BadQuantity(Exception):
         def __init__(self):
             self.error = 'The provided quantity is not valid.'
@@ -54,8 +46,6 @@ class TransactionController:
             # The bar login team is not coupled to an association?
             raise TransactionController.NoAssociation()
         association = user.association[0]
-
-        print "Association logged in: " + str(association.id)
 
         # First, add a new user to the database if this is required
         if (ta_dict['customer_id'] == -1 and
@@ -125,12 +115,12 @@ class TransactionController:
             customer = CustomerController.get(transaction.cust_id)
             if not customer or CustomerController.association_is_coupled(
                     customer, association) is False:
-                raise TransactionController.NotCoupled()
+                # Customer is not coupled at this point, so do that now
+                CustomerController.add_association(customer, association)
 
             # Get the credit object matched to this customer
             credit = customer.credits\
                 .filter(Credit.association_id == association.id).first()
-            print "Association charged: " + str(credit.association.id)
 
         if transaction.pay_type == 'credit':
             # Make sure the customer has enough credit

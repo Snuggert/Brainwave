@@ -2,7 +2,7 @@
 from datetime import date, timedelta, datetime
 from flask import render_template, session, Blueprint
 from brainwave.controllers import AssociationController, \
-    TransInController, ProductController, ProductCategoryController, \
+    ProductController, ProductCategoryController, \
     TransactionController, StockController
 from brainwave.models import Stock, User
 from brainwave.controllers.authentication import Authentication
@@ -10,13 +10,13 @@ from brainwave.controllers.authentication import Authentication
 admin_blueprint = Blueprint('admin', __name__, url_prefix='/admin')
 
 
+@admin_blueprint.route('', methods=['GET'])
 @admin_blueprint.route('/customer', methods=['GET'])
 @Authentication(User.ROLE_ASSOCIATION)
 def view_customers():
     return render_template('admin/customer.htm')
 
 
-@admin_blueprint.route('/', methods=['GET'])
 @admin_blueprint.route('/association', methods=['GET'])
 @Authentication(User.ROLE_ADMIN)
 def view_associations():
