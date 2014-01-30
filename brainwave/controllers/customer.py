@@ -29,6 +29,9 @@ class CustomerController:
     @staticmethod
     def create(customer_dict):
         """Create a new customer."""
+        if not 'username' in customer_dict:
+            customer_dict['username'] = customer_dict['name']
+
         customer = Customer.new_dict(customer_dict)
 
         if not customer.name:

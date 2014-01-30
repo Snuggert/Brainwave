@@ -379,23 +379,23 @@ PayModuleView = Backbone.View.extend({
     },
     show_new_customer: function(event) {
         me = this;
-        
-        /* Show the input bar and hide the add button */
-        $('.customer-list .list-group-item:nth-child(2)').slideDown();
-        $('.customer-list .list-group-item:first-child > span').hide();
-        /* Now put the selected class on the li element */
-        this.unselect_customer();
-        $('.customer-list .list-group-item:nth-child(2)').addClass('selected');
-        event.stopPropagation();
-        /* Add focus to input field */
-        $('.customer-list .list-group-item:nth-child(2) > input').focus();
 
         /* Show all customers from all associations */
         $.get('/api/customer/all/all', {}, function(data) {
             me.customers_all = new Customers(data.customers);
             me.filter('');
             me.render();
+    
+            /* Show the input bar and hide the add button */
+            $('.customer-list .list-group-item:nth-child(2)').slideDown();
+            $('.customer-list .list-group-item:first-child > span').hide();
+            /* Now put the selected class on the li element */
+            $('.customer-list .list-group-item:nth-child(2)').addClass('selected');
+            event.stopPropagation();
+            /* Add focus to input field */
+            $('.customer-list .list-group-item:nth-child(2) > input').focus();
         });
+
     },
     on_pay_init: function(data) {
         this.paymodule.set({'receipt_price': data.receipt_price});
