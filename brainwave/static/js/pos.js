@@ -170,7 +170,6 @@ var Customers = Backbone.Collection.extend({
      * matches.
      */
     search: function(str) {
-        str = str.split(' ').join('');
         if(str == '') return this;
 
         var regex = this.regex_make(str);
@@ -180,7 +179,8 @@ var Customers = Backbone.Collection.extend({
          */
         var filtered = new Customers();
         this.each(function(model) {
-            if (regex.test(model.get("name").split(' ').join('')))
+            if (regex.test(model.get("name").split(/0|1/).join('')) ||
+                regex.test(model.get("name")))
                 filtered.add(model);
         });
         return filtered;
@@ -188,9 +188,9 @@ var Customers = Backbone.Collection.extend({
 
     regex_make: function(str) {
         var pattern = '';
-        var chars = [" ", " ", "ABCÀÁÅÃÆÇàáâãäåæç", "DEFÈÉÊËèéêë",
-                     "GHIÌÍÎÏìíîï", "JKL", "MNOÑñÒÓÔÕÖØòóôõöøð", "PQRSß",
-                     "TUVÙÚÛÜùúûü", "WXYZýþÿÝÞ"];
+        var chars = [" 0", " 1", "ABCÀÁÅÃÆÇàáâãäåæç2", "DEFÈÉÊËèéêë3",
+                     "GHIÌÍÎÏìíîï4", "JKL5", "MNOÑñÒÓÔÕÖØòóôõöøð6", "PQRSß7",
+                     "TUVÙÚÛÜùúûü8", "WXYZýþÿÝÞ9"];
 
         for (var i = 0; i < str.length; i++)
             pattern += '[' + chars[parseInt(str[i])] + ']';
@@ -315,7 +315,9 @@ PayModuleView = Backbone.View.extend({
     },
     hammerEvents: {
         'tap .confirm-btn': 'confirm',
-        'tap .list-group-item': 'select_customer'
+        'tap .list-group-item': 'select_customer',
+        'tap .customer-list .list-group-item:first-child > span': 'show_new_customer'
+
     },
     update: function() {
         var me = this;
@@ -360,8 +362,10 @@ PayModuleView = Backbone.View.extend({
         /* Only add a new class if a different customer was tapped. Otherwise,
          * it is supposed to work like a toggle.
          */
-        if ($this.attr('customer-id') != current_id &&
-            $this.attr('customer-id') > 0) {
+        if (($this.attr('customer-id') != current_id ||
+             $this.attr('customer-id') == -1) &&
+             ($this.attr('customer-id') > 0 ||
+              $this.attr('customer-id') == -1)) {
             $this.addClass('selected');
 
             /* If there is sufficient credit, enable the "Credit" button */
@@ -372,6 +376,16 @@ PayModuleView = Backbone.View.extend({
     unselect_customer: function() {
         $('.customer-list .selected').removeClass('selected');
         this.$el.find('.credit').addClass('grayed');
+    },
+    show_new_customer: function(event) {
+        /* Show the input bar and hide the add button */
+        $('.customer-list .list-group-item:nth-child(2)').slideDown();
+        $('.customer-list .list-group-item:first-child > span').hide();
+        /* Now put the selected class on the li element */
+        $('.customer-list .list-group-item:nth-child(2)').addClass('selected');
+        event.stopPropagation();
+        /* Add focus to input field */
+        $('.customer-list .list-group-item:nth-child(2) > input').focus();
     },
     on_pay_init: function(data) {
         this.paymodule.set({'receipt_price': data.receipt_price});
@@ -528,8 +542,17 @@ var TransactionView = Backbone.View.extend({
         if(!this.transaction.get('entries').length)
             return;
 
+        /* THe data.customer_new attribute should be filled when a new customer
+         * should be added to the database. This will be handled by the 
+         * transaction api.
+         */
+        data.customer_new = '';
+        if (data.customer_id == -1)
+            data.customer_new = $('#new-customer-field').val();
+
         this.transaction.set({'pay_type': data.pay_type,
-                              'customer_id': data.customer_id})
+                              'customer_id': data.customer_id,
+                              'customer_new': data.customer_new});
 
         this.transaction.save({}, {
             success: function() {
@@ -655,8 +678,6 @@ var NumpadView = Backbone.View.extend({
                 val = parseInt(val);
                 val = (val > 999)  ? 1000 :
                       (val < -999) ? -1000 : val;
-            } else if (this.numpad.get('type') == 't9') {
-                val = val.replace('0', ' ').replace('1', ' ').replace(/\s+/g, ' ');
             }
             
             this.numpad.set({'display': val.toString(), 'real': val});

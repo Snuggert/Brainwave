@@ -15,6 +15,7 @@ customer_api = Blueprint('customer_api', __name__,
 def create():
     """Create a new customer."""
     customer_dict = request.json
+    print customer_dict
 
     try:
         customer = CustomerController.create(customer_dict)
