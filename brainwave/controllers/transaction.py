@@ -125,11 +125,11 @@ class TransactionController:
 
         if transaction.pay_type == 'credit':
             # Make sure the customer has enough credit
-            if credit.credit < price_total:
-                raise TransactionController.MissingCredit()
-            else:
+            # if credit.credit < price_total:
+            #     raise TransactionController.MissingCredit()
+            # else:
                 # Subtract the costs by adding a negative amount
-                CreditController.add(credit, price_total * -1)
+            CreditController.add(credit, price_total * -1)
 
         # Now iterate the individual parts of the purchase again, and
         # manipulate stock (or credit) as needed.
