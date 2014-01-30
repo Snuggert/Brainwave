@@ -597,7 +597,7 @@ var TransactionView = Backbone.View.extend({
     },
     on_pay_init_request: function(data) {
         /* Verify that the receipt isn't empty */
-        if (this.get_total() > 0.0)
+        if (this.transaction.get('entries').length > 0)
             Backbone.pubSub.trigger('pay_init_allowed',
                                     {'receipt_price': this.get_total()});
     },
