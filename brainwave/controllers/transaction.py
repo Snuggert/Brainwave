@@ -150,9 +150,7 @@ class TransactionController:
         if transaction.pay_type == 'cash':
             AssociationController.change_cash_counter(association, price_total)
 
-
         TransactionController.set_status(transaction.id, 'paid')
-
 
         return transaction
 

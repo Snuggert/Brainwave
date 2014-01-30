@@ -34,6 +34,7 @@ class CreditController:
     @staticmethod
     def add(credit, amount):
         """Add to the credit."""
+        print "test", amount
         credit.credit += amount
         db.session.add(credit)
         db.session.commit()
