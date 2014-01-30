@@ -65,11 +65,16 @@ def get(customer_id):
     return jsonify(customer=serialize_sqla(customer))
 
 
-@customer_api.route('/all', methods=['GET'])
+@customer_api.route('/all/<scope>', methods=['GET'])
 @Authentication(User.ROLE_ASSOCIATION)
-def get_all():
+def get_all(scope):
     """Get all customers."""
-    customers = CustomerController.get_all()
+    if (scope == 'all'):
+        # This means that the customers for ALL associations are fetched
+        customers = CustomerController.get_all_all()
+    else:
+        # All customers from the current association are fetched
+        customers = CustomerController.get_all()
 
     user_id = session['user_id']
     user = UserController.get(user_id)
@@ -93,6 +98,13 @@ def get_all():
         customer_dicts.append(customer_dict)
 
     return jsonify(customers=customer_dicts)
+
+
+@customer_api.route('/all', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
+def get_all_all():
+    result = get_all('assoc')
+    return result
 
 
 @customer_api.route('/association/<int:customer_id>', methods=['GET'])

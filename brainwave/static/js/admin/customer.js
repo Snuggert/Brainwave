@@ -20,7 +20,7 @@ CustomerViewView = Backbone.View.extend({
     update: function() {
         var me = this;
 
-        $.get('/api/customer/all', {}, function(data) {
+        $.get('/api/customer/all/all', {}, function(data) {
             me.customers = new collections.Customers(data.customers);
             me.render();
         });

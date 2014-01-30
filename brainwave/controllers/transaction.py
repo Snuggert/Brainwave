@@ -126,6 +126,8 @@ class TransactionController:
             # Get the credit object matched to this customer
             credit = customer.credits.filter(Association.id == association.id)\
                 .first()
+            print credit
+            return True
 
         if transaction.pay_type == 'credit':
             # Make sure the customer has enough credit
