@@ -50,9 +50,9 @@ CustomerController.add_association(custo1, assoc2)
 # Dummy product categories
 product_category1 = ProductCategory('Bier', 'FFFFFF', 1)
 product_category2 = ProductCategory('Wijn', 'FFFFFF', 1)
-product_category3 = ProductCategory('Hartig', 'FFFFFF', 2)
-product_category4 = ProductCategory('Frisdrank', 'FFFFFF', 2)
-product_category5 = ProductCategory('Snoep', 'FFFFFF', 2)
+product_category3 = ProductCategory('Hartig', 'FFFFFF', 1)
+product_category4 = ProductCategory('Frisdrank', 'FFFFFF', 1)
+product_category5 = ProductCategory('Snoep', 'FFFFFF', 1)
 product_category6 = ProductCategory('Overig', 'FFFFFF', 1)
 db.session.add(product_category1)
 db.session.add(product_category2)
@@ -60,6 +60,20 @@ db.session.add(product_category3)
 db.session.add(product_category4)
 db.session.add(product_category5)
 db.session.add(product_category6)
+db.session.commit()
+
+product_category7 = ProductCategory('Bier', 'FFFFFF', 2)
+product_category8 = ProductCategory('Wijn', 'FFFFFF', 2)
+product_category9 = ProductCategory('Hartig', 'FFFFFF', 2)
+product_category10 = ProductCategory('Frisdrank', 'FFFFFF', 2)
+product_category11 = ProductCategory('Snoep', 'FFFFFF', 2)
+product_category12 = ProductCategory('Overig', 'FFFFFF', 2)
+db.session.add(product_category7)
+db.session.add(product_category8)
+db.session.add(product_category9)
+db.session.add(product_category10)
+db.session.add(product_category11)
+db.session.add(product_category12)
 db.session.commit()
 
 # Dummy users
@@ -107,21 +121,21 @@ product1 = Product('Hertog Jan 30cL', 'HJ 30cL', 0.70, 30, 'cL', False,
 product2 = Product('Hertog Jan 50cL', 'HJ 50cL', 1.00, 50, 'cL', False,
                    product_category1, stock1, assoc1)
 product3 = Product('Chardonnay 25cL', 'Chard. 25cL', 2.00, 25, 'cL', False,
-                   product_category2, stock11, assoc2)
+                   product_category8, stock11, assoc2)
 product4 = Product('Zakje pinda\'s', 'Pinda\'s', 1.25, 1, 'amount', True,
                    product_category3, stock2, assoc1)
 product5 = Product('Coca Cola 33cL', 'Cola', 0.50, 1, 'amount', True,
-                   product_category4, stock3, assoc2)
+                   product_category10, stock3, assoc2)
 product6 = Product('Coca Cola Light 33cL', 'Cola L.', 0.50, 1, 'amount', True,
                    product_category4, stock4, assoc1)
 product7 = Product('Twix', 'Twix', 0.75, 1, 'amount', True, product_category5,
                    stock5, assoc1)
-product8 = Product('Mars', 'Mars', 0.75, 1, 'amount', True, product_category5,
+product8 = Product('Mars', 'Mars', 0.75, 1, 'amount', True, product_category11,
                    stock6, assoc2)
 product9 = Product('Fanta 33cL', 'Fanta', 0.50, 1, 'amount', True,
                    product_category4, stock7, assoc1)
 product10 = Product('Nestea 33cL', 'Nestea', 0.50, 1, 'amount', True,
-                    product_category4, stock8, assoc2)
+                    product_category10, stock8, assoc2)
 product11 = Product('Add Credit', 'Credit', 1.00, 0, 'amount', False,
                     product_category6, stock9, assoc1)
 product12 = Product('Cash Back', 'Cash', 1.00, 0, 'amount', False,
