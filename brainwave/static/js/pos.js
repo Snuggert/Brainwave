@@ -367,10 +367,6 @@ PayModuleView = Backbone.View.extend({
              ($this.attr('customer-id') > 0 ||
               $this.attr('customer-id') == -1)) {
             $this.addClass('selected');
-
-            /* If there is sufficient credit, enable the "Credit" button */
-            if ($this.attr('customer-credit') >= this.paymodule.get('receipt_price'))
-                this.$el.find('.credit').removeClass('grayed');
         }
     },
     unselect_customer: function() {

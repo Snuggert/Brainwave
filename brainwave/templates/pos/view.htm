@@ -81,7 +81,15 @@
         <img id="loading-img" src="/static/img/loader.gif" />
         <div id="overlay-msg"></div>
         <div class="confirm-btn">Okay</div>
+    </div>
 
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Welcome, <span id="association-name"></span></a>
+            </div>
+            <p class="navbar-text navbar-right">Signed in as {{session.user_name}}</p>
+        </div>
     </div>
 
     <div class="container">
