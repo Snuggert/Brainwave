@@ -52,6 +52,7 @@ class AssociationController:
         """Update the association."""
         user_dict = {'id': association_dict['user_id'],
                      'login_name': association_dict.pop('login_name', None),
+                     'password': association_dict.pop('password', None),
                      'email': association_dict.pop('email', None)}
         UserController.update(user_dict)
 

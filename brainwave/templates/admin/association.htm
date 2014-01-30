@@ -31,6 +31,7 @@
                 <th>Name</th>
                 <th>Username</th>
                 <th>Email</th>
+                <th>Password</th>
                 <th></th>
             </tr>
         </thead>
@@ -46,6 +47,7 @@
         <td><%= association.get('name') %></td>
         <td><%= association.user.get('login_name') %></td>
         <td><%= association.user.get('email') %></td>
+        <td>******</td>
         <td class='text-right'>
             <button class='members btn btn-default btn-xs'>
                 <span class='glyphicon glyphicon-user'></span>
@@ -66,6 +68,7 @@
 <td><input type='text' class='form-control' data-property='name' value='<%= association.get('name') %>' /></td>
 <td><input type='text' class='form-control' data-property='login_name' value='<%= association.user.get('login_name') %>' /></td>
 <td><input type='text' class='form-control' data-property='email' value='<%= association.user.get('email') %>' /></td>
+<td><input type='password' class='form-control' data-property='password'/></td>
 <td class='text-right'>
     <button class='save btn btn-primary btn-xs'>
         <span class='glyphicon glyphicon-ok'></span>

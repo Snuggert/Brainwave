@@ -68,6 +68,8 @@ class UserController:
     def update(user_dict):
         """Update an user."""
         password = user_dict.pop('password', None)
+        if password == '':
+            password = None
 
         user = User.merge_dict(user_dict)
 
