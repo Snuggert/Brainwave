@@ -19,6 +19,8 @@ def login():
         
         if (form.user.role == User.ROLE_ADMIN):
             return redirect(url_for('admin.view_customers'))
+        if (form.user.role == User.ROLE_ASSOCIATION):
+            return redirect(url_for('admin.view_customers'))
         if (form.user.role == User.ROLE_CUSTOMER):
             return redirect(url_for('customer.credit'))
 
