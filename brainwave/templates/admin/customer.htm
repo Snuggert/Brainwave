@@ -46,9 +46,11 @@
             <button class='associations btn btn-default btn-xs'>
                 <span class='glyphicon glyphicon-user'></span>
             </button>
+            {% if session['user_role'] >= 8 %}
             <button class='edit btn btn-info btn-xs'>
                 <span class='glyphicon glyphicon-edit'></span>
             </button>
+            {% endif %}
             <button class='remove btn btn-danger btn-xs'>
                 <span class='glyphicon glyphicon-remove'></span>
             </button>
