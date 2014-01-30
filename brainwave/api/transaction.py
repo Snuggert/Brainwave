@@ -37,9 +37,8 @@ def create():
 
     # Note that the TransactionController creates records for both the
     # Transaction table as the TransactionPiece table.
-    transaction = Transaction()
     try:
-        transaction = TransactionController.create(transaction_dict)
+        TransactionController.create(transaction_dict)
     except TransactionController.MissingCredit as e:
         return jsonify(status='error', error=e.error), 500
     except TransactionController.NoAssociation as e:
@@ -53,7 +52,7 @@ def create():
     except TransactionController.NoCustomerSelected as e:
         return jsonify(status='error', error=e.error), 500
 
-    return jsonify(status='success', transaction=transaction)
+    return jsonify(status='success')
 
 
 @transaction_api.route('/<int:transaction_id>', methods=['GET'])
