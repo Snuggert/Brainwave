@@ -367,6 +367,7 @@ PayModuleView = Backbone.View.extend({
              ($this.attr('customer-id') > 0 ||
               $this.attr('customer-id') == -1)) {
             $this.addClass('selected');
+            $this.removeClass('grayed');
         }
     },
     unselect_customer: function() {
