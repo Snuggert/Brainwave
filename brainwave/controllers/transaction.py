@@ -53,6 +53,8 @@ class TransactionController:
             raise TransactionController.NoAssociation()
         association = user.association[0]
 
+        print "Association logged in: " + str(association.id)
+
         # First, add a new user to the database if this is required
         if (ta_dict['customer_id'] == -1 and
                 ta_dict['customer_new'] != ''):
@@ -126,6 +128,7 @@ class TransactionController:
             # Get the credit object matched to this customer
             credit = customer.credits.filter(Association.id == association.id)\
                 .first()
+            print "Association charged: " + str(credit.association.id)
 
         if transaction.pay_type == 'credit':
             # Make sure the customer has enough credit
@@ -144,7 +147,7 @@ class TransactionController:
             elif p[1].shortname == "Credit":
                 # Customer wants to buy credit, so add it to his balance.
                 CreditController.add(credit, p[0].price)
-            elif p[1].stock.direct:
+            elif p[1].direct:
                 # Manipulate the stock for this particular product here
                 StockController.remove(p[1].stock, p[0].quantity)
             else:

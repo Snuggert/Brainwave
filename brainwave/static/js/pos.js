@@ -322,7 +322,7 @@ PayModuleView = Backbone.View.extend({
     update: function() {
         var me = this;
 
-        $.get('/api/customer/all', {}, function(data) {
+        $.get('/api/customer/all/all', {}, function(data) {
             me.customers_all = new Customers(data.customers);
             me.filter('');
             me.render();

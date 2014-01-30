@@ -28,6 +28,7 @@ models.Product = Backbone.Model.extend({
             price: null,
             quantity: null,
             unit: 'amount',
+            direct: true,
             product_category_id: null,
             stock_id: null,
             assoc_id: null,
