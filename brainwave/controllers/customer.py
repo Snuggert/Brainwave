@@ -75,6 +75,7 @@ class CustomerController:
 
     @staticmethod
     def get_all_all():
+        """Hack method for Mats"""
         return Customer.query.all()
 
     @staticmethod
