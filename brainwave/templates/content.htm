@@ -6,6 +6,7 @@
     <div class="row">
                 <div class="col-sm-3 col-md-3">
             <div class="panel-group" id="accordion">
+                {% if session['user_role'] >= 4 %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -16,9 +17,12 @@
                     <div id="collapseOne" class="panel-collapse collapse">
                         <div class="panel-body">
                             <table class="table">
+                                
                                 <tr>
                                     <td>
-                                        <span class="glyphicon glyphicon glyphicon-shopping-cart"></span><a href="{{url_for('admin.view_product')}}">Products</a>
+                                        <span class="glyphicon glyphicon glyphicon-shopping-cart"></span>
+
+                                        <a href="{{url_for('admin.view_product')}}">Products</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -40,6 +44,9 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
+
+                {% if session['user_role'] >= 4 %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -50,12 +57,16 @@
                     <div id="collapseTwo" class="panel-collapse collapse">
                         <div class="panel-body">
                             <table class="table">
+
+                                {% if session['user_role'] >= 8 %}
                                 <tr>
                                     <td>
                                         <span class="glyphicon glyphicon-eye-open"></span>
                                         <a href="{{url_for('admin.view_associations')}}">Association</a>
                                     </td>
                                 </tr>
+                                {% endif %}
+
                                 <tr>
                                     <td>
                                         <span class="glyphicon glyphicon-user"></span>
@@ -66,11 +77,24 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
+
+                {% if session['user_role'] >= 4 %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-parent="#accordion" href="{{url_for('admin.view_analysis')}}"><span class="glyphicon glyphicon-stats">
                             </span>Analytics</a>
+                        </h4>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-parent="#accordion" href="{{url_for('customer.credit')}}"><span class="glyphicon glyphicon-stats">
+                            </span>Credit</a>
                         </h4>
                     </div>
                 </div>                

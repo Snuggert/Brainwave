@@ -13,6 +13,9 @@ from brainwave.controllers import CustomerController
 assoc1 = AssociationController.create({'name': 'via', 'login_name': 'via',
                                        'password': 'via',
                                        'email': 'bestuur@svia.nl'})
+assoc2 = AssociationController.create({'name': 'nsa', 'login_name': 'nsa',
+                                       'password': 'nsa',
+                                       'email': 'bla@nsa.nl'})
 
 # Dummy customer
 custo1 = Customer('Bas van den Heuvel', "Klaplong", "bas@bas.nl", "basklaplong")
@@ -33,6 +36,8 @@ custo8 = Customer('Mace Tyrell')
 db.session.add(custo8)
 custo9 = Customer('Measter Aemon')
 db.session.add(custo9)
+custo10 = Customer('Jaap Koetsier', 'jaap', 'mail@jkoetsier.nl', 'jaap')
+db.session.add(custo10)
 db.session.commit()
 
 CustomerController.add_association(custo1, assoc1)
@@ -91,21 +96,21 @@ product1 = Product('Hertog Jan 30cL', 'HJ 30cL', 0.70, 30, 'cL',
 product2 = Product('Hertog Jan 50cL', 'HJ 50cL', 1.00, 50, 'cL',
                    product_category1, stock1, assoc1)
 product3 = Product('Chardonnay 25cL', 'Chard. 25cL', 2.00, 25, 'cL',
-                   product_category2, stock11, assoc1)
+                   product_category2, stock11, assoc2)
 product4 = Product('Zakje pinda\'s', 'Pinda\'s', 1.25, 1, 'amount',
                    product_category3, stock2, assoc1)
 product5 = Product('Coca Cola 33cL', 'Cola', 0.50, 1, 'amount',
-                   product_category4, stock3, assoc1)
+                   product_category4, stock3, assoc2)
 product6 = Product('Coca Cola Light 33cL', 'Cola L.', 0.50, 1, 'amount',
                    product_category4, stock4, assoc1)
 product7 = Product('Twix', 'Twix', 0.75, 1, 'amount', product_category5,
                    stock5, assoc1)
 product8 = Product('Mars', 'Mars', 0.75, 1, 'amount', product_category5,
-                   stock6, assoc1)
+                   stock6, assoc2)
 product9 = Product('Fanta 33cL', 'Fanta', 0.50, 1, 'amount', product_category4,
                    stock7, assoc1)
 product10 = Product('Nestea 33cL', 'Nestea', 0.50, 1, 'amount',
-                    product_category4, stock8, assoc1)
+                    product_category4, stock8, assoc2)
 product11 = Product('Add Credit', 'Credit', 1.00, 0, 'amount',
                     product_category6, stock9, assoc1)
 product12 = Product('Cash Back', 'Cash', 1.00, 0,
