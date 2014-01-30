@@ -472,8 +472,7 @@ var TransactionView = Backbone.View.extend({
         this.empty();
     },
     hammerEvents: {
-        'swipeleft .list-group-item': 'show_delete',
-        'tap .list-group-item': 'hide_delete',
+        'tap .list-group-item': 'toggle_delete',
         'tap .list-delete': 'delete_entry'
     },
     empty: function() {
@@ -535,6 +534,9 @@ var TransactionView = Backbone.View.extend({
         if (this.is_locked())
             return;
 
+        /* Make sure this event doesn't bubble up to the list element */
+        event.stopPropagation();
+
         var $this  = $(event.currentTarget)
         ,   id     = $this.parent().find('.item-count').attr('product-id');
 
@@ -588,6 +590,10 @@ var TransactionView = Backbone.View.extend({
         $this.find('.list-delete').css('line-height',
                 $this.find('.list-delete').height() + 'px');
         $this.find('.list-delete').show('slide', {direction: 'right'}, 250);
+    },
+    toggle_delete: function(event) {
+        this.hide_delete();
+        this.show_delete(event);
     },
     on_add_entry_init: function(data) {
         this.new_entry(data);
