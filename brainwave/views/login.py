@@ -16,6 +16,7 @@ def login():
     if form.validate_on_submit():
         session['user_id'] = form.user.id
         session['user_role'] = form.user.role
+        session['user_name'] = form.user.login_name
 
         if (form.user.role == User.ROLE_ADMIN):
             return redirect(url_for('admin.view_customers'))

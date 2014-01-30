@@ -28,10 +28,10 @@ class Customer(db.Model, BaseEntity):
     def __init__(self, name='', password='password', \
                  email='default@something.com', username=''):
         """Initialize a customer."""
+        self.name = name
         if username == "":
-            username = name
+          username = name
         user = User(username, generate_password_hash(password), email, 1)
         db.session.add(user)
         db.session.commit()
-        self.name = name
         self.user = user

@@ -17,4 +17,5 @@ def credit ():
     
     customer = Customer.query.filter_by(user_id=session["user_id"]).first()
     credits =  Credit.query.filter_by(customer_id=customer.id).all()
-    return render_template("customer/credit.htm", data={"credits":credits})
+    return render_template("customer/credit.htm", data={"name":customer.name,\
+                                                        "credits":credits})

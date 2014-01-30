@@ -1,4 +1,5 @@
 """customer.py - Controller calls for customer."""
+from werkzeug.security import generate_password_hash
 from brainwave.models import Customer, Credit, User, Association
 from brainwave import db
 from brainwave.controllers import AssociationController
@@ -33,7 +34,6 @@ class CustomerController:
             customer_dict['username'] = customer_dict['name']
 
         customer = Customer.new_dict(customer_dict)
-
         if not customer.name:
             raise CustomerController.NoNameGiven()
 
