@@ -8,7 +8,7 @@ from brainwave.models.user import User
 from brainwave.models import Association
 
 association_api = Blueprint('association_api', __name__,
-                            url_prefix='/api/associations')
+                            url_prefix='/api/association')
 
 
 @association_api.route('', methods=['POST'])

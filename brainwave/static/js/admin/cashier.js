@@ -21,7 +21,7 @@ $(document).ready(function () {
  */
 function change_cash(amount, target){
     var request = $.ajax({
-        url: '/api/associations/cash_counter/set/' + amount,
+        url: '/api/association/cash_counter/set/' + amount,
         type: "GET",
         dataType: "json",
     });
@@ -38,7 +38,7 @@ function change_cash(amount, target){
 
 function update_cash(target){
     var request = $.ajax({
-        url: '/api/associations/cash_counter/get',
+        url: '/api/association/cash_counter/get',
         type: "GET",
         dataType: "json",
     });
