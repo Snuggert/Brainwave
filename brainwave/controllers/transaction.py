@@ -9,6 +9,9 @@ from brainwave.controllers.customer import CustomerController
 from brainwave.controllers.credit import CreditController
 from brainwave.controllers.stock import StockController
 
+from brainwave import app
+import logging
+
 
 class TransactionController:
     class UnknownError(Exception):

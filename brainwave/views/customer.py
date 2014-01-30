@@ -13,4 +13,5 @@ customer_blueprint = Blueprint('customer', __name__, url_prefix='/customer')
 @customer_blueprint.route('/credit', methods=['GET'])
 @Authentication(User.ROLE_CUSTOMER)
 def credit ():
-    return "dadsadsa"
+    
+    return render_template("customer/credit.htm", data={"credits":{}})

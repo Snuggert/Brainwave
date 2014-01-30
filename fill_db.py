@@ -8,14 +8,14 @@ from brainwave import db
 from brainwave.models import *
 from werkzeug.security import generate_password_hash
 from brainwave.controllers import AssociationController
-
+from brainwave.controllers import CustomerController
 # Dummy association
 assoc1 = AssociationController.create({'name': 'via', 'login_name': 'via',
                                        'password': 'via',
                                        'email': 'bestuur@svia.nl'})
 
 # Dummy customer
-custo1 = Customer('Bas van den Heuvel')
+custo1 = Customer('Bas van den Heuvel', "Klaplong", "bas@bas.nl", "basklaplong")
 db.session.add(custo1)
 custo2 = Customer('Jon Snow')
 db.session.add(custo2)
@@ -33,6 +33,9 @@ custo8 = Customer('Mace Tyrell')
 db.session.add(custo8)
 custo9 = Customer('Measter Aemon')
 db.session.add(custo9)
+db.session.commit()
+
+CustomerController.add_association(custo1, assoc1)
 
 # Dummy product categories
 product_category1 = ProductCategory('Bier')
