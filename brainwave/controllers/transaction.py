@@ -41,8 +41,27 @@ class TransactionController:
 
     @staticmethod
     def create(ta_dict):
+        # Get the association that the barteam is a part of
+        user_id = session['user_id']
+        user = UserController.get(user_id)
+        if not user.association:
+            # The bar login team is not coupled to an association?
+            raise TransactionController.UnknownError()
+        association = user.association[0]
+
+        # First, add a new user to the database if this is required
+        if (ta_dict['customer_id'] == -1 and
+                ta_dict['customer_new'] != ''):
+            customer = CustomerController.create({'name':
+                                                 ta_dict['customer_new']})
+
+            # Now bind the customer to this assocation
+            CustomerController.add_association(customer, association)
+            # Finally, update the ta_dict so it holds the right customer_id
+            ta_dict['customer_id'] = customer.id
+
         # Temporarily set assoc_id to 1, should be changed later
-        transaction = Transaction.new_dict({'assoc_id': '1',
+        transaction = Transaction.new_dict({'assoc_id': association.id,
                                             'cust_id': ta_dict['customer_id'],
                                             'pay_type': ta_dict['pay_type'],
                                             'status': 'pending',
@@ -93,14 +112,6 @@ class TransactionController:
         if transaction.pay_type == 'credit' or sell_credit is True:
             if not transaction.cust_id:
                 raise TransactionController.NoCustomerSelected()
-
-            # Get the association that the barteam is a part of
-            user_id = session['user_id']
-            user = UserController.get(user_id)
-            if not user.association:
-                # The bar login team is not coupled to an association?
-                raise TransactionController.UnknownError()
-            association = user.association[0]
 
             # Get the customer that was selected for this transaction
             customer = CustomerController.get(transaction.cust_id)

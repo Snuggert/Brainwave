@@ -321,7 +321,29 @@ body {
 }
 
 .customer-list-wrapper .selected {
-    background-color: #C4F5D5;
+    background-color: #C4F5D5 !important;
+}
+
+.customer-list .list-group-item:first-child > span {
+    float: right;
+    clear: both;
+    width: 100px;
+    height: 25px;
+    line-height: 19px;
+    padding: 3px;
+    text-align: center;
+    background-color: #427BFF;
+    background: -webkit-linear-gradient(#4EF588, #0EE661) !important; /* For Safari */
+    background: -o-linear-gradient(#4EF588, #0EE661) !important; /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#4EF588, #0EE661) !important; /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#5D8DFC, #427BFF) !important; /* Standard syntax */
+    font-size: 11px;
+    color: #ffffff;
+    border: 1px gray solid;
+}
+
+.customer-list .list-group-item:nth-child(2) {
+    display: none;
 }
 
 #pos-pay-container {
