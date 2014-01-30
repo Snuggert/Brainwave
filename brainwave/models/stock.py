@@ -9,15 +9,13 @@ class Stock(db.Model, BaseEntity):
 
     name = db.Column(db.String(256))
     quantity = db.Column(db.Integer)
-    direct = db.Column(db.Boolean)
 
     assoc_id = db.Column(db.Integer, db.ForeignKey('association.id'))
 
     products = db.relationship('Product', backref='stock')
     transactions_in = db.relationship('TransIn', backref='stock')
 
-    def __init__(self, name=None, direct=True, association=None):
+    def __init__(self, name=None, association=None):
         self.name = name
         self.quantity = 0
-        self.direct = direct
         self.association = association

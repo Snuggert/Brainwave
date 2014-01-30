@@ -144,7 +144,7 @@ class TransactionController:
             elif p[1].shortname == "Credit":
                 # Customer wants to buy credit, so add it to his balance.
                 CreditController.add(credit, p[0].price)
-            elif p[1].stock.direct:
+            elif p[1].direct:
                 # Manipulate the stock for this particular product here
                 StockController.remove(p[1].stock, p[0].quantity)
             else:

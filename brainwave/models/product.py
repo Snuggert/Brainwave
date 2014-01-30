@@ -15,6 +15,7 @@ class Product(db.Model, BaseEntity):
     price = db.Column(db.Float)
     quantity = db.Column(db.Integer)
     unit = db.Column(db.Enum('cL', 'amount', name='unit'))
+    direct = db.Column(db.Boolean)
 
     product_category_id = db.Column(db.Integer,
                                     db.ForeignKey('product_category.id'))
@@ -24,7 +25,7 @@ class Product(db.Model, BaseEntity):
     sold_pieces = db.relationship('TransactionPiece', backref='product')
 
     def __init__(self, name='', shortname='', price=None, quantity=None,
-                 unit='cL', product_category=None, stock=None,
+                 unit='cL', direct=True, product_category=None, stock=None,
                  association=None):
         self.active = False
         self.name = name
@@ -32,6 +33,7 @@ class Product(db.Model, BaseEntity):
         self.price = price
         self.quantity = quantity
         self.unit = unit
+        self.direct = direct
         self.product_category = product_category
         self.stock = stock
         self.association = association
