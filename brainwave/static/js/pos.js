@@ -352,6 +352,15 @@ PayModuleView = Backbone.View.extend({
                                    attr('customer-id'));
 
         var jsonData = {'pay_type': pay_type, 'customer_id': customer_id};
+
+        /* If there is insufficient credit, ask for confirmation first */
+        if (pay_type == 'credit' &&
+                $('.customer-list').find('.selected').attr('customer-credit') -
+                this.paymodule.get('receipt_price') < 0) {
+            if (!confirm('This customer will have a negative credit balance. Proceed?'))
+                return;
+        }
+
         Backbone.pubSub.trigger('pay', jsonData);
     },
     select_customer: function(event) {
@@ -369,6 +378,7 @@ PayModuleView = Backbone.View.extend({
             $this.addClass('selected');
             this.$el.find('.credit').removeClass('grayed');
         }
+
     },
     unselect_customer: function() {
         $('.customer-list .selected').removeClass('selected');
