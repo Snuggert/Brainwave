@@ -25,7 +25,7 @@ class Customer(db.Model, BaseEntity):
                                                       lazy='dynamic'),
                                    lazy='dynamic')
 
-    def __init__(self, name='', password='password', \
+    def __init__(self, name='', password='password',
                  email='default@something.com', username=''):
         """Initialize a customer."""
         self.name = name

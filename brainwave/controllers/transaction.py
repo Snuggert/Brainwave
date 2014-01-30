@@ -92,6 +92,7 @@ class TransactionController:
                 raise TransactionController.BadProduct()
 
             piece['price'] = product.price * piece['quantity']
+            piece['assoc_id'] = product.assoc_id
             price_total += piece['price']
 
             # Create a new transaction piece

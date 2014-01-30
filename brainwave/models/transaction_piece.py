@@ -8,7 +8,7 @@ class TransactionPiece(db.Model, BaseEntity):
     __tablename__ = 'transaction_piece'
 
     transaction_id = db.Column(db.Integer, db.ForeignKey('transaction.id'))
-
+    assoc_id = db.Column(db.Integer, db.ForeignKey('association.id'))
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
 
     quantity = db.Column(db.Integer)
@@ -16,8 +16,9 @@ class TransactionPiece(db.Model, BaseEntity):
     price = db.Column(db.Float)
 
     def __init__(self, transaction=None, product=None, quantity=None,
-                 price=None):
+                 price=None, assoc_id=None):
         self.transaction = transaction
         self.product = product
         self.quantity = quantity
         self.price = price
+        self.assoc_id = assoc_id

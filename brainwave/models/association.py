@@ -13,7 +13,6 @@ class Association(db.Model, BaseEntity):
     minimum_credit = db.Column(db.Float)
     cash_counter = db.Column(db.Float)
 
-
     products = db.relationship('Product', backref='association')
     stocks = db.relationship('Stock', backref='association')
     transactions = db.relationship('Transaction', backref='association')

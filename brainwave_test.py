@@ -130,26 +130,26 @@ class brainwaveTestCase(unittest.TestCase):
 
     # def test_stock_api(self):
     #     stock_dict = {'name': 'Hertog Jan fust', 'quantity': 30}
-    #     stock = StockAPI.create(stock_dict)
+    #     stock = StockController.create(stock_dict)
     #     assert stock.id
 
     #     stock_dict = {'name': 'Jupiler fust'}
-    #     stock = StockAPI.create(stock_dict)
+    #     stock = StockController.create(stock_dict)
     #     assert stock.quantity == 0
     #     stock_id = stock.id
 
-    #     stock = StockAPI.add(stock, 2)
+    #     stock = StockController.add(stock, 2)
     #     assert stock.quantity == 2
 
-    #     stock = StockAPI.get(stock_id)
+    #     stock = StockController.get(stock_id)
     #     assert stock.name
 
-    #     stocks = StockAPI.get_all()
+    #     stocks = StockController.get_all()
     #     assert stocks
 
-    #     stock = StockAPI.get(stock_id)
-    #     StockAPI.delete(stock)
-    #     assert not StockAPI.get(stock_id)
+    #     stock = StockController.get(stock_id)
+    #     StockController.delete(stock)
+    #     assert not StockController.get(stock_id)
 
     # def test_stock_controller(self):
     #     with app.test_client() as c, app.app_context():
@@ -183,30 +183,30 @@ class brainwaveTestCase(unittest.TestCase):
 
     def test_trans_in_api(self):
         stock_dict = {'name': 'Hertog Jan', 'quantity': 30}
-        stock = StockAPI.create(stock_dict)
+        stock = StockController.create(stock_dict)
 
         trans_in_dict = {'price': 100.0, 'volume': 30, 'stock_id': stock.id}
-        trans_in = TransInAPI.create(trans_in_dict)
+        trans_in = TransInController.create(trans_in_dict)
         assert trans_in.id
 
-        stock = StockAPI.get(stock.id)
+        stock = StockController.get(stock.id)
         assert stock.quantity == 60
 
         trans_in_id = trans_in.id
 
-        trans_in = TransInAPI.get(trans_in_id)
+        trans_in = TransInController.get(trans_in_id)
         assert trans_in.volume == 30
 
-        trans_all = TransInAPI.get_all()
+        trans_all = TransInController.get_all()
         assert trans_all
 
-        TransInAPI.delete(trans_in)
-        assert not TransInAPI.get(trans_in_id)
+        TransInController.delete(trans_in)
+        assert not TransInController.get(trans_in_id)
 
     # def test_trans_in_controller(self):
     #     with app.test_client() as c, app.app_context():
     #         stock_dict = {'name': 'Hertog Jan', 'quantity': 30}
-    #         stock = StockAPI.create(stock_dict)
+    #         stock = StockController.create(stock_dict)
     #         trans_in_dict = {'price': 100.0, 'volume': 30,
     #                          'stock_id': stock.id}
 
@@ -276,7 +276,7 @@ class brainwaveTestCase(unittest.TestCase):
     #     product_category = ProductCategoryAPI.create(product_category_dict)
 
     #     stock_dict = {'name': 'Hertog Jan', 'quantity': 30}
-    #     stock = StockAPI.create(stock_dict)
+    #     stock = StockController.create(stock_dict)
 
     #     product_dict = {'name': 'Hertog Jan 30cl', 'shortname': 'HJ 30cl',
     #                     'price': 1.0, 'volume': 1, 'loss': None,
@@ -304,7 +304,7 @@ class brainwaveTestCase(unittest.TestCase):
     #     product_category = ProductCategoryAPI.create(product_category_dict)
 
     #     stock_dict = {'name': 'Hertog Jan', 'quantity': 30}
-    #     stock = StockAPI.create(stock_dict)
+    #     stock = StockController.create(stock_dict)
 
     #     with app.test_client() as c, app.app_context():
     #         product_dict = {'name': 'Hertog Jan 30cl',

@@ -1,8 +1,10 @@
 """transaction_piece.py - Controller calls for TransactionPieces."""
 from brainwave import db
-from brainwave.models import TransactionPiece, Product
+from brainwave.models import TransactionPiece, Product, User
 from sqlalchemy import func, and_
 from datetime import datetime, timedelta
+from flask import session
+
 import time
 
 
@@ -33,34 +35,71 @@ class TransactionPieceController:
             timedelta(days=1)
 
         # Retreive all products
-        products = Product.query.all()
+        if session['user_role'] >= User.ROLE_ADMIN:
+            products = Product.query.all()
+        elif session['user_role'] >= User.ROLE_ASSOCIATION:
+            assoc_id = session['association_id']
+            products = Product.query.filter_by(assoc_id=assoc_id).all()
 
-        for product in products:
-            # Get the sum of all the transactions
-            product.quantitysum = TransactionPiece.query.\
-                with_entities(func.sum(TransactionPiece.quantity).
-                              label('quantitysum')).\
-                filter(TransactionPiece.product_id == product.id,
-                       and_(TransactionPiece.created >= from_date,
-                            TransactionPiece.created <= to_date)
-                       ).all()
+        if session['user_role'] >= User.ROLE_ADMIN:
+            for product in products:
+                # Get the sum of all the transactions
+                product.quantitysum = TransactionPiece.query.\
+                    with_entities(func.sum(TransactionPiece.quantity).
+                                  label('quantitysum')).\
+                    filter(and_(TransactionPiece.product_id == product.id,
+                                TransactionPiece.created >= from_date,
+                                TransactionPiece.created <= to_date)
+                           ).all()
 
-            # Get the sum of all the transactions prices
-            product.pricesum = TransactionPiece.query.\
-                with_entities(func.sum(TransactionPiece.price).
-                              label('pricesum')).\
-                filter(TransactionPiece.product_id == product.id,
-                       and_(TransactionPiece.created >= from_date,
-                            TransactionPiece.created <= to_date)
-                       ).all()
+                # Get the sum of all the transactions prices
+                product.pricesum = TransactionPiece.query.\
+                    with_entities(func.sum(TransactionPiece.price).
+                                  label('pricesum')).\
+                    filter(and_(TransactionPiece.product_id == product.id,
+                                TransactionPiece.created >= from_date,
+                                TransactionPiece.created <= to_date)
+                           ).all()
 
-            # Get the amount of tranction items
-            product.amount = TransactionPiece.query.\
-                with_entities(func.count
-                              (TransactionPiece.id).label('amount')).\
-                filter(TransactionPiece.product_id == product.id,
-                       and_(TransactionPiece.created >= from_date,
-                            TransactionPiece.created <= to_date)
-                       ).all()
+                # Get the amount of tranction items
+                product.amount = TransactionPiece.query.\
+                    with_entities(func.count
+                                  (TransactionPiece.id).label('amount')).\
+                    filter(and_(TransactionPiece.product_id == product.id,
+                                TransactionPiece.created >= from_date,
+                                TransactionPiece.created <= to_date)
+                           ).all()
+
+        elif session['user_role'] >= User.ROLE_ASSOCIATION:
+            for product in products:
+                # Get the sum of all the associations transactions
+                product.quantitysum = TransactionPiece.query.\
+                    with_entities(func.sum(TransactionPiece.quantity).
+                                  label('quantitysum')).\
+                    filter(and_(TransactionPiece.product_id == product.id,
+                                TransactionPiece.created >= from_date,
+                                TransactionPiece.created <= to_date,
+                                TransactionPiece.assoc_id == assoc_id)
+                           ).all()
+
+                # Get the sum of all the associations transactions prices
+                product.pricesum = TransactionPiece.query.\
+                    with_entities(func.sum(TransactionPiece.price).
+                                  label('pricesum')).\
+                    filter(and_(TransactionPiece.product_id == product.id,
+                                TransactionPiece.created >= from_date,
+                                TransactionPiece.created <= to_date,
+                                TransactionPiece.assoc_id == assoc_id)
+                           ).all()
+
+                # Get the amount of associations tranction items
+                product.amount = TransactionPiece.query.\
+                    with_entities(func.count
+                                  (TransactionPiece.id).label('amount')).\
+                    filter(and_(TransactionPiece.product_id == product.id,
+                                TransactionPiece.created >= from_date,
+                                TransactionPiece.created <= to_date,
+                                TransactionPiece.assoc_id == assoc_id)
+                           ).all()
 
         return products
