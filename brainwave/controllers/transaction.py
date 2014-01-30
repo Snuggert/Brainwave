@@ -18,6 +18,10 @@ class TransactionController:
         def __init__(self):
             self.error = 'An unexpected error occurred.'
 
+    class NoAssociation(Exception):
+        def __init__(self):
+            self.error = 'Your account is not bound to any association.'
+
     class MissingCredit(Exception):
         def __init__(self):
             self.error = 'The customer does not have enough credit!' + \
@@ -46,7 +50,7 @@ class TransactionController:
         user = UserController.get(user_id)
         if not user.association:
             # The bar login team is not coupled to an association?
-            raise TransactionController.UnknownError()
+            raise TransactionController.NoAssociation()
         association = user.association[0]
 
         # First, add a new user to the database if this is required

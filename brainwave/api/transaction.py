@@ -38,17 +38,7 @@ def create():
     transaction = Transaction()
     try:
         transaction = TransactionController.create(transaction_dict)
-    except TransactionController.MissingCredit as e:
-        return jsonify(status='error', error=e.error), 500
-    except TransactionController.BadQuantity as e:
-        return jsonify(status='error', error=e.error), 500
-    except TransactionController.BadProduct as e:
-        return jsonify(status='error', error=e.error), 500
-    except TransactionController.UnknownError as e:
-        return jsonify(status='error', error=e.error), 500
-    except TransactionController.NotCoupled as e:
-        return jsonify(status='error', error=e.error), 500
-    except TransactionController.NoCustomerSelected as e:
+    except Exception as e:
         return jsonify(status='error', error=e.error), 500
 
     return jsonify(status='success')
