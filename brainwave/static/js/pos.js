@@ -316,8 +316,8 @@ PayModuleView = Backbone.View.extend({
     hammerEvents: {
         'tap .confirm-btn': 'confirm',
         'tap .list-group-item': 'select_customer',
-        'tap .customer-list .list-group-item:first-child > span': 'show_new_customer'
-
+        'tap .customer-list .list-group-item:first-child > span': 'show_new_customer',
+        'submit .new-customer-form': 'set_new_customer'
     },
     update: function() {
         var me = this;
@@ -400,9 +400,18 @@ PayModuleView = Backbone.View.extend({
             $('.customer-list .list-group-item:nth-child(2)').addClass('selected');
             event.stopPropagation();
             /* Add focus to input field */
-            $('.customer-list .list-group-item:nth-child(2) > input').focus();
+            $('.customer-list .list-group-item:nth-child(2) input').focus();
         });
 
+    },
+    set_new_customer: function(event) {
+        /* Prevent a form from actually trying to submit itself */
+        event.preventDefault();
+        /* Change the input field to a regular text area */
+        var name = $('.customer-list .list-group-item:nth-child(2) input').val();
+        $('.new-customer-form').hide();
+        $('.new-customer-text').text(name);
+        $('.new-customer-text').show();
     },
     on_pay_init: function(data) {
         this.paymodule.set({'receipt_price': data.receipt_price});

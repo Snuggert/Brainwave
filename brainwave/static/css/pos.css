@@ -352,6 +352,10 @@ body {
     display: none;
 }
 
+.new-customer-text {
+    display: none;
+}
+
 #pos-pay-container {
     display: none; /* Should disappear on pay */
 }

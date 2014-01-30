@@ -32,7 +32,7 @@
     <div class="col-xs-12 customer-list-wrapper">
         <ul class="list-group customer-list">
             <li class="list-group-item" customer-id="0">Select customer <span>New customer</span></li>
-            <li class="list-group-item" customer-id="-1"><input id="new-customer-field" class="form-control" type="text" value="" placeholder="Name or Student ID"></span></li>
+            <li class="list-group-item" customer-id="-1"><span class="new-customer-text"></span><form class="new-customer-form"><input id="new-customer-field" class="form-control" type="text" value="" placeholder="Name or Student ID"></form></li>
             <% _.each(customers, function(customer) { %>
                 <li class="list-group-item" customer-id="<%= customer.get('id') %>"
                     customer-credit="<%= (customer.get('credit') == null) ?
