@@ -1,10 +1,11 @@
 """association.py - Controller for association."""
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from brainwave.controllers import AssociationController, CustomerController,\
     UserController
 from brainwave.utils import serialize_sqla
 from brainwave.controllers.authentication import Authentication
 from brainwave.models.user import User
+from brainwave.models import Association
 
 association_api = Blueprint('association_api', __name__,
                             url_prefix='/api/association')
@@ -133,3 +134,27 @@ def remove_customer(association_id):
         return jsonify(error=e.error)
 
     return jsonify()
+
+@association_api.route('/cash_counter/set/<int:amount>', methods=['POST'])
+@Authentication(User.ROLE_ASSOCIATION)
+def set_cash_counter(amount):
+    association = Association.query.filter_by(user_id=session["user_id"])\
+                                              .first()
+    AssociationController.set_cash_counter(association, amount)
+    return jsonify()
+
+@association_api.route('/cash_counter/change/<int:amount>', methods=['POST'])
+@Authentication(User.ROLE_ASSOCIATION)
+def change_cash_counter(amount):
+    association = Association.query.filter_by(user_id=session["user_id"])\
+                                              .first()
+    AssociationController.change_cash_counter(association, amount)
+    return jsonify()
+
+@association_api.route('/cash_counter/get', methods=['GET'])
+@Authentication(User.ROLE_ASSOCIATION)
+def get_cash_counter():
+    association = Association.query.filter_by(user_id=session["user_id"])\
+                                              .first()
+    cash_counted = AssociationController.get_cash_counter(association)
+    return jsonify(cash_counter=cash_counted)

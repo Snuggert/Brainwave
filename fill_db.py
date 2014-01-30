@@ -26,7 +26,6 @@ assoc5 = AssociationController.create({'name': 'nsa', 'login_name': 'nsa',
                                        'password': 'nsa',
                                        'email': 'bla@nsa.nl'})
 
-
 db.session.add(assoc1)
 db.session.add(assoc2)
 db.session.add(assoc3)
@@ -35,8 +34,10 @@ db.session.add(assoc5)
 db.session.commit()
 
 # Dummy customer
-custo1 = Customer('Bas van den Heuvel', "Klaplong", "bas@bas.nl",
-                  "basklaplong")
+AssociationController.set_cash_counter(assoc1, 10)
+AssociationController.change_cash_counter(assoc2, 50)
+
+
 custo1 = Customer('Bas van den Heuvel', "klaplong", "bas@bas.nl", "basklaplong")
 db.session.add(custo1)
 custo2 = Customer('Jon Snow', 'ghost', "jon@snow.sk", "jonsnow")

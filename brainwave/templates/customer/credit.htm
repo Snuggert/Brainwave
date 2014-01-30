@@ -4,7 +4,20 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container" style="margin-top: 70px">
-        <div class="row">
-        </div>
+    <table class="table table-striped custab" id="credits">
+        <thead>
+            <tr>
+                <th>Credit</th>
+                <th>Assciation</th>
+            </tr>
+        </thead>
+        <tbody id="product_results">
+            {% for credit in data.credits %}
+                <tr>
+                    <td>€{{credit.credit}}</td>
+                    <td>{{credit.association.name}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

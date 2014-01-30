@@ -131,3 +131,19 @@ class AssociationController:
 
         db.session.add(association)
         db.session.commit()
+
+    @staticmethod
+    def set_cash_counter(association, amount):
+        association.cash_counter = amount
+        db.session.add(association)
+        db.session.commit()
+
+    @staticmethod
+    def change_cash_counter(association, amount):
+        association.cash_counter += amount
+        db.session.add(association)
+        db.session.commit()
+
+    @staticmethod
+    def get_cash_counter(association):
+        return association.cash_counter

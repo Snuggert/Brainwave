@@ -1,11 +1,12 @@
-"""admin.py - View for administration."""
+"""customer.py - Display customers credits"""
 from datetime import date, timedelta, datetime
 from flask import render_template
 from flask import Blueprint
-from brainwave.controllers import AssociationController, \
-    TransInController, ProductController, ProductCategoryController, \
-    TransactionController
-from brainwave.models import Stock, User
+from flask import session
+from flask import jsonify
+from brainwave.controllers import CreditController, UserController, \
+                                  AssociationController
+from brainwave.models import Credit, Customer, Association, User
 from brainwave.controllers.authentication import Authentication
 
 customer_blueprint = Blueprint('customer', __name__, url_prefix='/customer')
@@ -14,4 +15,6 @@ customer_blueprint = Blueprint('customer', __name__, url_prefix='/customer')
 @Authentication(User.ROLE_CUSTOMER)
 def credit ():
     
-    return render_template("customer/credit.htm", data={"credits":{}})
+    customer = Customer.query.filter_by(user_id=session["user_id"]).first()
+    credits =  Credit.query.filter_by(customer_id=customer.id).all()
+    return render_template("customer/credit.htm", data={"credits":credits})
