@@ -6,6 +6,7 @@
     <div class="row">
                 <div class="col-sm-3 col-md-3">
             <div class="panel-group" id="accordion">
+                {% if session['user_role'] >= 4 %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -14,6 +15,7 @@
                         </h4>
                     </div>
                 </div>
+                {% endif %}
                 {% if session['user_role'] >= 4 %}
                 <div class="panel panel-default">
                     <div class="panel-heading">

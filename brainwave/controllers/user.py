@@ -136,6 +136,7 @@ class UserController:
     @staticmethod
     def logout():
         logout_user()
+        del session['user_name']
 
         return
 
