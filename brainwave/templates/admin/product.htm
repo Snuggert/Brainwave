@@ -140,7 +140,7 @@
                 <label for="stock_id">Stock</label><br/>
                 <select id="stock_id" class="form_select select2-offscreen" data-property="stock_id" tabindex="-1">
                     <% _.each(stocks, function(stock) { %>
-                        <option value="<%= product_category.get('id') %>"> <%= product_category.get('name') %></option>
+                        <option value="<%= stock.get('id') %>"> <%= stock.get('name') %></option>
                     <% }); %>
                 </select>
                 <br />
@@ -151,8 +151,8 @@
                     <% }); %>
                 </select>
                 <br />
-                <label for='new-stock-direct'>Direct</label>
-                <input type='checkbox' id='new-stock-direct' data-property="direct" data-toggle="tooltip" title="The direct checkbox sets whether products can be directly subtracted from the stock quantity."/>
+                <label for='new-product-direct'>Direct</label>
+                <input type='checkbox' id='new-product-direct' data-property="direct" data-toggle="tooltip" title="The direct checkbox sets whether products can be directly subtracted from the stock quantity."/>
             </div>
             <button id='save-new' class='btn btn-primary'>Save</button>
         </div>

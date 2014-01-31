@@ -125,19 +125,19 @@ var ProductEditView = Backbone.View.extend({
 var ProductNewView = Backbone.View.extend({
     stocks: new collections.Stocks(),
     product_categories: new collections.ProductCategories(),
-    associations: new collections.ProductCategories(),
+    associations: new collections.Associations(),
     initialize: function() {
         var me = this;
         $.get('/api/stock/all', {}, function(data) {
             me.stocks = new collections.Stocks(data.stocks);
+            $.get('/api/association/all', {}, function(data) {
+                me.associations = new collections.Associations(data.associations);
+                $.get('/api/product_category/all', {}, function(data) {
+                    me.product_categories = new collections.ProductCategories(data.product_categories);
+                    me.render();
+                });
+            });
         });
-        $.get('/api/product_category/all', {}, function(data) {
-            me.product_categories = new collections.ProductCategories(data.product_categories);
-        });
-        $.get('/api/association/all', {}, function(data) {
-            me.associations = new collections.Associations(data.associations);
-        });
-        this.render();
     },
     render: function() {
         var template = _.template($('#product-new-template').html(), {
