@@ -5,7 +5,7 @@ from brainwave.forms.login import LoginForm
 from brainwave.controllers import UserController
 from brainwave.models.user import User
 
-
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if 'user_id' in session:
