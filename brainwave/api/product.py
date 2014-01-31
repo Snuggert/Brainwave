@@ -14,6 +14,7 @@ product_api = Blueprint('product_api', __name__,
 def create():
     """ Create new product """
     product_dict = request.json
+    print product_dict
     if product_dict:
         if product_dict['price'] == '':
             product_dict['price'] = 0.0
